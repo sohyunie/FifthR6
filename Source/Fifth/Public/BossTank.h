@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Fifth.h"
 #include "GameFramework/Character.h"
 #include "BossTank.generated.h"
 
@@ -39,6 +39,7 @@ public:
 	void Kick();
 	void Skill();
 	void SpecialAttack();
+	void Screaming();
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UBossStatComponent* BossStat;
@@ -56,6 +57,8 @@ private:
 		bool IsSkillUsing;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsSpecialAttacking;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool IsScreaming;
 	
 	void AttackCheck();
 	void KickCheck();
@@ -84,5 +87,8 @@ private:
 
 	UFUNCTION()
 		void OnSpecialMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+		void OnScreamMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 };

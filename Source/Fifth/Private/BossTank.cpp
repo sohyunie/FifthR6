@@ -40,6 +40,7 @@ ABossTank::ABossTank()
 	IsKicking = false;
 	IsSkillUsing = false;
 	IsSpecialAttacking = false;
+	IsScreaming = false;
 
 	AttackRange = 200.0f;
 	AttackRadius = 50.0f;
@@ -74,6 +75,11 @@ void ABossTank::SetControlMode(int32 ControlMode)
 void ABossTank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsDamaging)
+	{
+		SetActorLocation(GetActorLocation() + GetControlRotation().Vector());
+	}
 
 }
 
@@ -163,6 +169,14 @@ void ABossTank::SpecialAttack()
 	IsAttacking = true;
 }
 
+void ABossTank::Screaming()
+{
+	if (IsScreaming) return;
+
+	BTAnim->PlayScreamMontage();
+	IsScreaming = true;
+}
+
 void ABossTank::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	IsAttacking = false;
@@ -188,6 +202,11 @@ void ABossTank::OnSkillMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 void ABossTank::OnSpecialMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	IsSpecialAttacking = false;
+}
+
+void ABossTank::OnScreamMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	IsScreaming = false;
 }
 
 void ABossTank::AttackCheck()

@@ -6,6 +6,7 @@
 #include "MyAIController.h"
 #include "ShadowStatComponent.h"
 #include "DrawDebugHelpers.h"
+#include "ShadowSetting.h"
 
 // Sets default values
 AShadow::AShadow()

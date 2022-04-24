@@ -32,12 +32,27 @@ void ATankAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
+}
+
+void ATankAIController::RunAI()
+{
+	
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
-		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
+		Blackboard->SetValueAsVector(HomePosKey, GetPawn()->GetActorLocation());
 		if (!RunBehaviorTree(BTAsset))
 		{
 			ABLOG(Error, TEXT("TankAIController couldn't run behavior tree!"));
 		}
 	}
+}
+
+void ATankAIController::StopAI()
+{
+	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (nullptr!=BehaviorTreeComponent)
+	{
+		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
+	}
+	
 }

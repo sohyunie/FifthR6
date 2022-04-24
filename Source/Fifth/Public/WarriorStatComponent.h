@@ -7,6 +7,7 @@
 #include "WarriorStatComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHPIsZeroDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FIFTH_API UWarriorStatComponent : public UActorComponent
@@ -25,10 +26,13 @@ protected:
 public:
 	void SetNewLevel(int32 NewLevel);
 	void SetDamage(float NewDamage);
+	void SetHP(float NewHP);
 	float GetAttack();
 	float GetSAttack();
+	float GetHPRatio();
 
 	FOnHPIsZeroDelegate OnHPIsZero;
+	FOnHPChangedDelegate OnHPChanged;
 
 	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		//bool SAttackCheck{ false };

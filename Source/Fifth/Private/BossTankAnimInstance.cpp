@@ -42,6 +42,13 @@ UBossTankAnimInstance::UBossTankAnimInstance()
 	{
 		SpecialMontage = SPECIAL_MONTAGE.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		SCREAM_MONTAGE(TEXT("/Game/MyCharacter/Animation/NPCAnimations/TankAnimations/BossTankAni/BossTank_Screaming.BossTank_Screaming"));
+	if (SCREAM_MONTAGE.Succeeded())
+	{
+		ScreamMontage = SCREAM_MONTAGE.Object;
+	}
 }
 
 void UBossTankAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -88,6 +95,12 @@ void UBossTankAnimInstance::PlaySpecialMontage()
 {
 	//ABCHECK(!IsDead);
 	Montage_Play(SpecialMontage, 1.0f);
+}
+
+void UBossTankAnimInstance::PlayScreamMontage()
+{
+	//ABCHECK(!IsDead);
+	Montage_Play(ScreamMontage, 1.0f);
 }
 
 void UBossTankAnimInstance::AnimNotify_AttackHitCheck()

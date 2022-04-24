@@ -9,6 +9,7 @@
 const FName ABossAIController::HomePosKey(TEXT("HomePos"));
 const FName ABossAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName ABossAIController::TargetKey(TEXT("Target"));
+const FName ABossAIController::SelectAttackNumberKey(TEXT("SelectAttackNumber"));
 
 ABossAIController::ABossAIController()
 {
