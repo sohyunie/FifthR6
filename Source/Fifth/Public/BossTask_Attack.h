@@ -25,6 +25,6 @@ protected:
 
 private:
 	bool IsAttacking = false;
-	bool IsKicking = false;
+	//bool IsKicking = false;
 	
 };

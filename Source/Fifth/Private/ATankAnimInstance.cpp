@@ -42,7 +42,10 @@ void UATankAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UATankAnimInstance::PlayAttackMontage()
 {
 	//ABCHECK(!IsDead);
-	Montage_Play(AttackMontage, 1.0f);
+	if (Montage_IsPlaying(AttackMontage) == false) {
+
+		Montage_Play(AttackMontage, 1.0f);
+	}
 }
 
 void UATankAnimInstance::PlayDamagedMontage()

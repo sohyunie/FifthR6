@@ -14,6 +14,8 @@ class FIFTH_API AMyCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMyCharacter();
+	
+	
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,6 +47,9 @@ public:
 
 	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		//bool SAttackCheck{ false };
+
+	void SetWarriorState(ECharacterState NewState);
+	ECharacterState GetWarriorState() const;
 	
 
 private:
@@ -66,6 +71,8 @@ private:
 	void AttackCheck();
 	void SAttackCheck();
 
+	void OnAssetLoadCompleted();
+
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;
@@ -73,7 +80,12 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		bool IsSAttacking;
 
+	//강제 이동이 아닌 조건 성립 체크
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool beChecked;
 	
+
+
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool CanNextCombo; 
@@ -95,4 +107,30 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		float AttackRadius;
+
+	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
+	TSharedPtr<struct FStreamableHandle> AssetStreamingHandle;
+	
+
+	int32 AssetIndex = 0;
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State,
+		Meta = (AllowPrivateAccess = true))
+		ECharacterState CurrentState;
+
+	//UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State,
+		//Meta = (AllowPrivateAccess = true))
+		//bool bIsPlayer;
+
+	UPROPERTY()
+		class AMyPlayerController* MyPlayerController;
+
+	//UPROPERTY()
+		//class AMyPlayerController* MyPlayerController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
+		float DeadTimer;
+
+	FTimerHandle DeadTimerHandle = {};
+
+
 };

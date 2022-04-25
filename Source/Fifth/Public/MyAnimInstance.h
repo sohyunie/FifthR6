@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "MyAnimInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnIsCheckedDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSAttackHitCheckDelegate);
@@ -29,6 +30,7 @@ public:
 	void JumpToAttackMontageSection(int32 NewSection);
 
 public:
+	FOnIsCheckedDelegate OnIsChecked;
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnSAttackHitCheckDelegate OnSAttackHitCheck;
@@ -46,6 +48,9 @@ private:
 
 	UFUNCTION()
 		void AnimNotify_NextAttackCheck();
+
+	UFUNCTION()
+		void AnimNotify_IsChecked();
 
 	FName GetAttackMontageSectionName(int32 Section);
 

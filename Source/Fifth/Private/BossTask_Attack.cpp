@@ -5,10 +5,8 @@
 #include "BossAIController.h"
 #include "MyCharacter.h"
 #include "BossTank.h"
-#include <random>
+#include "BehaviorTree/BlackboardComponent.h"
 
-std::random_device rd;
-std::uniform_int_distribution<int> uid(0, 1);
 
 
 UBossTask_Attack::UBossTask_Attack()
@@ -25,6 +23,8 @@ EBTNodeResult::Type UBossTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	auto BossTank = Cast<ABossTank>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == BossTank)
 		return EBTNodeResult::Failed;
+
+	
 
 	
 	BossTank->Attack();

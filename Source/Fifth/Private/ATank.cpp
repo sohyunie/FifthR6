@@ -6,6 +6,13 @@
 #include "TankAIController.h"
 #include "TankStatComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Components/WidgetComponent.h"
+#include "TankWidget.h"
+#include "TankSetting.h"
+#include "MyGameInstance.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 
 // Sets default values
 AATank::AATank()
@@ -14,15 +21,28 @@ AATank::AATank()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TankStat = CreateDefaultSubobject<UTankStatComponent>(TEXT("TANKSTAT"));
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+
+	HPBarWidget->SetupAttachment(GetMesh());
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),
 		FRotator(0.0f, -90.0f, 0.0f));
+
+	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 300.0f));
+	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT
+	("/Game/UI/UI_HPBar.UI_HPBar_C"));
+	if (UI_HUD.Succeeded())
+	{
+		HPBarWidget->SetWidgetClass(UI_HUD.Class);
+		HPBarWidget->SetDrawSize(FVector2D(150.0f,50.0f));
+	}
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ATank(TEXT
 	("/Game/MyCharacter/Characters/Tank.Tank"));
 	if (ATank.Succeeded())
 	{
-		ABLOG(Warning, TEXT("SUCCEEDED1"));
+		//ABLOG(Warning, TEXT("SUCCEEDED1"));
 		GetMesh()->SetSkeletalMesh(ATank.Object);
 	}
 
@@ -32,7 +52,7 @@ AATank::AATank()
 	("/Game/MyCharacter/Animation/NPCAnimations/TankAnimations/TankAnimBlueprint.TankAnimBlueprint_C"));
 	if (ATank_ANIM.Succeeded())
 	{
-		ABLOG(Warning, TEXT("SUCCEEDED2"));
+		//ABLOG(Warning, TEXT("SUCCEEDED2"));
 		GetMesh()->SetAnimInstanceClass(ATank_ANIM.Class);
 	}
 
@@ -48,13 +68,113 @@ AATank::AATank()
 
 	AIControllerClass = ATankAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
+
+	AssetIndex = 0;
+	SetActorHiddenInGame(true);
+	HPBarWidget->SetHiddenInGame(true);
+	SetCanBeDamaged(false);
+
+	
+	
+	DeadTimer = 5.0f;
+}
+
+void AATank::OnAssetLoadCompleted()
+{
+	USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
+	AssetStreamingHandle.Reset();
+	ABCHECK(nullptr != AssetLoaded);
+	GetMesh()->SetSkeletalMesh(AssetLoaded);
+
+	SetTankState(ECharacterState::READY);
+	
+
 }
 
 // Called when the game starts or when spawned
 void AATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TankAIController = Cast<ATankAIController>(GetController());
+	ABCHECK(nullptr != TankAIController);
+
+	auto DefaultSetting = GetDefault<UTankSetting>();
+
+	AssetIndex = 0;
+
+	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
+	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	ABCHECK(nullptr != MyGameInstance);
+	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
+		FStreamableDelegate::CreateUObject(this, &AATank::OnAssetLoadCompleted));
 	
+	
+
+	SetTankState(ECharacterState::LOADING);
+}
+
+void AATank::SetTankState(ECharacterState NewState)
+{
+	ABCHECK(CurrentState != NewState);
+	CurrentState = NewState;
+
+	switch (CurrentState)
+	{
+	case ECharacterState::LOADING:
+	{
+		SetActorHiddenInGame(true);
+		HPBarWidget->SetHiddenInGame(true);
+		SetCanBeDamaged(false);
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		HPBarWidget->SetHiddenInGame(false);
+		SetCanBeDamaged(true);
+
+		TankStat->OnHPIsZero.AddLambda([this]()->void {
+			SetTankState(ECharacterState::DEAD);
+			});
+
+		auto TankWidget = Cast<UTankWidget>(HPBarWidget->GetUserWidgetObject());
+		ABCHECK(nullptr != TankWidget);
+		TankWidget->BindTankStat(TankStat);
+
+		SetControlMode(0);
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+		TankAIController->RunAI();
+
+		break;
+	}
+	case ECharacterState::DEAD:
+	{
+		SetActorEnableCollision(false);
+		GetMesh()->SetHiddenInGame(false);
+		HPBarWidget->SetHiddenInGame(true);
+		ATAnim->SetDeadAnim();
+		SetCanBeDamaged(false);
+
+		TankAIController->StopAI();
+
+		GetWorld()->GetTimerManager().SetTimer
+		(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+			Destroy();
+
+			}), DeadTimer, false);
+
+
+		break;
+	}
+	}
+}
+
+
+ECharacterState AATank::GetTankState() const
+{
+	return CurrentState;
 }
 
 void AATank::SetControlMode(int32 ControlMode)
@@ -74,6 +194,14 @@ void AATank::SetControlMode(int32 ControlMode)
 void AATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsDamaging)
+	{
+
+		
+		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
+			->GetControlRotation().Vector()/**10*/);
+	}
 
 }
 
@@ -114,6 +242,12 @@ float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	Damaged();
 	TankStat->SetDamage(FinalDamage);
 
+	ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
 	
 
 	return FinalDamage;
@@ -150,8 +284,9 @@ void AATank::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	
 	IsAttacking = false;
 	//IsDamaging = false;
-
+	
 	OnAttackEnd.Broadcast();
+	
 	
 }
 
@@ -162,7 +297,7 @@ void AATank::OnDamagedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	//IsAttacking = false;
 	IsDamaging = false;
 
-	
+	OnAttackEnd.Broadcast();
 
 }
 
@@ -179,7 +314,7 @@ void AATank::AttackCheck()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-#if ENABLE_DRAW_DEBUG
+/*#if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -197,7 +332,7 @@ void AATank::AttackCheck()
 		false,
 		DebugLifeTime);
 
-#endif
+#endif*/
 
 
 	if (bResult)
@@ -209,13 +344,11 @@ void AATank::AttackCheck()
 
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
-			UParticleSystem* ElectricAttackBoomEffect =
-				Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-					TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
-				this->GetActorLocation());
+			
+			
+
 		
-			//ABLOG(Warning, TEXT("2Ok!!"));
+			
 			Damaged();
 		}
 	}
