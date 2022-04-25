@@ -41,7 +41,8 @@ public:
 
 	bool IsNear(int a_id, int b_id);
 
-	void MovePosition(float x, float y, float z, char direction);
+	void MovePosition(cs_packet_move packet, int id);
+
 	void Jump(float x, float y, float z);
 
 	void HandleCompletionInfoByOperation(WSAOVERLAPPEDEX* over, int id, int bytes);

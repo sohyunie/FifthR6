@@ -73,7 +73,12 @@ struct cs_packet_move {
 	unsigned char size;
 	char type;
 	short id;
-	unsigned short key;
+	short x;
+	short y;
+	short z;
+	float yaw;
+	float pitch;
+	float roll;
 };
 
 struct cs_packet_jump {
@@ -117,7 +122,7 @@ struct cs_packet_map_change {
 struct sc_packet_login_ok
 {
 	unsigned char size;
-	char type;
+	char	type;
 	int		id;
 	short	level;
 };

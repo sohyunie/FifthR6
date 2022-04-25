@@ -53,6 +53,7 @@ public:
 
 public:
 	int ID;
+	int roomID; // ¾øÀ¸¸é -1
 	PlayerInfo Info;
 
 	ClientType Type;

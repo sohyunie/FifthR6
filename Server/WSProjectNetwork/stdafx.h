@@ -39,13 +39,16 @@ typedef unsigned char uchar;
 struct PlayerInfo
 {
 	char name[20];
+	char characterType;
+	// 위치 정보
 	short x;
 	short y;
 	short z;
-	char characterType;
-	XMFLOAT3 look = XMFLOAT3(0.0f,0.0f,1.0f);
-	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	XMFLOAT3 right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	// 회전 정보
+	float yaw;
+	float pitch;
+	float roll;
 
 	short hp;
 	short max_hp;

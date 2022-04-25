@@ -44,3 +44,12 @@ bool Room::FindPlayerByUid()
 {
 	return false;
 }
+
+void Room::Loop()
+{
+	if (!bStartGame)
+		return;
+
+
+
+}

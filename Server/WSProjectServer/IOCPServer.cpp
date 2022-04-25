@@ -146,23 +146,23 @@ void IOCPServer::TimerThreadFunc(IOCPServer& server)
 				gTimerQueue.try_pop(evnt);
 				if (evnt.StartTime <= std::chrono::system_clock::now())
 				{
-					switch (evnt.EvntType)
-					{
-					case EventType::NPC_MOVE:
-					{
-						WSAOVERLAPPEDEX* over_ex = new WSAOVERLAPPEDEX(OP::NPC_MOVE);
-						over_ex->Target = evnt.TargetID;
-						over_ex->Random_direction = evnt.Move_direction;
-						server.mIOCP.PostToCompletionQueue(over_ex, evnt.ObjectID);
-						break;
-					}
-					case EventType::NPC_REVIVE:
-					{
-						gClients[evnt.ObjectID]->Revive();
-						server.HandleRevivedPlayer(evnt.ObjectID);
-						break;
-					}
-					}
+					//switch (evnt.EvntType)
+					//{
+					//case EventType::NPC_MOVE:
+					//{
+					//	WSAOVERLAPPEDEX* over_ex = new WSAOVERLAPPEDEX(OP::NPC_MOVE);
+					//	over_ex->Target = evnt.TargetID;
+					//	over_ex->Random_direction = evnt.Move_direction;
+					//	server.mIOCP.PostToCompletionQueue(over_ex, evnt.ObjectID);
+					//	break;
+					//}
+					//case EventType::NPC_REVIVE:
+					//{
+					//	gClients[evnt.ObjectID]->Revive();
+					//	server.HandleRevivedPlayer(evnt.ObjectID);
+					//	break;
+					//}
+					//}
 				}
 				else
 				{
@@ -232,6 +232,10 @@ void IOCPServer::ProcessPackets(int id, RingBuffer& msgQueue)
 		char type = msgQueue.GetMsgType();
 		std::cout << "type : " + type << std::endl;
 
+		// 임시로 진행해야 하는 부분.
+		// C -> S CS_PACKET_LOGIN
+		// S -> C SendLoginOkPacket
+		// C -> S CS_PACKET_JOIN_ROOM, RoomNumber = 1로 임시로 보냄.
 		switch (type)
 		{
 		case CS_PACKET_LOGIN:
@@ -240,6 +244,7 @@ void IOCPServer::ProcessPackets(int id, RingBuffer& msgQueue)
 			cs_packet_login packet_login{};
 			msgQueue.Pop(reinterpret_cast<uchar*>(&packet_login), sizeof(cs_packet_login));
 			SendLoginOkPacket(id);	// 내가 접속됐는지 보냄
+			// 로그인을 하는 순간 룸이 없다면 하나가 만들어지고 있으면 그 룸으로 들어가.
 			break;
 		}
 		case CS_PACKET_JOIN_ROOM:
@@ -258,9 +263,14 @@ void IOCPServer::ProcessPackets(int id, RingBuffer& msgQueue)
 		{
 			cs_packet_move packet_move{};
 			msgQueue.Pop(reinterpret_cast<uchar*>(&packet_move), sizeof(cs_packet_move));
-			MovePosition(gClients[id]->Info.x, gClients[id]->Info.y, gClients[id]->Info.z, packet_move.key);
+			MovePosition(packet_move, id);
 
-			SendMovePacket(id, id);			
+			std::shared_ptr<Room> room = gRooms[gClients[id]->roomID];
+			for (int i = 0; i < 3; i++)
+			{
+				if (room->GetPlayerUidByIndex(i) != 0)
+					SendMovePacket(room->GetPlayerUidByIndex(i), id);
+			}	
 			break;
 		}
 		case CS_PACKET_JUMP:
@@ -337,17 +347,19 @@ void IOCPServer::ProcessPackets(int id, RingBuffer& msgQueue)
 // 클라이언트 정보 설정
 void IOCPServer::ProcessJoinPacket(cs_packet_join_room& pck, int myUid)
 {
+	// 우선 룸을 강제로 만들어.
 	if(gRooms.count(roomCount) == 0)
-		gRooms[roomCount] = std::make_shared<Room>(myUid);
+		gRooms[roomCount] = std::make_shared<Room>(0);
 
 	int myIndex = gRooms[roomCount]->GetUidIndex(myUid);
+	gClients[myUid]->roomID = 0; // 임시 roomid
 	gClients[myUid]->Info.hp = 100;
 	gClients[myUid]->Info.max_hp = 100;
 	gClients[myUid]->Info.x = this->defaultPosition[myIndex][0];
 	gClients[myUid]->Info.y = this->defaultPosition[myIndex][1];
 	gClients[myUid]->Info.z = this->defaultPosition[myIndex][2];
 	
-	SendNewPlayerPosition(gRooms[roomCount], myUid);	// 다른 플레이어한테 내가 들어온 걸 알려줌
+	SendNewPlayerPosition(gRooms[0], myUid);	// 다른 플레이어한테 내가 들어온 걸 알려줌
 }
 
 void IOCPServer::ProcessAttackPacket(int id, const std::unordered_set<int>& viewlist)
@@ -357,7 +369,7 @@ void IOCPServer::ProcessAttackPacket(int id, const std::unordered_set<int>& view
 
 void IOCPServer::SendNewPlayerPosition(std::shared_ptr<Room> room, int newPlayerUid)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		if(room->GetPlayerUidByIndex(i) != 0)
 			SendPutObjectPacket(room->GetPlayerUidByIndex(i), newPlayerUid);
@@ -452,6 +464,8 @@ void IOCPServer::SendPutObjectPacket(int recieverID, int newPlayerID)
 
 void IOCPServer::SendMovePacket(int sender, int target)
 {
+	if (sender == target) // 나는 나한테 보낼 필요 없음.
+		return;
 	sc_packet_move move_packet{};
 	move_packet.id = target;
 	move_packet.size = sizeof(sc_packet_move);
@@ -516,15 +530,15 @@ bool IOCPServer::IsNear(int a_id, int b_id)
 	return true;
 }
 
-void IOCPServer::MovePosition(float x, float y, float z, char direction)
+void IOCPServer::MovePosition(cs_packet_move packet, int id)
 {
-	switch (direction)
-	{
-	case 0: if (z > -WORLD_HEIGHT / 2 + 1) z -= 0.5f; break;
-	case 1: if (z < WORLD_HEIGHT/2 - 1) z += 0.5f; break;
-	case 2: if (x > -WORLD_WIDTH / 2 + 1) x-= 0.5f; break;
-	case 3: if (x < WORLD_WIDTH/2 - 1) x += 0.5f; break;
-	}
+	gClients[id]->Info.x = packet.x;
+	gClients[id]->Info.y = packet.y;
+	gClients[id]->Info.z = packet.z;
+
+	gClients[id]->Info.yaw = packet.yaw;
+	gClients[id]->Info.pitch = packet.pitch;
+	gClients[id]->Info.roll = packet.roll;
 }
 
 void IOCPServer::Jump(float x, float y, float z)
