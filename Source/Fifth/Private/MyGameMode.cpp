@@ -11,6 +11,7 @@
 #include "MWater.h"
 #include "MThunder.h"
 #include "MyPlayerController.h"
+#include "MyPlayerState.h"
 
 AMyGameMode::AMyGameMode()
 {
@@ -21,12 +22,16 @@ AMyGameMode::AMyGameMode()
 	//DefaultPawnClass = AMWater::StaticClass();
 	//DefaultPawnClass = AMThunder::StaticClass();
 	PlayerControllerClass = AMyPlayerController::StaticClass();
+	PlayerStateClass = AMyPlayerState::StaticClass();
 }
 
 void AMyGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	ABLOG(Warning, TEXT("PostLogin Begin"));
 	Super::PostLogin(NewPlayer);
-	ABLOG(Warning, TEXT("PostLogin End"));
+
+	auto MyPlayerState = Cast<AMyPlayerState>(NewPlayer->PlayerState);
+	ABCHECK(nullptr != MyPlayerState);
+	MyPlayerState->InitPlayerData();
+	
 }
 

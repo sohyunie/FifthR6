@@ -16,6 +16,18 @@ bool UBossDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCom
 	uint8* NodeMemory) const
 
 {
+	int x = 0;
+	x = FMath::RandRange(1, 100);
+
+	if (x <= 50)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(ABossAIController::SelectAttackNumberKey, 1);
+	}
+	else
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(ABossAIController::SelectAttackNumberKey, 2);
+	}
+
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
 	auto ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
@@ -26,7 +38,7 @@ bool UBossDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCom
 	if (nullptr == Target)
 		return false;
 
-	bResult = (Target->GetDistanceTo(ControllingPawn) <= 1000.0f);
+	bResult = (Target->GetDistanceTo(ControllingPawn) <= 600.0f);
 	return bResult;
 }
 

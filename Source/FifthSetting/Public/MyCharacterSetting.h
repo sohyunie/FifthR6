@@ -9,9 +9,15 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(config=Warrior)
 class FIFTHSETTING_API UMyCharacterSetting : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	UMyCharacterSetting();
+
+	UPROPERTY(config)
+		TArray<FSoftObjectPath> WarriorAssets;
 	
 };

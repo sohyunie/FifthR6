@@ -6,6 +6,12 @@
 #include "MyWeapon.h"
 #include "WarriorStatComponent.h"
 #include "DrawDebugHelpers.h"
+#include "MyCharacterSetting.h"
+#include "MyPlayerController.h"
+#include "MyGameInstance.h"
+#include "MyPlayerState.h"
+#include "MyHUDWidget.h"
+
 
 
 // Sets default values
@@ -25,12 +31,7 @@ AMyCharacter::AMyCharacter()
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
-	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> WarriorOfFire(TEXT
-	("/Game/MyCharacter/Characters/WarriorOfFire.WarriorOfFire"));
-	if (WarriorOfFire.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(WarriorOfFire.Object);
-	}*/
+	
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -56,13 +57,34 @@ AMyCharacter::AMyCharacter()
 	AttackRange = 200.0f;
 	AttackRadius = 50.0f;
 
+	auto DefaultSetting = GetDefault<UMyCharacterSetting>();
+
+	AssetIndex = 2;
+
 	
+
+	/*CharacterAssetToLoad = DefaultSetting->WarriorAssets[AssetIndex];
+	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	ABCHECK(nullptr != MyGameInstance);
+	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
+		FStreamableDelegate::CreateUObject(this, &AMyCharacter::OnAssetLoadCompleted));
+
+	
+
+	SetActorHiddenInGame(true);
+	SetCanBeDamaged(false);*/
+
+	DeadTimer = 5.0f;
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MyPlayerController = Cast<AMyPlayerController>(GetController());
+
+	
 	
 	FName WeaponSocket(TEXT("Bip-R-HandSocket"));
 	
@@ -79,6 +101,93 @@ void AMyCharacter::BeginPlay()
 
 	}
 
+	auto DefaultSetting = GetDefault<UMyCharacterSetting>();
+
+	AssetIndex = 2;
+
+	CharacterAssetToLoad = DefaultSetting->WarriorAssets[AssetIndex];
+	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	ABCHECK(nullptr != MyGameInstance);
+	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
+		FStreamableDelegate::CreateUObject(this, &AMyCharacter::OnAssetLoadCompleted));
+	
+	SetWarriorState(ECharacterState::LOADING);
+	
+	
+}
+
+void AMyCharacter::SetWarriorState(ECharacterState NewState)
+{
+	ABCHECK(CurrentState != NewState);
+	CurrentState = NewState;
+
+	switch (CurrentState)
+	{
+	case ECharacterState::LOADING:
+	{
+		DisableInput(MyPlayerController);
+
+		MyPlayerController->GetHUDWidget()->BindCharacterStat(WarriorStat);
+
+		auto MyPlayerState = Cast<AMyPlayerState>(GetPlayerState());
+		ABCHECK(nullptr != MyPlayerState);
+		WarriorStat->SetNewLevel(MyPlayerState->GetCharacterLevel());
+		
+		
+		SetActorHiddenInGame(true);
+		SetCanBeDamaged(false);
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		SetCanBeDamaged(true);
+
+		WarriorStat->OnHPIsZero.AddLambda([this]()->void {
+			SetWarriorState(ECharacterState::DEAD);
+			});
+
+		SetControlMode(0);
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		EnableInput(MyPlayerController);
+
+		break;
+	}
+	case ECharacterState::DEAD:
+	{
+		SetActorEnableCollision(false);
+		GetMesh()->SetHiddenInGame(false);
+		MyAnim->SetDeadAnim();
+		SetCanBeDamaged(false);
+
+		DisableInput(MyPlayerController);
+
+		GetWorld()->GetTimerManager().
+			SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+			MyPlayerController->RestartLevel();
+
+				}), DeadTimer, false);
+
+		break;
+	}
+	}
+}
+
+
+ECharacterState AMyCharacter::GetWarriorState() const
+{
+	return CurrentState;
+}
+
+void AMyCharacter::OnAssetLoadCompleted()
+{
+	USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
+	AssetStreamingHandle.Reset();
+	ABCHECK(nullptr != AssetLoaded);
+	GetMesh()->SetSkeletalMesh(AssetLoaded);
+
+	SetWarriorState(ECharacterState::READY);
+	
 	
 }
 
@@ -105,6 +214,17 @@ void AMyCharacter::SetControlMode(int32 ControlMode)
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsAttacking || IsSAttacking)
+	{
+		//ABLOG(Warning, TEXT("TICK"));
+		
+		//FVector MyCharacter = GetActorLocation() + (100.0f, 0.0f, 0.0f);
+		SetActorLocation(GetActorLocation() + GetControlRotation().Vector());
+		
+
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Player Location: %s"), *MyCharacter.ToString()));
+	}
 
 }
 
@@ -140,15 +260,31 @@ void AMyCharacter::PostInitializeComponents()
 		{
 			//ABLOG(Warning, TEXT("OnNextAttackCheck"));
 			AttackStartComboState();
+			beChecked = true;
+			//MyAnim->JumpToAttackMontageSection(CurrentCombo);
+		}
+		
+		});
+
+	
+	MyAnim->OnIsChecked.AddLambda([this]()->void {
+		ABLOG(Warning, TEXT("OnIsChecked"));
+		//CanNextCombo = false;
+
+		if (beChecked)
+		{
+			ABLOG(Warning, TEXT("OnbeChecked"));
+			//AttackStartComboState();
 			MyAnim->JumpToAttackMontageSection(CurrentCombo);
+			beChecked = false;
+		}
+		else {
+			StopAnimMontage();
+			ABLOG(Warning, TEXT("STOP"));
 		}
 		});
 
-	/*MyAnim->OnSAttackHitCheck.AddLambda([this]()->void {
-		ABLOG(Warning, TEXT("OnSAttackHitCheck"));
-		AMyCharacter::SAttackCheck = true;
-
-		});*/
+	
 
 
 	MyAnim->OnAttackHitCheck.AddUObject(this, &AMyCharacter::AttackCheck);
@@ -175,12 +311,24 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 void AMyCharacter::UpDown(float NewAxisValue)
 {
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue);
+	if (!IsAttacking && !IsSAttacking) {
+		
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue);
+	}
+	/*else {
+		ABLOG(Warning, TEXT("Attacking"));
+	}*/
+	
 }
 
 void AMyCharacter::LeftRight(float NewAxisValue)
 {
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
+	if (!IsAttacking && !IsSAttacking) {
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
+	}
+	/*else {
+		ABLOG(Warning, TEXT("Attacking"));
+	}*/
 }
 
 void AMyCharacter::LookUp(float NewAxisValue)
@@ -197,10 +345,13 @@ void AMyCharacter::Attack()
 {
 	if (IsAttacking)
 	{
+		
+
 		ABCHECK(FMath::IsWithinInclusive<int32>(CurrentCombo, 1, MaxCombo));
 		if (CanNextCombo)
 		{
 			IsComboInputOn = true;
+			
 		}
 	}
 	else
@@ -208,7 +359,8 @@ void AMyCharacter::Attack()
 		ABCHECK(CurrentCombo == 0);
 		AttackStartComboState();
 		MyAnim->PlayAttackMontage();
-		MyAnim->JumpToAttackMontageSection(CurrentCombo);
+		//beChecked = true;
+		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//강제 이동이 아닌 조건성립으로
 		IsAttacking = true;
 	}
 
@@ -217,7 +369,7 @@ void AMyCharacter::Attack()
 void AMyCharacter::SAttack()
 {
 	if (IsSAttacking) return;
-
+	
 	MyAnim->PlaySAttackMontage();
 	IsSAttacking = true;
 }
@@ -266,7 +418,7 @@ void AMyCharacter::AttackCheck()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-#if ENABLE_DRAW_DEBUG
+/*#if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -284,7 +436,7 @@ void AMyCharacter::AttackCheck()
 		false,
 		DebugLifeTime);
 
-#endif
+#endif*/
 
 
 	if (bResult)
@@ -316,7 +468,7 @@ void AMyCharacter::SAttackCheck()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-#if ENABLE_DRAW_DEBUG
+/*#if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -334,7 +486,7 @@ void AMyCharacter::SAttackCheck()
 		false,
 		DebugLifeTime);
 
-#endif
+#endif*/
 
 
 	if (bResult)

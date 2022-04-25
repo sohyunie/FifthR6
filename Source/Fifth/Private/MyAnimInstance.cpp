@@ -49,6 +49,8 @@ void UMyAnimInstance::PlaySAttackMontage()
 {
 	ABCHECK(!IsDead);
 	Montage_Play(SAttackMontage, 1.0f);
+	
+
 
 }
 
@@ -82,10 +84,15 @@ void UMyAnimInstance::AnimNotify_NextAttackCheck()
 	OnNextAttackCheck.Broadcast();
 }
 
+void UMyAnimInstance::AnimNotify_IsChecked()
+{
+	OnIsChecked.Broadcast();
+}
+
 FName UMyAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Section : %d "), Section));
-	ABCHECK(FMath::IsWithinInclusive<int32>(Section, 1, 4), NAME_None);
+	ABCHECK(FMath::IsWithinInclusive<int32>(Section, 1, 3), NAME_None);
 	return FName(*FString::Printf(TEXT("Attack%d"), Section));
 }
 

@@ -17,12 +17,18 @@ public:
 	// Sets default values for this character's properties
 	AATank();
 
+	void SetTankState(ECharacterState NewState);
+	ECharacterState GetTankState() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SetControlMode(int32 ControlMode);
 
 public:	
+	UPROPERTY(VisibleAnywhere, Category = UI)
+		class UWidgetComponent* HPBarWidget;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
@@ -59,6 +65,7 @@ private:
 		void OnDamagedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void AttackCheck();
+	void OnAssetLoadCompleted();
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		float AttackRange;
@@ -66,5 +73,20 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		float AttackRadius;
 
+	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
+	TSharedPtr<struct FStreamableHandle> AssetStreamingHandle;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+		ECharacterState CurrentState;
+
+	int32 AssetIndex = 0;
+
+	UPROPERTY()
+		class ATankAIController* TankAIController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		float DeadTimer;
+
+	FTimerHandle DeadTimerHandle = {};
 
 };

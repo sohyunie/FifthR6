@@ -13,6 +13,13 @@ UManAnimInstance::UManAnimInstance()
 	{
 		AttackMontage = ATTACK_MONTAGE.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> TRANSFORM_MONTAGE(
+		TEXT("/Game/MyCharacter/Animation/Man_Transform.Man_Transform"));
+	if (TRANSFORM_MONTAGE.Succeeded())
+	{
+		TransformMontage = TRANSFORM_MONTAGE.Object;
+	}
 }
 
 void UManAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -38,6 +45,13 @@ void UManAnimInstance::PlayAttackMontage()
 	ABCHECK(!IsDead);
 	Montage_Play(AttackMontage, 1.0f);
 	
+}
+
+void UManAnimInstance::PlayTransformMontage()
+{
+	//ABCHECK(!IsDead);
+	Montage_Play(TransformMontage, 1.0f);
+
 }
 
 void UManAnimInstance::JumpToAttackMontageSection(int32 NewSection)

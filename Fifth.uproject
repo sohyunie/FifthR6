@@ -19,7 +19,9 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"AIModule",
-				"FifthSetting"
+				"FifthSetting",
+				"UMG",
+				"CoreUObject"
 			]
 		}
 	],

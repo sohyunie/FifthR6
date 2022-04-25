@@ -27,6 +27,7 @@ public:
 	void PlayDamagedMontage();
 	void PlaySkillMontage();
 	void PlaySpecialMontage();
+	void PlayScreamMontage();
 
 	void SetDeadAnim() { IsDead = true; }
 
@@ -61,6 +62,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* SpecialMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* ScreamMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 		bool IsDead;

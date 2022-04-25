@@ -5,6 +5,7 @@
 #include "ManAnimInstance.h"
 #include "ManStatComponent.h"
 #include "DrawDebugHelpers.h"
+#include "ManSetting.h"
 
 // Sets default values
 AManOfFire::AManOfFire()
@@ -46,6 +47,7 @@ AManOfFire::AManOfFire()
 	SetControlMode(0);
 
 	IsAttacking = false;
+	IsTransforming = false;
 	MaxCombo = 3;
 	AttackEndComboState();
 
@@ -94,7 +96,7 @@ void AManOfFire::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"),EInputEvent::IE_Pressed, this, &AManOfFire::Attack);
-	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &AManOfFire::SAttack);
+	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &AManOfFire::Transform);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AManOfFire::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AManOfFire::LeftRight);
@@ -110,6 +112,7 @@ void AManOfFire::PostInitializeComponents()
 	ABCHECK(nullptr != ManAnim);
 
 	ManAnim->OnMontageEnded.AddDynamic(this, &AManOfFire::OnAttackMontageEnded);
+	ManAnim->OnMontageEnded.AddDynamic(this, &AManOfFire::OnTransformMontageEnded);
 
 	ManAnim->OnNextAttackCheck.AddLambda([this]()->void {
 		ABLOG(Warning, TEXT("OnNextAttackCheck"));
@@ -172,9 +175,15 @@ void AManOfFire::Attack()
 	}
 }
 
-void AManOfFire::SAttack()
+void AManOfFire::Transform()
 {
-	ABLOG_S(Warning);
+	//ABLOG(Warning, TEXT("TRANSFORM!!!"));
+	if (IsTransforming) return;
+
+	ManAnim->PlayTransformMontage();
+
+	IsTransforming = true;
+	
 }
 
 void AManOfFire::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -183,6 +192,14 @@ void AManOfFire::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	ABCHECK(CurrentCombo > 0);
 	IsAttacking = false;
 	AttackEndComboState();
+}
+
+void AManOfFire::OnTransformMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	ABCHECK(IsTransforming);
+	
+	IsTransforming = false;
+	
 }
 
 void AManOfFire::AttackStartComboState()

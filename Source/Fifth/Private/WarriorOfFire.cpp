@@ -2,6 +2,7 @@
 
 
 #include "WarriorOfFire.h"
+#include "MyCharacterSetting.h"
 
 // Sets default values
 AWarriorOfFire::AWarriorOfFire()
@@ -12,6 +13,12 @@ AWarriorOfFire::AWarriorOfFire()
 	{
 		GetMesh()->SetSkeletalMesh(WarriorOfFire.Object);
 	}
+
+	
+
+	
+
+	
 
 }
 

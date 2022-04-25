@@ -22,6 +22,9 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 
+	static const FName SelectAttackNumberKey;
+	
+
 private:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

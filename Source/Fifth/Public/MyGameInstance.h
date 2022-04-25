@@ -5,6 +5,7 @@
 #include "Fifth.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
+#include "Engine/StreamableManager.h"
 #include "MyGameInstance.generated.h"
 
 USTRUCT(BlueprintType)
@@ -143,6 +144,8 @@ public:
 	FShadowData* GetShadowData(int32 Level);
 	FTankData* GetTankData(int32 Level);
 	FManData* GetManData(int32 Level);
+
+	FStreamableManager StreamableManager;
 
 private:
 	UPROPERTY()
