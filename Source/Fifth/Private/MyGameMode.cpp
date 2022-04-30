@@ -33,7 +33,7 @@ AMyGameMode::AMyGameMode()
 	//DefaultPawnClass = AMFire::StaticClass();
 	//DefaultPawnClass = AMWater::StaticClass();
 	//DefaultPawnClass = AMThunder::StaticClass();
-	PlayerControllerClass = AMyPlayerController::StaticClass();
+	PlayerControllerClass = ANetPlayerController::StaticClass();
 	PlayerStateClass = AMyPlayerState::StaticClass();
 }
 

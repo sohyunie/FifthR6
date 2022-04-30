@@ -79,13 +79,12 @@ void ANetPlayerController::BeginPlay()
 	//}
 
 	// 캐릭터 등록
-	APawn* player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	auto player = Cast<ANetCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	UE_LOG(LogClass, Log, TEXT("BeginPlay GetPlayerCharacter"));
 	if (!player)
 		return;
 
-	//player->SetSessionId(SessionId);
-	UE_LOG(LogClass, Log, TEXT("BeginPlay SetSessionId"));
+	player->SetSessionId(SessionId);
 
 	auto MyLocation = player->GetActorLocation();
 	auto MyRotation = player->GetActorRotation();

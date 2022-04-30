@@ -57,11 +57,14 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
 	{
+		UE_LOG(LogClass, Log, TEXT("bIsChatNeedUpdate"));
 		//UpdateChat();
 	}
 
 	if (bNewPlayerEntered)
 	{
+		UE_LOG(LogClass, Log, TEXT("bNewPlayerEntered"));
+
 		UpdateNewPlayer();
 	}
 }

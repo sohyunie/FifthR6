@@ -286,16 +286,19 @@ uint32 ClientSocket::Run()
 			{
 			case EPacketType::RECV_PLAYER:
 			{
+				UE_LOG(LogClass, Log, TEXT("ClientSocket RECV_PLAYER"));
 				PlayerController->RecvWorldInfo(RecvCharacterInfo(RecvStream));
 			}
 			break;
 			case EPacketType::CHAT:
 			{
+				UE_LOG(LogClass, Log, TEXT("ClientSocket RECV_CHAT"));
 				PlayerController->RecvChat(RecvChat(RecvStream));
 			}
 			break;
 			case EPacketType::ENTER_NEW_PLAYER:
 			{
+				UE_LOG(LogClass, Log, TEXT("ClientSocket RECV_ENTER_NEW_PLAYER"));
 				PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
 			}
 			break;
