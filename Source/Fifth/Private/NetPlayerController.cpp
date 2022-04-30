@@ -3,6 +3,7 @@
 #include "NetPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyHUDWidget.h"
+#include "WarriorOfFire.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
@@ -22,6 +23,8 @@ ANetPlayerController::ANetPlayerController()
 
 	bIsChatNeedUpdate = false;
 	bNewPlayerEntered = false;
+
+	WhoToSpawn = AWarriorOfFire::StaticClass();
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -212,7 +215,7 @@ bool ANetPlayerController::SendPlayerInfo()
 	//tempCharacter.HealthValue = tempPlayer->HealthValue;
 	//tempCharacter.IsAttacking = tempPlayer->IsAttacking();
 
-	Socket->SendPlayer(tempCharacter);
+	//Socket->SendPlayer(tempCharacter);
 
 	return true;
 }
@@ -381,7 +384,7 @@ void ANetPlayerController::UpdateNewPlayer()
 
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.Owner = this;
-				//SpawnParams.Instigator = Instigator;
+				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
