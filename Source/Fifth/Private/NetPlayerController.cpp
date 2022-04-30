@@ -112,8 +112,8 @@ void ANetPlayerController::BeginPlay()
 	tempCharacter.VZ = 0;
 	// ¼Ó¼º
 	tempCharacter.IsAlive = player->GetIsAlived();
-	//tempCharacter.HealthValue = player->HealthValue;
-	//tempCharacter.IsAttacking = player->IsAttacking();
+	tempCharacter.HealthValue = player->HealthValue;
+	tempCharacter.IsAttacking = player->IsAttacking();
 
 	UE_LOG(LogClass, Log, TEXT("EnrollPlayer start"));
 	Socket->EnrollPlayer(tempCharacter);

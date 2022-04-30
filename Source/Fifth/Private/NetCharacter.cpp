@@ -492,15 +492,24 @@ void ANetCharacter::SAttackCheck()
 
 	if (bResult)
 	{
+		// 기존 Hit
+		//if (HitResult.Actor.IsValid())
+		//{
+		//	ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+		//	FDamageEvent DamageEvent;
+
+		//	HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
+		//}
+		// Netwrok Hit
+		// 우선 플레이어를 공격, 차후에 몬스터 공격으로 변경 필요.
 		if (HitResult.Actor.IsValid())
 		{
-			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-
-			FDamageEvent DamageEvent;
-
-
-			HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
-
+			ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+			}
 		}
 	}
 }
