@@ -11,7 +11,7 @@
 #include "Runtime/Core/Public/HAL/Runnable.h"
 
 class AMyGameMode;
-class AMyPlayerController;
+class ANetPlayerController;
 
 using namespace std;
 
@@ -181,7 +181,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////	
 
 	// 플레이어 컨트롤러 세팅
-	void SetPlayerController(AMyPlayerController* pPlayerController);
+	void SetPlayerController(ANetPlayerController* pPlayerController);
 
 	void CloseSocket();
 
@@ -213,7 +213,7 @@ private:
 	char UdpRecvBuffer[MAX_BUFFER];
 
 	SOCKADDR_IN	UdpServerAddr;
-	AMyPlayerController* PlayerController;	// 플레이어 컨트롤러 정보
+	ANetPlayerController* PlayerController;	// 플레이어 컨트롤러 정보
 
 
 	char testChat[MAX_BUFFER];

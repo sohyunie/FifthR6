@@ -6,7 +6,7 @@
 #include "Runtime/Core/Public/HAL/RunnableThread.h"
 #include <algorithm>
 #include <string>
-#include "MyPlayerController.h"
+#include "NetPlayerController.h"
 
 ClientSocket::ClientSocket()
 	:StopTaskCounter(0)
@@ -243,7 +243,7 @@ void ClientSocket::SendChat(const int& SessionId, const string& Chat)
 	);
 }
 
-void ClientSocket::SetPlayerController(AMyPlayerController* pPlayerController)
+void ClientSocket::SetPlayerController(ANetPlayerController* pPlayerController)
 {
 	// 플레이어 컨트롤러 세팅
 	if (pPlayerController)
