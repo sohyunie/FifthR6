@@ -20,20 +20,20 @@ AMyGameMode::AMyGameMode()
 	UE_LOG(LogClass, Log, TEXT("AMyGameMode!"));
 	Socket = ClientSocket::GetSingleton();
 	Socket->InitSocket();
-	bIsConnected = Socket->Connect("127.0.0.1", 8000);
+	bIsConnected = Socket->Connect("127.0.0.1", 8000); 
 	if (bIsConnected)
 	{
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
 
 	//UE_LOG(LogTemp, Display, TEXT("START"));
-	//DefaultPawnClass = AWarriorOfFire::StaticClass();
+	DefaultPawnClass = AWarriorOfFire::StaticClass();
 	//DefaultPawnClass = AWarriorOfWater::StaticClass();
 	//DefaultPawnClass = AWarriorOfThunder::StaticClass();
 	//DefaultPawnClass = AMFire::StaticClass();
 	//DefaultPawnClass = AMWater::StaticClass();
 	//DefaultPawnClass = AMThunder::StaticClass();
-	PlayerControllerClass = AMyPlayerController::StaticClass();
+	PlayerControllerClass = ANetPlayerController::StaticClass();
 	PlayerStateClass = AMyPlayerState::StaticClass();
 }
 

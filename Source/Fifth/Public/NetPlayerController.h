@@ -56,6 +56,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void OnPossess(APawn* aPawn) override;
 
 	// 세션아이디에 매칭되는 액터 반환
 	AActor* FindActorBySessionId(TArray<AActor*> ActorArray, const int& SessionId);

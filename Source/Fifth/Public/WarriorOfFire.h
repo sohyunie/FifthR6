@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Fifth.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "WarriorOfFire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FIFTH_API AWarriorOfFire : public AMyCharacter
+class FIFTH_API AWarriorOfFire : public ANetCharacter
 {
 	GENERATED_BODY()
 

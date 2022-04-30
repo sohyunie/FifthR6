@@ -1,9 +1,11 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
+#include "Fifth.h"
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
 #include "ClientSocket.h"
+#include "GameFramework/Character.h"
 #include "NetCharacter.generated.h"
 
 UCLASS()
@@ -11,120 +13,132 @@ class FIFTH_API ANetCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-		/** Camera boom positioning the camera behind the character */
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* FollowCamera;
 public:
+	// Sets default values for this character's properties
 	ANetCharacter();
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-		float BaseTurnRate;
-
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-		float BaseLookUpRate;
-
-	// 체력
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		float HealthValue;
-
-	// 에너지
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		float EnergyValue;
-
-	// 기분
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Properties")
-		float MoodValue;
-
-	// 체력 업데이트
-	UFUNCTION(BlueprintCallable, Category = "Properties")
-		void UpdateHealth(float HealthChange);
-
-	// 체력 가져오기
-	UFUNCTION(BlueprintPure, Category = "Properties")
-		float GetHealth();
-
-	UFUNCTION(BlueprintPure, Category = "Properties")
-		bool IsAlive();
-
-	bool IsFalling();
-
-	UFUNCTION(BlueprintCallable)
-		int GetSessionId();
-
-	void SetSessionId(int SessionId);
-
-	// 피격 애니메이션
-	UFUNCTION(BlueprintImplementableEvent)
-		void PlayDamagedAnimation();
-
-	// 타격 애니메이션
-	UFUNCTION(BlueprintImplementableEvent)
-		void PlayHitAnimation();
-
-	UFUNCTION(BlueprintCallable)
-		void HitOtherCharacter();
-
-	UFUNCTION(BlueprintCallable)
-		void SetAttacking(bool attack);
-
-	bool IsAttacking();
-
-protected:
-
-	/** Resets HMD orientation in VR. */
-	//void OnResetVR();
-
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for side to side input */
-	void MoveRight(float Value);
-
-	/**
-	 * Called via input to turn at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void TurnAtRate(float Rate);
-
-	/**
-	 * Called via input to turn look up/down at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void LookUpAtRate(float Rate);
-
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
-
 
 
 protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-	int		SessionId;
-	bool	bIsAlive;
-	bool	bIsAttacking;
+	void SetControlMode(int32 ControlMode);
 
-	FTimerHandle HitTimerHandle;
-	bool HitEnable;
-	void ResetHitEnable();
 public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-private:
-	// 플레이어 캐릭터 점프
-	void Jump();
-};
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class
+		AController* EventInstigator, AActor* DamageCauser) override;
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Stat)
+		class UWarriorStatComponent* WarriorStat;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+		USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+		UCameraComponent* Camera;
+
+	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
+		//bool SAttackCheck{ false };
+
+	void SetWarriorState(ECharacterState NewState);
+	ECharacterState GetWarriorState() const;
+
+	int GetSessionId();
+	void SetSessionId(int SessionId);
+	bool GetIsAlived();
+	void SetIsAlived(bool _isAlived);
+
+private:
+	void UpDown(float NewAxisValue);
+	void LeftRight(float NewAxisValue);
+	void LookUp(float NewAxisValue);
+	void Turn(float NewAxisValue);
+
+	void Attack();
+	void SAttack();
+
+	UFUNCTION()
+		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		void OnSAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	void AttackStartComboState();
+	void AttackEndComboState();
+	void AttackCheck();
+	void SAttackCheck();
+
+	void OnAssetLoadCompleted();
+
+private:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool IsAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
+		bool IsSAttacking;
+
+	//강제 이동이 아닌 조건 성립 체크
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool beChecked;
+
+
+
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool CanNextCombo;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool IsComboInputOn;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 CurrentCombo;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 MaxCombo;
+
+	UPROPERTY()
+		class UMyAnimInstance* MyAnim;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		float AttackRange;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		float AttackRadius;
+
+	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
+	TSharedPtr<struct FStreamableHandle> AssetStreamingHandle;
+
+
+	int32 AssetIndex = 0;
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State,
+		Meta = (AllowPrivateAccess = true))
+		ECharacterState CurrentState;
+
+	//UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State,
+		//Meta = (AllowPrivateAccess = true))
+		//bool bIsPlayer;
+
+	UPROPERTY()
+		class ANetPlayerController* NetPlayerController;
+
+	//UPROPERTY()
+		//class AMyPlayerController* MyPlayerController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
+		float DeadTimer;
+
+	FTimerHandle DeadTimerHandle = {};
+
+	// network
+	int sessionID;
+	bool isAlived;
+};
