@@ -215,7 +215,7 @@ bool ANetPlayerController::SendPlayerInfo()
 	//tempCharacter.HealthValue = tempPlayer->HealthValue;
 	//tempCharacter.IsAttacking = tempPlayer->IsAttacking();
 
-	//Socket->SendPlayer(tempCharacter);
+	Socket->SendPlayer(tempCharacter);
 
 	return true;
 }
