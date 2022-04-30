@@ -127,7 +127,7 @@ void AMyCharacter::SetWarriorState(ECharacterState NewState)
 	{
 		DisableInput(MyPlayerController);
 
-		MyPlayerController->GetHUDWidget()->BindCharacterStat(WarriorStat);
+		//MyPlayerController->GetHUDWidget()->BindCharacterStat(WarriorStat);
 
 		auto MyPlayerState = Cast<AMyPlayerState>(GetPlayerState());
 		ABCHECK(nullptr != MyPlayerState);

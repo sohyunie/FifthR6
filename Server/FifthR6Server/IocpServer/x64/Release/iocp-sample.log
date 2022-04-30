@@ -1,0 +1,27 @@
+﻿  MainIocp.cpp
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(98,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(98): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(113,56): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(113,56): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(150,13): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'SOCKET'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(150,13): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(150,13): message : 서식 문자열에서 '%Id'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(150,13): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(123,7): warning C4101: 'nResult' :참조되지 않은 지역 변수입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(126,8): warning C4101: 'sendBytes' :참조되지 않은 지역 변수입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(203,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(203,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'std::string'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(211,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(253,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(253,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(303,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(303,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(342,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(368,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(385,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다.
+  3 of 397 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    12 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  iocp-sample.vcxproj -> D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\iocp-server.exe
