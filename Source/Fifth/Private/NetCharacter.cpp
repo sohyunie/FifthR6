@@ -75,7 +75,9 @@ ANetCharacter::ANetCharacter()
 	SetCanBeDamaged(false);*/
 
 	DeadTimer = 5.0f;
+	HealthValue = 1.0f;
 	isAlived = true;
+	bIsAttacking = false;
 }
 
 // Called when the game starts or when spawned
@@ -442,15 +444,24 @@ void ANetCharacter::AttackCheck()
 
 	if (bResult)
 	{
+		// 기존 Hit
+		//if (HitResult.Actor.IsValid())
+		//{
+		//	ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+		//	FDamageEvent DamageEvent;
+
+		//	HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
+		//}
+		// Netwrok Hit
+		// 우선 플레이어를 공격, 차후에 몬스터 공격으로 변경 필요.
 		if (HitResult.Actor.IsValid())
 		{
-			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-
-			FDamageEvent DamageEvent;
-
-
-
-			HitResult.Actor->TakeDamage(WarriorStat->GetAttack(), DamageEvent, GetController(), this);
+			ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+			}
 		}
 	}
 }
@@ -534,4 +545,30 @@ bool ANetCharacter::GetIsAlived()
 void ANetCharacter::SetIsAlived(bool _isAlived)
 {
 	isAlived = _isAlived;
+}
+
+void ANetCharacter::PlayAttackAnim()
+{
+	return MyAnim->PlayAttackMontage();
+}
+
+void ANetCharacter::PlayTakeDamageAnim()
+{
+	//[TODO] Dead Anim으로 수정 필요
+	return MyAnim->PlayAttackMontage();
+}
+
+bool ANetCharacter::GetIsAttacking()
+{
+	return bIsAttacking;
+}
+
+void ANetCharacter::UpdateHealth(float _healthValue)
+{
+	HealthValue = _healthValue;
+}
+
+float ANetCharacter::GetHealthValue()
+{
+	return HealthValue;
 }

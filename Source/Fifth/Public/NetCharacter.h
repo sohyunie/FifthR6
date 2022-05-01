@@ -57,6 +57,12 @@ public:
 	void SetSessionId(int SessionId);
 	bool GetIsAlived();
 	void SetIsAlived(bool _isAlived);
+	float GetHealthValue();
+	void UpdateHealth(float _healthValue);
+
+	void PlayAttackAnim();
+	void PlayTakeDamageAnim();
+	bool GetIsAttacking();
 
 private:
 	void UpDown(float NewAxisValue);
@@ -130,9 +136,6 @@ private:
 	UPROPERTY()
 		class ANetPlayerController* NetPlayerController;
 
-	//UPROPERTY()
-		//class AMyPlayerController* MyPlayerController;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
 		float DeadTimer;
 
@@ -141,4 +144,6 @@ private:
 	// network
 	int sessionID;
 	bool isAlived;
+	bool bIsAttacking;
+	float HealthValue;
 };

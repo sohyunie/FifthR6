@@ -26,6 +26,12 @@ ANetPlayerController::ANetPlayerController()
 
 	WhoToSpawn = AWarriorOfFire::StaticClass();
 
+	// 임시 파티클
+	DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+	HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -115,12 +121,11 @@ void ANetPlayerController::BeginPlay()
 	tempCharacter.VZ = 0;
 	// 속성
 	tempCharacter.IsAlive = player->GetIsAlived();
-	//tempCharacter.HealthValue = player->HealthValue;
-	//tempCharacter.IsAttacking = player->IsAttacking();
+	tempCharacter.IsAttacking = player->GetIsAttacking();
+	tempCharacter.HealthValue = player->GetHealthValue();
 
-	UE_LOG(LogClass, Log, TEXT("EnrollPlayer start"));
+	UE_LOG(LogClass, Log, TEXT("EnrollPlayer"));
 	Socket->EnrollPlayer(tempCharacter);
-	UE_LOG(LogClass, Log, TEXT("EnrollPlayer start"));
 
 	// Recv 스레드 시작
 	Socket->StartListen();
@@ -211,9 +216,9 @@ bool ANetPlayerController::SendPlayerInfo()
 	tempCharacter.VY = Velocity.Y;
 	tempCharacter.VZ = Velocity.Z;
 
-	//tempCharacter.IsAlive = tempPlayer->IsAlive();
-	//tempCharacter.HealthValue = tempPlayer->HealthValue;
-	//tempCharacter.IsAttacking = tempPlayer->IsAttacking();
+	tempCharacter.IsAlive = tempPlayer->GetIsAlived();
+	tempCharacter.IsAttacking = tempPlayer->GetIsAttacking();
+	tempCharacter.HealthValue = tempPlayer->GetHealthValue();
 
 	Socket->SendPlayer(tempCharacter);
 
@@ -249,24 +254,24 @@ bool ANetPlayerController::UpdateWorldInfo()
 
 		if (info->IsAlive)
 		{
-			//if (OtherPlayer->HealthValue != info->HealthValue)
-			//{
-			//	// 피격 파티클 소환
-			//	FTransform transform(OtherPlayer->GetActorLocation());
-			//	UGameplayStatics::SpawnEmitterAtLocation(
-			//		world, HitEmiiter, transform, true
-			//	);
-			//	// 피격 애니메이션 플레이
-			//	OtherPlayer->PlayDamagedAnimation();
-			//	OtherPlayer->HealthValue = info->HealthValue;
-			//}
+			if (OtherPlayer->GetHealthValue() != info->HealthValue)
+			{
+				// 피격 파티클 소환
+				FTransform transform(OtherPlayer->GetActorLocation());
+				UGameplayStatics::SpawnEmitterAtLocation(
+					world, HitEmiiter, transform, true
+				);
+				// 피격 애니메이션 플레이
+				OtherPlayer->PlayTakeDamageAnim();
+				OtherPlayer->UpdateHealth(info->HealthValue);
+			}
 
-			//// 공격중일때 타격 애니메이션 플레이
-			//if (info->IsAttacking)
-			//{
-			//	UE_LOG(LogClass, Log, TEXT("Other character is hitting"));
-			//	OtherPlayer->PlayHitAnimation();
-			//}
+			// 공격중일때 타격 애니메이션 플레이
+			if (info->IsAttacking)
+			{
+				UE_LOG(LogClass, Log, TEXT("Other character is hitting"));
+				OtherPlayer->PlayAttackAnim();
+			}
 
 			FVector CharacterLocation;
 			CharacterLocation.X = info->X;
@@ -325,18 +330,18 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 	else
 	{
 		// 캐릭터 속성 업데이트
-		//if (tempPlayer->HealthValue != info.HealthValue)
-		//{
-		//	UE_LOG(LogClass, Log, TEXT("Player damaged"));
-		//	// 피격 파티클 스폰
-		//	FTransform transform(tempPlayer->GetActorLocation());
-		//	UGameplayStatics::SpawnEmitterAtLocation(
-		//		world, HitEmiiter, transform, true
-		//	);
-		//	// 피격 애니메이션 스폰
-		//	tempPlayer->PlayDamagedAnimation();
-		//	tempPlayer->HealthValue = info.HealthValue;
-		//}
+		if (tempPlayer->GetHealthValue() != info.HealthValue)
+		{
+			UE_LOG(LogClass, Log, TEXT("Player damaged"));
+			// 피격 파티클 스폰
+			FTransform transform(tempPlayer->GetActorLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(
+				world, HitEmiiter, transform, true
+			);
+			// 피격 애니메이션 스폰
+			tempPlayer->PlayTakeDamageAnim();
+			tempPlayer->UpdateHealth(info.HealthValue);
+		}
 	}
 }
 
