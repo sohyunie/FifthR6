@@ -60,7 +60,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	if (!bIsConnected) return;
 
 	// 플레이어 정보 송신
-	if (!SendPlayerInfo()) return;
+	//if (!SendPlayerInfo()) return;
 
 	// 월드 동기화
 	if (!UpdateWorldInfo()) return;
