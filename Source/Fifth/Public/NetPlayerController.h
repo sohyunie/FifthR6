@@ -91,6 +91,8 @@ private:
 	bool UpdateWorldInfo();		// 월드 동기화
 	void UpdatePlayerInfo(const cCharacter& info);		// 플레이어 동기화	
 
+	bool isTankActionStart;
+
 	// 채팅 업데이트
 	bool bIsChatNeedUpdate;
 	const string* chat;

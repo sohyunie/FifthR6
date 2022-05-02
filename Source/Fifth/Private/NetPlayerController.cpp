@@ -62,11 +62,11 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	// 플레이어 정보 송신
 	if (!SendPlayerInfo()) return;
 
-	// 몬스터 셋 송신
-	if (!SendMonsterSet()) return;
-
 	// 월드 동기화
 	if (!UpdateWorldInfo()) return;
+
+	// 몬스터 셋 송신
+	if (!SendMonsterSet()) return;
 
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
@@ -509,35 +509,41 @@ void ANetPlayerController::DestroyMonster()
 bool ANetPlayerController::SendMonsterSet()
 {
 	// 마스터가 일 때
-	if (ci->players[SessionId].IsMaster == false)
+	UWorld* const world = GetWorld();
+	if (world == nullptr)
 		return false;
-	if (MonsterSetInfo == nullptr)
+	if (ci == nullptr)
+		return false;
+
+	if (ci->players[SessionId].IsMaster == false)
 		return false;
 
 	MonsterSet sendMonsterSet;
-	UWorld* const world = GetWorld();
-	if (world)
+
+	TArray<AActor*> SpawnedMonsters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+	for (auto actor : SpawnedMonsters)
 	{
-		TArray<AActor*> SpawnedMonsters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
-
-		for (auto actor : SpawnedMonsters)
+		AATank* monster = Cast<AATank>(actor);
+		if (isTankActionStart == false)
 		{
-			AATank* monster = Cast<AATank>(actor);
-			if (monster)
-			{
-				const auto& Location = monster->GetActorLocation();
-				const auto& Rotation = monster->GetActorRotation();
-				const auto& Velocity = monster->GetVelocity();
+			monster->StartAction();
+		}
+		if (monster)
+		{
+			const auto& Location = monster->GetActorLocation();
+			const auto& Rotation = monster->GetActorRotation();
+			const auto& Velocity = monster->GetVelocity();
 
 
-				sendMonsterSet.monsters[monster->Id].X = Location.X;
-				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
-				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-			}
+			sendMonsterSet.monsters[monster->Id].X = Location.X;
+			sendMonsterSet.monsters[monster->Id].Y = Location.Y;
+			sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 		}
 	}
-
+	isTankActionStart = true;
 	Socket->SendSyncMonster(sendMonsterSet);
 	return true;
+
 }

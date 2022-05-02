@@ -62,7 +62,7 @@ private:
 	// 몬스터 피격 처리
 	static void HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
-	void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
+	static void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	// 브로드캐스트 함수
 	static void Broadcast(stringstream & SendStream);	

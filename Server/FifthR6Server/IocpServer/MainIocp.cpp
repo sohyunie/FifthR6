@@ -254,6 +254,8 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 
 	if (LevelMaster.find(info.UELevel) == LevelMaster.end())
 	{
+		printf_s("나는 마스터야 : %d\n", info.SessionId);
+
 		LevelMaster[info.UELevel] = info.SessionId;
 		info.IsMaster = true;
 	}
@@ -418,38 +420,11 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
-	for (auto& kvp : MonstersInfo.monsters)
-	{
-		auto& monster = kvp.second;
-		for (auto& player : CharactersInfo.players)
-		{
-			// 플레이어나 몬스터가 죽어있을 땐 무시
-			if (!player.second.IsAlive || !monster.IsAlive())
-				continue;
+	MonsterSet monsterSet;
+	RecvStream >> monsterSet;
+	stringstream SendStream;
+	SendStream << EPacketType::SYNC_MONSTER << endl;
+	SendStream << monsterSet << endl;
 
-			if (monster.IsPlayerInHitRange(player.second) && !monster.bIsAttacking)
-			{
-				monster.HitPlayer(player.second);
-				continue;
-			}
-
-			if (monster.IsPlayerInTraceRange(player.second) && !monster.bIsAttacking)
-			{
-				monster.MoveTo(player.second);
-				continue;
-			}
-		}
-	}
-
-	//count++;
-	//// 0.5초마다 클라이언트에게 몬스터 정보 전송
-	//if (count > 15)
-	//{
-	//	stringstream SendStream;
-	//	SendStream << EPacketType::SYNC_MONSTER << endl;
-	//	SendStream << MonstersInfo << endl;
-
-	//	count = 0;
-	//	Broadcast(SendStream);
-	//}
+	Broadcast(SendStream);
 }

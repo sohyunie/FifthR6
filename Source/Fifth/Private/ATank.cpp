@@ -12,6 +12,7 @@
 #include "MyGameInstance.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ClientSocket.h"
 
 
 // Sets default values
@@ -148,7 +149,7 @@ void AATank::SetTankState(ECharacterState NewState)
 
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-		TankAIController->RunAI();
+		//TankAIController->RunAI();
 
 		break;
 	}
@@ -200,8 +201,6 @@ void AATank::Tick(float DeltaTime)
 
 	if (IsDamaging)
 	{
-
-		
 		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
 			->GetControlRotation().Vector()/**10*/);
 	}
@@ -375,4 +374,9 @@ void AATank::MoveToLocation(const FVector& dest)
 	{
 		TankAIController->MoveToLocation(dest);
 	}
+}
+
+void AATank::StartAction()
+{
+	TankAIController->RunAI();
 }
