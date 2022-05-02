@@ -134,7 +134,7 @@ void ClientSocket::EnrollPlayer(cCharacter& info)
 
 void ClientSocket::SendPlayer(cCharacter& info)
 {
-	UE_LOG(LogClass, Log, TEXT("ClientSocket SendPlayer"));
+	//UE_LOG(LogClass, Log, TEXT("ClientSocket SendPlayer"));
 	// 캐릭터 정보 직렬화
 	stringstream SendStream;
 	// 요청 종류
@@ -154,7 +154,7 @@ void ClientSocket::SendPlayer(cCharacter& info)
 
 cCharactersInfo* ClientSocket::RecvCharacterInfo(stringstream& RecvStream)
 {
-	UE_LOG(LogClass, Log, TEXT("ClientSocket RecvCharacterInfo"));
+	//UE_LOG(LogClass, Log, TEXT("ClientSocket RecvCharacterInfo"));
 	// 서버에서 캐릭터 정보를 얻어 반환		
 	RecvStream >> CharactersInfo;
 	return &CharactersInfo;

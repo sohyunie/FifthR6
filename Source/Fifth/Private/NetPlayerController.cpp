@@ -452,6 +452,7 @@ void ANetPlayerController::UpdateMonsterSet()
 	if (MonsterSetInfo == nullptr)
 		return;
 
+	UE_LOG(LogClass, Log, TEXT("UpdateMonsterSet"));
 	UWorld* const world = GetWorld();
 	if (world)
 	{
