@@ -309,9 +309,9 @@ bool ANetPlayerController::UpdateWorldInfo()
 	} 
 	else
 	{
-		for (auto& Character : SpawnedCharacters)
+		for (auto& character : SpawnedCharacters)
 		{
-			ANetCharacter* OtherPlayer = Cast<ANetCharacter>(Character);
+			ANetCharacter* OtherPlayer = Cast<ANetCharacter>(character);
 
 			if (!OtherPlayer || OtherPlayer->GetSessionId() == -1 || OtherPlayer->GetSessionId() == SessionId)
 			{
@@ -364,11 +364,11 @@ bool ANetPlayerController::UpdateWorldInfo()
 			else
 			{
 				UE_LOG(LogClass, Log, TEXT("other player dead."));
-				FTransform transform(Character->GetActorLocation());
+				FTransform transform(character->GetActorLocation());
 				UGameplayStatics::SpawnEmitterAtLocation(
 					world, DestroyEmiiter, transform, true
 				);
-				Character->Destroy();
+				character->Destroy();
 			}
 		}
 
