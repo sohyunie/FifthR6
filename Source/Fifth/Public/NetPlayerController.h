@@ -74,6 +74,13 @@ public:
 	// 새 플레이어 업데이트
 	void RecvNewPlayer(cCharactersInfo* NewPlayer);
 
+	// 몬스터 업데이트
+	void RecvMonsterSet(MonsterSet* MonstersInfo);
+	// 기존 몬스터 파괴
+	void RecvDestroyMonster(Monster* MonsterInfo);
+	// 몬스터 타격 정보 전달
+	void HitMonster(const int& MonsterId);
+
 private:
 	ClientSocket* Socket;			// 서버와 접속할 소켓
 	bool			bIsConnected;	// 서버와 접속 유무
@@ -93,4 +100,16 @@ private:
 	bool bNewPlayerEntered;
 	cCharactersInfo* NewPlayer;
 	void UpdateNewPlayer();
+
+
+	// 몬스터 업데이트
+	MonsterSet* MonsterSetInfo;
+	int nMonsters;
+	void UpdateMonsterSet();
+
+	Monster* MonsterInfo;
+
+	bool bIsNeedToDestroyMonster;
+	void DestroyMonster();
+	bool SendMonsterSet();
 };

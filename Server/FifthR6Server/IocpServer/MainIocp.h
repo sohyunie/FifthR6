@@ -11,6 +11,7 @@
 #include <iostream>
 #include "CommonClass.h"
 #include "DBConnector.h"
+#include "Monster.h"
 #include "IocpBase.h"
 
 using namespace std;
@@ -42,6 +43,7 @@ private:
 	static float			HitPoint;		// 타격 데미지
 	//static DBConnector 	Conn;			// DB 커넥터
 	static CRITICAL_SECTION csPlayers;		// CharactersInfo 임계영역
+	static MonsterSet		MonstersInfo;	// 몬스터 집합 정보
 
 	FuncProcess fnProcess[100];
 
@@ -57,6 +59,10 @@ private:
 	static void HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket);
 	// 채팅 수신 후 클라이언트들에게 송신
 	static void BroadcastChat(stringstream & RecvStream, stSOCKETINFO * pSocket);
+	// 몬스터 피격 처리
+	static void HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
+
+	void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	// 브로드캐스트 함수
 	static void Broadcast(stringstream & SendStream);	

@@ -75,7 +75,10 @@ AATank::AATank()
 	HPBarWidget->SetHiddenInGame(true);
 	SetCanBeDamaged(false);
 
-	
+	//auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	//Id = MyGameInstance->uniqueMonsterID++;
+	//UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
+
 	
 	DeadTimer = 5.0f;
 }
@@ -351,5 +354,25 @@ void AATank::AttackCheck()
 			
 			Damaged();
 		}
+	}
+}
+
+void AATank::PlayAttackAnim()
+{
+	//[TODO] Dead Anim으로 수정 필요
+	return ATAnim->PlayAttackMontage();
+}
+
+void AATank::PlayTakeDamageAnim()
+{
+	//[TODO] Dead Anim으로 수정 필요
+	return ATAnim->PlayAttackMontage();
+}
+
+void AATank::MoveToLocation(const FVector& dest)
+{
+	if (TankAIController)
+	{
+		TankAIController->MoveToLocation(dest);
 	}
 }

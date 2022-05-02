@@ -176,6 +176,20 @@ cCharactersInfo* ClientSocket::RecvNewPlayer(stringstream& RecvStream)
 	return &NewPlayer;
 }
 
+MonsterSet* ClientSocket::RecvMonsterSet(stringstream& RecvStream)
+{
+	// 몬스터 집합 정보를 얻어 반환
+	RecvStream >> MonsterSetInfo;
+	return &MonsterSetInfo;
+}
+
+Monster* ClientSocket::RecvMonster(stringstream& RecvStream)
+{
+	// 단일 몬스터 정보를 얻어 반환
+	RecvStream >> MonsterInfo;
+	return &MonsterInfo;
+}
+
 void ClientSocket::LogoutPlayer(int SessionId)
 {
 	UE_LOG(LogClass, Log, TEXT("ClientSocket LogoutPlayer"));
@@ -299,6 +313,16 @@ uint32 ClientSocket::Run()
 				PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
 			}
 			break;
+			case EPacketType::SYNC_MONSTER:
+			{
+				PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
+			}
+			break;
+			case EPacketType::DESTROY_MONSTER:
+			{
+				PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
+			}
+			break;
 			default:
 				break;
 			}
@@ -335,4 +359,28 @@ void ClientSocket::StopListen()
 	delete Thread;
 	Thread = nullptr;
 	StopTaskCounter.Reset();
+}
+
+void ClientSocket::HitMonster(const int& MonsterId)
+{
+	// 서버에게 데미지를 준 몬스터 정보 전송
+	stringstream SendStream;
+	SendStream << EPacketType::HIT_MONSTER << endl;
+	SendStream << MonsterId << endl;
+
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+}
+
+void ClientSocket::SendSyncMonster(MonsterSet& monsterSet)
+{
+	// 서버에게 몬스터 정보를 전송
+	stringstream SendStream;
+	SendStream << EPacketType::SYNC_MONSTER << endl;
+	SendStream << monsterSet << endl;
+
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
 }

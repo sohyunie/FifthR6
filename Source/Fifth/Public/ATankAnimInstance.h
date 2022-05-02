@@ -26,7 +26,6 @@ public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 
 	void SetDeadAnim() { IsDead = true; }
-
 private:
 	UFUNCTION()
 		void AnimNotify_AttackHitCheck();

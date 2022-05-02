@@ -11,6 +11,8 @@ map<int, SOCKET> MainIocp::SessionSocket;
 cCharactersInfo MainIocp::CharactersInfo;
 //DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
+MonsterSet MainIocp::MonstersInfo;
+map<int, int> LevelMaster;
 
 unsigned int WINAPI CallWorkerThread(LPVOID p)
 {
@@ -39,6 +41,8 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::HIT_PLAYER].funcProcessPacket = HitCharacter;
 	fnProcess[EPacketType::CHAT].funcProcessPacket = BroadcastChat;
 	fnProcess[EPacketType::LOGOUT_PLAYER].funcProcessPacket = LogoutCharacter;
+	fnProcess[EPacketType::HIT_MONSTER].funcProcessPacket = HitMonster;
+	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
 }
 
 
@@ -246,6 +250,14 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 
+	LevelMaster.find(info.UELevel);
+
+	if (LevelMaster.find(info.UELevel) == LevelMaster.end())
+	{
+		LevelMaster[info.UELevel] = info.SessionId;
+		info.IsMaster = true;
+	}
+
 	LeaveCriticalSection(&csPlayers);
 
 	SessionSocket[info.SessionId] = pSocket->socket;
@@ -261,8 +273,8 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	cCharacter info;
 	RecvStream >> info;
 
-	 	printf_s("[INFO][%d]정보 수신 - %f, &f\n",
-	 		info.SessionId, info.X, info.Z);
+	 	//printf_s("[INFO][%d]정보 수신 - %f, &f\n",
+	 	//	info.SessionId, info.X, info.Z);
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
@@ -383,4 +395,61 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();
+}
+
+void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	// 몬스터 피격 처리
+	int MonsterId;
+	RecvStream >> MonsterId;
+	MonstersInfo.monsters[MonsterId].Damaged(30.f);
+
+	if (!MonstersInfo.monsters[MonsterId].IsAlive())
+	{
+		stringstream SendStream;
+		SendStream << EPacketType::DESTROY_MONSTER << endl;
+		SendStream << MonstersInfo.monsters[MonsterId] << endl;
+
+		Broadcast(SendStream);
+
+		MonstersInfo.monsters.erase(MonsterId);
+	}
+}
+
+void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	for (auto& kvp : MonstersInfo.monsters)
+	{
+		auto& monster = kvp.second;
+		for (auto& player : CharactersInfo.players)
+		{
+			// 플레이어나 몬스터가 죽어있을 땐 무시
+			if (!player.second.IsAlive || !monster.IsAlive())
+				continue;
+
+			if (monster.IsPlayerInHitRange(player.second) && !monster.bIsAttacking)
+			{
+				monster.HitPlayer(player.second);
+				continue;
+			}
+
+			if (monster.IsPlayerInTraceRange(player.second) && !monster.bIsAttacking)
+			{
+				monster.MoveTo(player.second);
+				continue;
+			}
+		}
+	}
+
+	//count++;
+	//// 0.5초마다 클라이언트에게 몬스터 정보 전송
+	//if (count > 15)
+	//{
+	//	stringstream SendStream;
+	//	SendStream << EPacketType::SYNC_MONSTER << endl;
+	//	SendStream << MonstersInfo << endl;
+
+	//	count = 0;
+	//	Broadcast(SendStream);
+	//}
 }

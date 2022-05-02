@@ -55,6 +55,9 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
+	bool IsMaster;
+	int UELevel;
+
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
 	{
 		stream << info.SessionId << endl;
@@ -70,6 +73,8 @@ public:
 		stream << info.IsAlive << endl;
 		stream << info.HealthValue << endl;
 		stream << info.IsAttacking << endl;
+		stream << info.IsMaster << endl;
+		stream << info.UELevel << endl;
 
 		return stream;
 	}
@@ -89,6 +94,8 @@ public:
 		stream >> info.IsAlive;
 		stream >> info.HealthValue;
 		stream >> info.IsAttacking;
+		stream >> info.IsMaster;
+		stream >> info.UELevel;
 
 		return stream;
 	}
@@ -104,7 +111,10 @@ enum EPacketType
 	HIT_PLAYER,
 	DAMAGED_PLAYER,
 	CHAT,
-	ENTER_NEW_PLAYER
+	ENTER_NEW_PLAYER,
+	HIT_MONSTER,
+	SYNC_MONSTER,
+	DESTROY_MONSTER
 };
 
 class cCharactersInfo
@@ -146,6 +156,81 @@ public:
 	}
 };
 
+
+
+// 몬스터 정보
+class Monster
+{
+public:
+	float	X;				// X좌표
+	float	Y;				// Y좌표
+	float	Z;				// Z좌표
+	float	Health;			// 체력
+	int		Id;				// 고유 id
+	bool	IsAttacking;		// 타격중인지
+
+	friend ostream& operator<<(ostream& stream, Monster& info)
+	{
+		stream << info.X << endl;
+		stream << info.Y << endl;
+		stream << info.Z << endl;
+		stream << info.Health << endl;
+		stream << info.Id << endl;
+		stream << info.IsAttacking << endl;
+
+		return stream;
+	}
+
+	friend istream& operator>>(istream& stream, Monster& info)
+	{
+		stream >> info.X;
+		stream >> info.Y;
+		stream >> info.Z;
+		stream >> info.Health;
+		stream >> info.Id;
+		stream >> info.IsAttacking;
+
+		return stream;
+	}
+};
+
+// 몬스터 직렬화/역직렬화 클래스
+class MonsterSet
+{
+public:
+	map<int, Monster> monsters;
+
+	friend ostream& operator<<(ostream& stream, MonsterSet& info)
+	{
+		stream << info.monsters.size() << endl;
+		for (auto& kvp : info.monsters)
+		{
+			stream << kvp.first << endl;
+			stream << kvp.second << endl;
+		}
+
+		return stream;
+	}
+
+	friend istream& operator>>(istream& stream, MonsterSet& info)
+	{
+		int nMonsters = 0;
+		int PrimaryId = 0;
+		Monster monster;
+		info.monsters.clear();
+
+		stream >> nMonsters;
+		for (int i = 0; i < nMonsters; i++)
+		{
+			stream >> PrimaryId;
+			stream >> monster;
+			info.monsters[PrimaryId] = monster;
+		}
+
+		return stream;
+	}
+};
+
 /**
  *
  */
@@ -176,6 +261,9 @@ public:
 	void DamagePlayer(int SessionId);
 	// 채팅 
 	void SendChat(const int& SessionId, const string& Chat);
+	// 몬스터 피격 처리
+	void HitMonster(const int& MonsterId);
+	void SendSyncMonster(MonsterSet& monsterSet);
 	// UDP 테스트용 함수
 	char* UdpTest();
 	//////////////////////////////////////////////////////////////////////////	
@@ -229,7 +317,11 @@ private:
 
 	cCharactersInfo NewPlayer;
 	cCharactersInfo* RecvNewPlayer(stringstream& RecvStream);
+
+	MonsterSet	MonsterSetInfo;
+	MonsterSet* RecvMonsterSet(stringstream& RecvStream);
+
+	Monster		MonsterInfo;
+	Monster* RecvMonster(stringstream& RecvStream);
 	//////////////////////////////////////////////////////////////////////////
 };
-
-

@@ -11,6 +11,7 @@
 #include "MyGameInstance.h"
 #include "MyPlayerState.h"
 #include "MyHUDWidget.h"
+#include "ATank.h"
 
 
 
@@ -456,11 +457,17 @@ void ANetCharacter::AttackCheck()
 		// 우선 플레이어를 공격, 차후에 몬스터 공격으로 변경 필요.
 		if (HitResult.Actor.IsValid())
 		{
-			ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			//ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			//if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			//{
+			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+			//}
+			AATank* Monster = Cast<AATank>(HitResult.Actor);
+			if (Monster)
 			{
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+				PlayerController->HitMonster(Monster->Id);
 			}
 		}
 	}
@@ -512,14 +519,21 @@ void ANetCharacter::SAttackCheck()
 		//	HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
 		//}
 		// Netwrok Hit
-		// 우선 플레이어를 공격, 차후에 몬스터 공격으로 변경 필요.
 		if (HitResult.Actor.IsValid())
 		{
-			ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			// 플레이어 공격
+			//ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			//if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
+			//{
+			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+			//}
+
+			AATank* Monster = Cast<AATank>(HitResult.Actor);
+			if (Monster)
 			{
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
+				PlayerController->HitMonster(Monster->Id);
 			}
 		}
 	}

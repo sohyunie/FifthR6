@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MyHUDWidget.h"
 #include "WarriorOfFire.h"
+#include "ATank.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
@@ -61,6 +62,9 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	// 플레이어 정보 송신
 	if (!SendPlayerInfo()) return;
 
+	// 몬스터 셋 송신
+	if (!SendMonsterSet()) return;
+
 	// 월드 동기화
 	if (!UpdateWorldInfo()) return;
 
@@ -74,6 +78,10 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	{
 		UpdateNewPlayer();
 	}
+
+	// 몬스터 업데이트
+	if (ci->players[SessionId].UELevel != 0)
+		UpdateMonsterSet();
 }
 
 void ANetPlayerController::BeginPlay()
@@ -124,6 +132,8 @@ void ANetPlayerController::BeginPlay()
 	tempCharacter.IsAttacking = player->GetIsAttacking();
 	tempCharacter.HealthValue = player->GetHealthValue();
 
+	tempCharacter.UELevel = 1; // [TODO] UE Level ID 필요.
+
 	UE_LOG(LogClass, Log, TEXT("EnrollPlayer"));
 	Socket->EnrollPlayer(tempCharacter);
 
@@ -162,6 +172,13 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 	}
 }
 
+void ANetPlayerController::HitMonster(const int& MonsterId)
+{
+	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
+
+	Socket->HitMonster(MonsterId);
+}
+
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 {
 	if (ci_ != nullptr)
@@ -186,6 +203,23 @@ void ANetPlayerController::RecvNewPlayer(cCharactersInfo* NewPlayer_)
 	{
 		bNewPlayerEntered = true;
 		NewPlayer = NewPlayer_;
+	}
+}
+
+void ANetPlayerController::RecvMonsterSet(MonsterSet* MonstersInfo_)
+{
+	if (MonstersInfo_ != nullptr)
+	{
+		MonsterSetInfo = MonstersInfo_;
+	}
+}
+
+void ANetPlayerController::RecvDestroyMonster(Monster* MonsterInfo_)
+{
+	if (MonsterInfo_ != nullptr)
+	{
+		MonsterInfo = MonsterInfo_;
+		bIsNeedToDestroyMonster = true;
 	}
 }
 
@@ -408,4 +442,102 @@ void ANetPlayerController::OnPossess(APawn* aPawn)
 {
 	ABLOG_S(Warning);
 	Super::OnPossess(aPawn);
+}
+
+void ANetPlayerController::UpdateMonsterSet()
+{
+	// 마스터가 아닐 때
+	if (ci->players[SessionId].IsMaster == true)
+		return;
+	if (MonsterSetInfo == nullptr)
+		return;
+
+	UWorld* const world = GetWorld();
+	if (world)
+	{
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+		for (auto actor : SpawnedMonsters)
+		{
+			AATank* monster = Cast<AATank>(actor);
+			if (monster)
+			{
+				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+
+				FVector Location;
+				Location.X = monsterInfo->X;
+				Location.Y = monsterInfo->Y;
+				Location.Z = monsterInfo->Z;
+
+				monster->MoveToLocation(Location);
+
+				if (monsterInfo->IsAttacking)
+				{
+					monster->PlayAttackAnim();
+				}
+			}
+		}
+	}
+}
+void ANetPlayerController::DestroyMonster()
+{
+	UWorld* const world = GetWorld();
+	if (world)
+	{
+		// 스폰된 몬스터에서 찾아 파괴
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+		for (auto Actor : SpawnedMonsters)
+		{
+			AATank* Monster = Cast<AATank>(Actor);
+			if (Monster && Monster->Id == MonsterInfo->Id)
+			{
+				//[TODO] dead
+				//Monster->Dead();
+				break;
+			}
+		}
+
+		// 업데이트 후 초기화
+		MonsterInfo = nullptr;
+		bIsNeedToDestroyMonster = false;
+	}
+}
+
+bool ANetPlayerController::SendMonsterSet()
+{
+	// 마스터가 일 때
+	if (ci->players[SessionId].IsMaster == false)
+		return false;
+	if (MonsterSetInfo == nullptr)
+		return false;
+
+	MonsterSet sendMonsterSet;
+	UWorld* const world = GetWorld();
+	if (world)
+	{
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+		for (auto actor : SpawnedMonsters)
+		{
+			AATank* monster = Cast<AATank>(actor);
+			if (monster)
+			{
+				const auto& Location = monster->GetActorLocation();
+				const auto& Rotation = monster->GetActorRotation();
+				const auto& Velocity = monster->GetVelocity();
+
+
+				sendMonsterSet.monsters[monster->Id].X = Location.X;
+				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
+				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
+			}
+		}
+	}
+
+	Socket->SendSyncMonster(sendMonsterSet);
+	return true;
 }

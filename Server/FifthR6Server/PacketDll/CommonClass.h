@@ -23,7 +23,10 @@ enum COMMONCLASS_API EPacketType
 	HIT_PLAYER,
 	DAMAGED_PLAYER,
 	CHAT,
-	ENTER_NEW_PLAYER
+	ENTER_NEW_PLAYER,
+	HIT_MONSTER,
+	SYNC_MONSTER,
+	DESTROY_MONSTER
 };
 
 class COMMONCLASS_API cCharacter {
@@ -50,6 +53,9 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
+	bool	IsMaster;
+	int		UELevel;
+
 	friend ostream& operator<<(ostream &stream, cCharacter& info)
 	{
 		stream << info.SessionId << endl;
@@ -65,6 +71,8 @@ public:
 		stream << info.IsAlive << endl;		
 		stream << info.HealthValue << endl;
 		stream << info.IsAttacking << endl;
+		stream << info.IsMaster << endl;
+		stream << info.UELevel << endl;
 
 		return stream;
 	}
@@ -84,6 +92,8 @@ public:
 		stream >> info.IsAlive;		
 		stream >> info.HealthValue;
 		stream >> info.IsAttacking;
+		stream >> info.IsMaster;
+		stream >> info.UELevel;
 
 		return stream;
 	}
