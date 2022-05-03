@@ -257,7 +257,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 		printf_s("나는 마스터야 : %d\n", info.SessionId);
 
 		LevelMaster[info.UELevel] = info.SessionId;
-		info.IsMaster = true;
+		pinfo->IsMaster = true;
 	}
 
 	LeaveCriticalSection(&csPlayers);

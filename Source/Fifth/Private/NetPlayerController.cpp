@@ -254,6 +254,8 @@ bool ANetPlayerController::SendPlayerInfo()
 	tempCharacter.IsAttacking = tempPlayer->GetIsAttacking();
 	tempCharacter.HealthValue = tempPlayer->GetHealthValue();
 
+	tempCharacter.UELevel = 1; // [TODO] UE Level ID ÇÊ¿ä.
+
 	Socket->SendPlayer(tempCharacter);
 
 	return true;
