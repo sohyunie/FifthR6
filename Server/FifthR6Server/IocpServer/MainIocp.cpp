@@ -303,9 +303,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	pinfo->VZ = info.VZ;
 
 	pinfo->IsAttacking = info.IsAttacking;
-	pinfo->HealthValue = info.HealthValue;
 	pinfo->UELevel = info.UELevel;
-	pinfo->IsMaster = info.IsMaster;
 
 	LeaveCriticalSection(&csPlayers);
 
