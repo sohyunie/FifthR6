@@ -404,9 +404,10 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 	else
 	{
 		// 캐릭터 속성 업데이트
+		//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), tempPlayer->GetSessionId());
 		if (tempPlayer->GetHealthValue() != info.HealthValue)
 		{
-			UE_LOG(LogClass, Log, TEXT("Player damaged"));
+			//UE_LOG(LogClass, Log, TEXT("Player damaged : %f / %f"), tempPlayer->GetHealthValue(), info.HealthValue);
 			// 피격 파티클 스폰
 			FTransform transform(tempPlayer->GetActorLocation());
 			UGameplayStatics::SpawnEmitterAtLocation(
@@ -492,7 +493,7 @@ void ANetPlayerController::UpdateMonsterSet()
 	if (MonsterSetInfo == nullptr)
 		return;
 
-	UE_LOG(LogClass, Log, TEXT("UpdateMonsterSet"));
+	//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), tempPlayer->GetSessionId());
 	UWorld* const world = GetWorld();
 	if (world)
 	{
@@ -569,6 +570,7 @@ bool ANetPlayerController::SendMonsterSet()
 		AATank* monster = Cast<AATank>(actor);
 		if (isTankActionStart == false)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
 			monster->StartAction();
 		}
 		if (monster)

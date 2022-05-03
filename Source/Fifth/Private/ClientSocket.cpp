@@ -121,16 +121,6 @@ void ClientSocket::EnrollPlayer(cCharacter& info)
 	SendStream << EPacketType::ENROLL_PLAYER << endl;;
 	SendStream << info;
 
-	FString name = SendStream.str().c_str();
-	TArray<FStringFormatArg> args;
-
-	args.Add(FStringFormatArg(name));
-	FString string = FString::Format(TEXT("Name = {0}"), args);
-
-
-	UE_LOG(LogTemp, Warning, TEXT("String : %s"), *string);
-	UE_LOG(LogTemp, Warning, TEXT("UELevel : %d"), info.UELevel);
-
 	// 캐릭터 정보 전송
 	int nSendLen = send(
 		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
@@ -389,6 +379,14 @@ void ClientSocket::SendSyncMonster(MonsterSet& monsterSet)
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
 	SendStream << monsterSet << endl;
+	//FString name = SendStream.str().c_str();
+	//TArray<FStringFormatArg> args;
+
+	//args.Add(FStringFormatArg(name));
+	//FString string = FString::Format(TEXT("SendSyncMonster = {0}"), args);
+
+
+	//UE_LOG(LogTemp, Warning, TEXT("SendSyncMonster : %s"), *string);
 
 	int nSendLen = send(
 		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
