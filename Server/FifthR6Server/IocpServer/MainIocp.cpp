@@ -222,8 +222,10 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	printf_s("[INFO][%d]캐릭터 등록 - X : [%f], Y : [%f], Z : [%f], Yaw : [%f], Alive : [%d], Health : [%f]\n",
-		info.SessionId, info.X, info.Y, info.Z, info.Yaw, info.IsAlive, info.HealthValue);
+	printf_s(RecvStream.str().c_str());
+
+	printf_s("[INFO][%d]캐릭터 등록 - X : [%f], Y : [%f], Z : [%f], Yaw : [%f], Alive : [%d], Health : [%f], UELevel : [%d]\n",
+		info.SessionId, info.X, info.Y, info.Z, info.Yaw, info.IsAlive, info.HealthValue, info.UELevel);
 
 	EnterCriticalSection(&csPlayers);
 
@@ -275,8 +277,8 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	cCharacter info;
 	RecvStream >> info;
 
-	 	//printf_s("[INFO][%d]정보 수신 - %f, &f\n",
-	 	//	info.SessionId, info.X, info.Z);
+	 	//printf_s("[INFO][%d]정보 수신 - %d\n",
+	 	//	info.SessionId, info.UELevel);
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];

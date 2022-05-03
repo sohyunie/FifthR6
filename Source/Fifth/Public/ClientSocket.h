@@ -55,8 +55,8 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
-	bool IsMaster;
 	int UELevel;
+	bool IsMaster;
 
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
 	{
@@ -73,8 +73,8 @@ public:
 		stream << info.IsAlive << endl;
 		stream << info.HealthValue << endl;
 		stream << info.IsAttacking << endl;
-		stream << info.IsMaster << endl;
 		stream << info.UELevel << endl;
+		stream << info.IsMaster << endl;
 
 		return stream;
 	}
@@ -94,8 +94,8 @@ public:
 		stream >> info.IsAlive;
 		stream >> info.HealthValue;
 		stream >> info.IsAttacking;
-		stream >> info.IsMaster;
 		stream >> info.UELevel;
+		stream >> info.IsMaster;
 
 		return stream;
 	}
