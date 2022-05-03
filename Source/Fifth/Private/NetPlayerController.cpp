@@ -560,6 +560,8 @@ bool ANetPlayerController::SendMonsterSet()
 	if (ci->players[SessionId].IsMaster == false)
 		return false;
 
+	UE_LOG(LogTemp, Warning, TEXT("SendMonsterSet : %d"), SessionId);
+	UE_LOG(LogTemp, Warning, TEXT("SendMonsterSet is master : %d"), ci->players[SessionId].IsMaster);
 	MonsterSet sendMonsterSet;
 
 	TArray<AActor*> SpawnedMonsters;
