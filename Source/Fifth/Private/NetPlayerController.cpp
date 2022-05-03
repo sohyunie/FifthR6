@@ -585,6 +585,7 @@ bool ANetPlayerController::SendMonsterSet()
 			sendMonsterSet.monsters[monster->Id].X = Location.X;
 			sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 			sendMonsterSet.monsters[monster->Id].Z = Location.Z;
+			sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 		}
 	}
 	isTankActionStart = true;

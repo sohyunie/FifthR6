@@ -15,9 +15,9 @@ D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(215,50): warning C4267: 
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(255,13): warning C4834: 'nodiscard' 특성이 포함된 함수의 반환 값을 버리는 중
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(272,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(272,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(325,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(325,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(364,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(390,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(407,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(323,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(323,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(362,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(388,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(405,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   iocp-sample.vcxproj -> D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\iocp-server.exe

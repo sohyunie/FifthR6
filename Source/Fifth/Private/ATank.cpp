@@ -78,7 +78,6 @@ AATank::AATank()
 
 	//auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	//Id = MyGameInstance->uniqueMonsterID++;
-	//UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 
 	
 	DeadTimer = 5.0f;
@@ -100,6 +99,8 @@ void AATank::OnAssetLoadCompleted()
 void AATank::BeginPlay()
 {
 	Super::BeginPlay();
+	Id = FMath::RandRange(0, 10000);
+	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 
 	TankAIController = Cast<ATankAIController>(GetController());
 	ABCHECK(nullptr != TankAIController);
