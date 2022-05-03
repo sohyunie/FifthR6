@@ -78,10 +78,6 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	{
 		UpdateNewPlayer();
 	}
-
-	// 몬스터 업데이트
-	if (ci->players[SessionId].UELevel != 0)
-		UpdateMonsterSet();
 }
 
 void ANetPlayerController::BeginPlay()
@@ -257,6 +253,10 @@ bool ANetPlayerController::SendPlayerInfo()
 	tempCharacter.UELevel = 1; // [TODO] UE Level ID 필요.
 
 	Socket->SendPlayer(tempCharacter);
+
+	// 몬스터 업데이트
+	if (ci != nullptr && ci->players[SessionId].UELevel != 0)
+		UpdateMonsterSet();
 
 	return true;
 }

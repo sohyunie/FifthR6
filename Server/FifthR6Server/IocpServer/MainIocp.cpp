@@ -261,6 +261,9 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 		LevelMaster[info.UELevel] = info.SessionId;
 		pinfo->IsMaster = true;
 	}
+	else {
+		pinfo->IsMaster = false;
+	}
 
 	LeaveCriticalSection(&csPlayers);
 
