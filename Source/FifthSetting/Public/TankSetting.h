@@ -19,5 +19,4 @@ public:
 
 	UPROPERTY(config)
 		TArray<FSoftObjectPath> TankAssets;
-	
 };

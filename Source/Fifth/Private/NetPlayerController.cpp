@@ -513,10 +513,6 @@ void ANetPlayerController::UpdateMonsterSet()
 
 				monster->MoveToLocation(Location);
 
-				UE_LOG(LogClass, Log, TEXT("Location X : %f"), monsterInfo->X);
-				UE_LOG(LogClass, Log, TEXT("Location Y : %f"), monsterInfo->Y);
-				UE_LOG(LogClass, Log, TEXT("Location Z : %f"), monsterInfo->Z);
-
 				if (monsterInfo->IsAttacking)
 				{
 					monster->PlayAttackAnim();

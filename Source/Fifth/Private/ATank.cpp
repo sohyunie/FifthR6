@@ -99,18 +99,18 @@ void AATank::OnAssetLoadCompleted()
 void AATank::BeginPlay()
 {
 	Super::BeginPlay();
-	Id = FMath::RandRange(0, 10000);
-	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 
 	TankAIController = Cast<ATankAIController>(GetController());
 	ABCHECK(nullptr != TankAIController);
 
 	auto DefaultSetting = GetDefault<UTankSetting>();
-
+	
 	AssetIndex = 0;
 
 	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	Id = MyGameInstance->uniqueMonsterID++;
+	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 	ABCHECK(nullptr != MyGameInstance);
 	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
 		FStreamableDelegate::CreateUObject(this, &AATank::OnAssetLoadCompleted));

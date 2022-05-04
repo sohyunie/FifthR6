@@ -5,5 +5,4 @@
 
 UTankSetting::UTankSetting()
 {
-
 }
