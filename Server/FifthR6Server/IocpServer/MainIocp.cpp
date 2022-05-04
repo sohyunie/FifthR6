@@ -252,8 +252,6 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 
-	LevelMaster.find(info.UELevel);
-
 	if (LevelMaster.find(info.UELevel) == LevelMaster.end())
 	{
 		printf_s("나는 마스터야 : %d\n", info.SessionId);
@@ -262,7 +260,14 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 		pinfo->IsMaster = true;
 	}
 	else {
-		pinfo->IsMaster = false;
+		if (LevelMaster[info.UELevel] == pinfo->SessionId)
+		{
+			pinfo->IsMaster = true;
+		}
+		else
+		{
+			pinfo->IsMaster = false;
+		}
 	}
 
 	LeaveCriticalSection(&csPlayers);
@@ -304,6 +309,14 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	pinfo->IsAttacking = info.IsAttacking;
 	pinfo->UELevel = info.UELevel;
+	if (LevelMaster[info.UELevel] == pinfo->SessionId)
+	{
+		pinfo->IsMaster = true;
+	}
+	else
+	{
+		pinfo->IsMaster = false;
+	}
 
 	LeaveCriticalSection(&csPlayers);
 

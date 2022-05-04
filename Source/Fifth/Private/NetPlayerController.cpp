@@ -276,104 +276,67 @@ bool ANetPlayerController::UpdateWorldInfo()
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 
-	if (false)
-	{	
-		//for (auto & player : ci->players)
-		//{			
-		//	if (player.first == SessionId || !player.second.IsAlive)
-		//		continue;
-
-		//	FVector SpawnLocation;
-		//	SpawnLocation.X = player.second.X;
-		//	SpawnLocation.Y = player.second.Y;
-		//	SpawnLocation.Z = player.second.Z;
-
-		//	FRotator SpawnRotation;
-		//	SpawnRotation.Yaw = player.second.Yaw;
-		//	SpawnRotation.Pitch = player.second.Pitch;
-		//	SpawnRotation.Roll = player.second.Roll;
-
-		//	FActorSpawnParameters SpawnParams;
-		//	SpawnParams.Owner = this;
-		//	SpawnParams.Instigator = GetPawn();
-		//	SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
-
-		//	ANetPlayerController* SpawnCharacter = world->SpawnActor<ASungminWorldCharacter>(WhoToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		//	SpawnCharacter->SpawnDefaultController();
-
-		//	SpawnCharacter->SessionId = player.second.SessionId;
-		//	SpawnCharacter->HealthValue = player.second.HealthValue;
-		//	SpawnCharacter->IsAlive = player.second.IsAlive;
-		//	SpawnCharacter->IsAttacking = player.second.IsAttacking;	
-		//}
-
-		//nPlayers = CharactersInfo->players.size();
-	} 
-	else
+	for (auto& character : SpawnedCharacters)
 	{
-		for (auto& character : SpawnedCharacters)
+		ANetCharacter* OtherPlayer = Cast<ANetCharacter>(character);
+
+		if (!OtherPlayer || OtherPlayer->GetSessionId() == -1 || OtherPlayer->GetSessionId() == SessionId)
 		{
-			ANetCharacter* OtherPlayer = Cast<ANetCharacter>(character);
-
-			if (!OtherPlayer || OtherPlayer->GetSessionId() == -1 || OtherPlayer->GetSessionId() == SessionId)
-			{
-				continue;
-			}
-
-			cCharacter * info = &ci->players[OtherPlayer->GetSessionId()];
-
-			if (info->IsAlive)
-			{
-				if (OtherPlayer->GetHealthValue() != info->HealthValue)
-				{
-					UE_LOG(LogClass, Log, TEXT("other player damaged."));
-					// 피격 파티클 소환
-					FTransform transform(OtherPlayer->GetActorLocation());
-					UGameplayStatics::SpawnEmitterAtLocation(
-						world, HitEmiiter, transform, true
-					);
-					// 피격 애니메이션 플레이
-					OtherPlayer->PlayTakeDamageAnim();
-					OtherPlayer->UpdateHealth(info->HealthValue);
-				}
-
-				// 공격중일때 타격 애니메이션 플레이
-				if (info->IsAttacking)
-				{
-					UE_LOG(LogClass, Log, TEXT("other player hit."));
-					OtherPlayer->PlayAttackAnim();
-				}
-
-				FVector CharacterLocation;
-				CharacterLocation.X = info->X;
-				CharacterLocation.Y = info->Y;
-				CharacterLocation.Z = info->Z;
-
-				FRotator CharacterRotation;
-				CharacterRotation.Yaw = info->Yaw;
-				CharacterRotation.Pitch = info->Pitch;
-				CharacterRotation.Roll = info->Roll;
-
-				FVector CharacterVelocity;
-				CharacterVelocity.X = info->VX;
-				CharacterVelocity.Y = info->VY;
-				CharacterVelocity.Z = info->VZ;
-
-				OtherPlayer->AddMovementInput(CharacterVelocity);
-				OtherPlayer->SetActorRotation(CharacterRotation);
-				OtherPlayer->SetActorLocation(CharacterLocation);
-			}
-			else
-			{
-				UE_LOG(LogClass, Log, TEXT("other player dead."));
-				FTransform transform(character->GetActorLocation());
-				UGameplayStatics::SpawnEmitterAtLocation(
-					world, DestroyEmiiter, transform, true
-				);
-				character->Destroy();
-			}
+			continue;
 		}
 
+		cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
+
+		if (info->IsAlive)
+		{
+			if (OtherPlayer->GetHealthValue() != info->HealthValue)
+			{
+				UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
+				// 피격 파티클 소환
+				FTransform transform(OtherPlayer->GetActorLocation());
+				UGameplayStatics::SpawnEmitterAtLocation(
+					world, HitEmiiter, transform, true
+				);
+				// 피격 애니메이션 플레이
+				OtherPlayer->PlayTakeDamageAnim();
+				OtherPlayer->UpdateHealth(info->HealthValue);
+			}
+
+			// 공격중일때 타격 애니메이션 플레이
+			if (info->IsAttacking)
+			{
+				UE_LOG(LogClass, Log, TEXT("other player hit."));
+				OtherPlayer->PlayAttackAnim();
+			}
+
+			FVector CharacterLocation;
+			CharacterLocation.X = info->X;
+			CharacterLocation.Y = info->Y;
+			CharacterLocation.Z = info->Z;
+
+			FRotator CharacterRotation;
+			CharacterRotation.Yaw = info->Yaw;
+			CharacterRotation.Pitch = info->Pitch;
+			CharacterRotation.Roll = info->Roll;
+
+			FVector CharacterVelocity;
+			CharacterVelocity.X = info->VX;
+			CharacterVelocity.Y = info->VY;
+			CharacterVelocity.Z = info->VZ;
+
+			OtherPlayer->AddMovementInput(CharacterVelocity);
+			OtherPlayer->SetActorRotation(CharacterRotation);
+			OtherPlayer->SetActorLocation(CharacterLocation);
+		}
+		else
+		{
+			UE_LOG(LogClass, Log, TEXT("other player dead."));
+			FTransform transform(character->GetActorLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(
+				world, DestroyEmiiter, transform, true
+			);
+			character->Destroy();
+		}
 	}
 
 	
@@ -558,9 +521,7 @@ bool ANetPlayerController::SendMonsterSet()
 
 	if (ci->players[SessionId].IsMaster == false)
 		return false;
-
-	UE_LOG(LogTemp, Warning, TEXT("SendMonsterSet : %d"), SessionId);
-	UE_LOG(LogTemp, Warning, TEXT("SendMonsterSet is master : %d"), ci->players[SessionId].IsMaster);
+	UE_LOG(LogTemp, Warning, TEXT("IsMaster[%d] : %s"), SessionId, ci->players[SessionId].IsMaster ? TEXT("true") : TEXT("false"));
 	MonsterSet sendMonsterSet;
 
 	TArray<AActor*> SpawnedMonsters;
