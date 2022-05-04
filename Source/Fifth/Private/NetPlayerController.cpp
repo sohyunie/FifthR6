@@ -493,7 +493,6 @@ void ANetPlayerController::UpdateMonsterSet()
 	if (MonsterSetInfo == nullptr)
 		return;
 
-	//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), tempPlayer->GetSessionId());
 	UWorld* const world = GetWorld();
 	if (world)
 	{
@@ -513,6 +512,10 @@ void ANetPlayerController::UpdateMonsterSet()
 				Location.Z = monsterInfo->Z;
 
 				monster->MoveToLocation(Location);
+
+				UE_LOG(LogClass, Log, TEXT("Location X : %f"), monsterInfo->X);
+				UE_LOG(LogClass, Log, TEXT("Location Y : %f"), monsterInfo->Y);
+				UE_LOG(LogClass, Log, TEXT("Location Z : %f"), monsterInfo->Z);
 
 				if (monsterInfo->IsAttacking)
 				{
@@ -585,7 +588,7 @@ bool ANetPlayerController::SendMonsterSet()
 			sendMonsterSet.monsters[monster->Id].X = Location.X;
 			sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 			sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-			sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+			sendMonsterSet.monsters[monster->Id].Id = monster->Id; 
 		}
 	}
 	isTankActionStart = true;
