@@ -290,6 +290,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
+	printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
 
 	// 캐릭터의 위치를 저장						
 	pinfo->SessionId = info.SessionId;
@@ -425,6 +426,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	RecvStream >> MonsterId;
 	MonstersInfo.monsters[MonsterId].Damaged(30.f);
 
+	printf_s("[INFO] (%d) HitMonster \n", MonsterId);
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
 		stringstream SendStream;
@@ -444,6 +446,8 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
 	SendStream << monsterSet << endl;
+
+	MonstersInfo = monsterSet;
 
 	Broadcast(SendStream);
 }

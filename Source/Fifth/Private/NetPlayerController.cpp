@@ -65,8 +65,8 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	// 월드 동기화
 	if (!UpdateWorldInfo()) return;
 
-	// 몬스터 셋 송신
-	if (!SendMonsterSet()) return;
+	// 몬스터 셋 송신, 수신
+	if (!UpdateMonster()) return;
 
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
@@ -78,6 +78,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	{
 		UpdateNewPlayer();
 	}
+
 }
 
 void ANetPlayerController::BeginPlay()
@@ -253,10 +254,6 @@ bool ANetPlayerController::SendPlayerInfo()
 	tempCharacter.UELevel = 1; // [TODO] UE Level ID 필요.
 
 	Socket->SendPlayer(tempCharacter);
-
-	// 몬스터 업데이트
-	if (ci != nullptr && ci->players[SessionId].UELevel != 0)
-		UpdateMonsterSet();
 
 	return true;
 }
@@ -450,9 +447,6 @@ void ANetPlayerController::OnPossess(APawn* aPawn)
 
 void ANetPlayerController::UpdateMonsterSet()
 {
-	// 마스터가 아닐 때
-	if (ci->players[SessionId].IsMaster == true)
-		return;
 	if (MonsterSetInfo == nullptr)
 		return;
 
@@ -510,7 +504,7 @@ void ANetPlayerController::DestroyMonster()
 	}
 }
 
-bool ANetPlayerController::SendMonsterSet()
+bool ANetPlayerController::UpdateMonster()
 {
 	// 마스터가 일 때
 	UWorld* const world = GetWorld();
@@ -519,37 +513,42 @@ bool ANetPlayerController::SendMonsterSet()
 	if (ci == nullptr)
 		return false;
 
-	if (ci->players[SessionId].IsMaster == false)
-		return false;
-	UE_LOG(LogTemp, Warning, TEXT("IsMaster[%d] : %s"), SessionId, ci->players[SessionId].IsMaster ? TEXT("true") : TEXT("false"));
-	MonsterSet sendMonsterSet;
-
-	TArray<AActor*> SpawnedMonsters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
-
-	for (auto actor : SpawnedMonsters)
+	if (ci->players[SessionId].IsMaster)
 	{
-		AATank* monster = Cast<AATank>(actor);
-		if (isTankActionStart == false)
+		MonsterSet sendMonsterSet;
+
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+		for (auto actor : SpawnedMonsters)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
-			monster->StartAction();
-		}
-		if (monster)
-		{
-			const auto& Location = monster->GetActorLocation();
-			const auto& Rotation = monster->GetActorRotation();
-			const auto& Velocity = monster->GetVelocity();
+			AATank* monster = Cast<AATank>(actor);
+			if (isTankActionStart == false)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
+				//monster->StartAction();
+			}
+			if (monster)
+			{
+				const auto& Location = monster->GetActorLocation();
+				const auto& Rotation = monster->GetActorRotation();
+				const auto& Velocity = monster->GetVelocity();
 
 
-			sendMonsterSet.monsters[monster->Id].X = Location.X;
-			sendMonsterSet.monsters[monster->Id].Y = Location.Y;
-			sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-			sendMonsterSet.monsters[monster->Id].Id = monster->Id; 
+				sendMonsterSet.monsters[monster->Id].X = Location.X;
+				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
+				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
+				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+			}
 		}
+		isTankActionStart = true;
+		Socket->SendSyncMonster(sendMonsterSet);
+		return true;
+
 	}
-	isTankActionStart = true;
-	Socket->SendSyncMonster(sendMonsterSet);
-	return true;
-
+	else {
+		// 몬스터 업데이트
+		UpdateMonsterSet();
+		return true;
+	}
 }

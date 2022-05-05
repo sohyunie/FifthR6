@@ -113,5 +113,5 @@ private:
 
 	bool bIsNeedToDestroyMonster;
 	void DestroyMonster();
-	bool SendMonsterSet();
+	bool UpdateMonster();
 };
