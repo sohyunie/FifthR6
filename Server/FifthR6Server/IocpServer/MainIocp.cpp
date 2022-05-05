@@ -277,7 +277,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	printf_s("[INFO] 클라이언트 수 : %d\n", SessionSocket.size());
 
 	//Send(pSocket);
-	BroadcastNewPlayer(CharactersInfo);
+	BroadcastNewPlayer(CharactersInfo, info.UELevel);
 }
 
 void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
@@ -360,13 +360,13 @@ void MainIocp::BroadcastChat(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
 
-	int SessionId;
+	int sessionID;
 	string Temp;
 	string Chat;
 
-	RecvStream >> SessionId;
+	RecvStream >> sessionID;
 	getline(RecvStream, Temp);
-	Chat += to_string(SessionId) + "_:_";
+	Chat += to_string(sessionID) + "_:_";
 	while (RecvStream >> Temp)
 	{
 		Chat += Temp + "_";
@@ -378,30 +378,32 @@ void MainIocp::BroadcastChat(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	SendStream << EPacketType::CHAT << endl;
 	SendStream << Chat;
-
-	Broadcast(SendStream);
+	
+	Broadcast(SendStream, CharactersInfo.players[sessionID].UELevel);
 }
 
-void MainIocp::BroadcastNewPlayer(cCharactersInfo & player)
+void MainIocp::BroadcastNewPlayer(cCharactersInfo & player, int UELevel)
 {
 	stringstream SendStream;
 	SendStream << EPacketType::ENTER_NEW_PLAYER << endl;
 	SendStream << player << endl;
 
-	Broadcast(SendStream);
+	Broadcast(SendStream, UELevel);
 }
 
-void MainIocp::Broadcast(stringstream & SendStream)
+void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
-		client->socket = kvp.second;
-		CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
-		client->dataBuf.buf = client->messageBuffer;
-		client->dataBuf.len = SendStream.str().length();
+		if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
+			client->socket = kvp.second;
+			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
+			client->dataBuf.buf = client->messageBuffer;
+			client->dataBuf.len = SendStream.str().length();
 
-		Send(client);
+			Send(client);
+		}
 	}
 }
 
@@ -424,6 +426,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	// 몬스터 피격 처리
 	int MonsterId;
 	RecvStream >> MonsterId;
+
 	MonstersInfo.monsters[MonsterId].Damaged(0.2f);
 
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
@@ -433,7 +436,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
-		Broadcast(SendStream);
+		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
 
 		MonstersInfo.monsters.erase(MonsterId);
 	}
@@ -444,7 +447,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
-		Broadcast(SendStream);
+		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
 	}
 }
 
@@ -459,6 +462,5 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	MonstersInfo = monsterSet;
 	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
-
-	Broadcast(SendStream);
+	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
 }

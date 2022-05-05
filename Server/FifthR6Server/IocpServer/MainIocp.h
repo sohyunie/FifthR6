@@ -65,9 +65,9 @@ private:
 	static void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	// 브로드캐스트 함수
-	static void Broadcast(stringstream & SendStream);	
+	static void Broadcast(stringstream & SendStream, int UELevel);	
 	// 다른 클라이언트들에게 새 플레이어 입장 정보 보냄
-	static void BroadcastNewPlayer(cCharactersInfo & player);
+	static void BroadcastNewPlayer(cCharactersInfo & player, int UELevel);
 	// 캐릭터 정보를 버퍼에 기록
 	static void WriteCharactersInfoToSocket(stSOCKETINFO * pSocket);	
 };

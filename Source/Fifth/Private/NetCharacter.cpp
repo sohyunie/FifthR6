@@ -521,14 +521,6 @@ void ANetCharacter::SAttackCheck()
 		// Netwrok Hit
 		if (HitResult.Actor.IsValid())
 		{
-			// 플레이어 공격
-			//ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			//if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
-			//{
-			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
-			//}
-
 			AATank* Monster = Cast<AATank>(HitResult.Actor);
 			if (Monster)
 			{

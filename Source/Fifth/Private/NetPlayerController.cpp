@@ -547,6 +547,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 				sendMonsterSet.monsters[monster->Id].Health = monster->Health;
+				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 			}
 		}
 		isTankActionStart = true;

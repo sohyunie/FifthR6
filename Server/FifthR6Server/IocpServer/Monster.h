@@ -33,6 +33,7 @@ public:
 		stream << info.Health << endl;
 		stream << info.Id << endl;
 		stream << info.bIsAttacking << endl;
+		stream << info.ueLevel << endl;
 
 		return stream;
 	}
@@ -45,6 +46,7 @@ public:
 		stream >> info.Health;
 		stream >> info.Id;
 		stream >> info.bIsAttacking;
+		stream >> info.ueLevel;
 
 		return stream;
 	}
@@ -58,7 +60,8 @@ public:
 	float	HitRange;		// 타격 범위
 	float	MovePoint;		// 이동 포인트
 	float	HitPoint;		// 타격 포인트	
-	bool	bIsAttacking;	// 공격중인지	
+	bool	bIsAttacking;	// 공격중인지
+	int		ueLevel;
 
 private:
 	bool	bIsTracking;	// 추격중인지

@@ -13,6 +13,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "ClientSocket.h"
+#include "NetCharacter.h"
+#include "NetPlayerController.h"
 
 
 // Sets default values
@@ -351,9 +353,13 @@ void AATank::AttackCheck()
 			HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
 			
 			
-
-		
-			
+			// 플레이어 공격
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
+			}
 			Damaged();
 		}
 	}
