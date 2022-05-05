@@ -68,6 +68,9 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	// 몬스터 셋 송신, 수신
 	if (!UpdateMonster()) return;
 
+	// 몬스터 파괴
+	if (bIsNeedToDestroyMonster)
+		DestroyMonster();
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
 	{
@@ -489,13 +492,17 @@ void ANetPlayerController::DestroyMonster()
 
 		for (auto Actor : SpawnedMonsters)
 		{
-			AATank* Monster = Cast<AATank>(Actor);
-			if (Monster && Monster->Id == MonsterInfo->Id)
-			{
-				//[TODO] dead
-				//Monster->Dead();
-				break;
-			}
+			 AATank* Monster = Cast<AATank>(Actor);
+			 if (Monster && Monster->Id == MonsterInfo->Id)
+			 {
+				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				  Monster->Health = MonsterInfo->Health;
+				  if (Monster->Health <= 0) {
+			 			//[TODO] dead
+			 			//Monster->Dead();
+				  }
+			 	break;
+			 }
 		}
 
 		// 업데이트 후 초기화
@@ -526,7 +533,7 @@ bool ANetPlayerController::UpdateMonster()
 			if (isTankActionStart == false)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
-				//monster->StartAction();
+				monster->StartAction();
 			}
 			if (monster)
 			{
@@ -539,6 +546,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+				sendMonsterSet.monsters[monster->Id].Health = monster->Health;
 			}
 		}
 		isTankActionStart = true;

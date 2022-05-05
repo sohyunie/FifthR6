@@ -50,7 +50,7 @@ void Monster::HitPlayer(cCharacter& target)
 void Monster::Damaged(float damage)
 {
 	Health -= damage;
-	printf_s("맞음 남은 체력 : %f\n", Health);
+	printf_s("[%d]맞음 남은 체력 : %f\n", Id, Health);
 }
 
 bool Monster::IsAlive()

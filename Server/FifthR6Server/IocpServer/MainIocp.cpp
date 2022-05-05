@@ -290,7 +290,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
-	printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
+	//printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
 
 	// 캐릭터의 위치를 저장						
 	pinfo->SessionId = info.SessionId;
@@ -424,11 +424,11 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	// 몬스터 피격 처리
 	int MonsterId;
 	RecvStream >> MonsterId;
-	MonstersInfo.monsters[MonsterId].Damaged(30.f);
+	MonstersInfo.monsters[MonsterId].Damaged(0.2f);
 
-	printf_s("[INFO] (%d) HitMonster \n", MonsterId);
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
+		printf_s("[INFO] (%d) DESTROY_MONSTER \n", MonsterId);
 		stringstream SendStream;
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
@@ -436,6 +436,15 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		Broadcast(SendStream);
 
 		MonstersInfo.monsters.erase(MonsterId);
+	}
+	else
+	{
+		printf_s("[INFO] (%d) HIT_MONSTER \n", MonsterId);
+		stringstream SendStream;
+		SendStream << EPacketType::DESTROY_MONSTER << endl;
+		SendStream << MonstersInfo.monsters[MonsterId] << endl;
+
+		Broadcast(SendStream);
 	}
 }
 
@@ -448,6 +457,8 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
+	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
+	
 
 	Broadcast(SendStream);
 }
