@@ -20,6 +20,20 @@ UMyAnimInstance::UMyAnimInstance()
 	{
 		SAttackMontage = SATTACK_MONTAGE.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		TATTACK_MONTAGE(TEXT("/Game/MyCharacter/Animation/WarriorOfFire_TwoHand_Attack.WarriorOfFire_TwoHand_Attack"));
+	if (TATTACK_MONTAGE.Succeeded())
+	{
+		TAttackMontage = TATTACK_MONTAGE.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		DAMAGED_MONTAGE(TEXT("/Game/MyCharacter/Animation/WarriorOfFire_Damaging.WarriorOfFire_Damaging"));
+	if (DAMAGED_MONTAGE.Succeeded())
+	{
+		DamagedMontage = DAMAGED_MONTAGE.Object;
+	}
 }
 
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -50,10 +64,22 @@ void UMyAnimInstance::PlaySAttackMontage()
 	ABCHECK(!IsDead);
 	Montage_Play(SAttackMontage, 1.0f);
 	
+}
 
+void UMyAnimInstance::PlayTAttackMontage()
+{
+	ABCHECK(!IsDead);
+	Montage_Play(TAttackMontage, 1.0f);
 
 }
 
+void UMyAnimInstance::PlayDamagedMontage()
+{
+	//ABLOG(Warning, TEXT("Hey!!"));
+	//ABCHECK(!IsDead);
+	Montage_Play(DamagedMontage, 1.0f);
+
+}
 
 
 void UMyAnimInstance::JumpToAttackMontageSection(int32 NewSection)
@@ -64,9 +90,12 @@ void UMyAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("NewSection : %d "), NewSection));
 }
 
-void UMyAnimInstance::AnimNotify_P_Sparks()
+void UMyAnimInstance::JumpToTAttackMontageSection(int32 NewSection)
 {
-	
+	ABCHECK(!IsDead);
+	ABCHECK(Montage_IsPlaying(TAttackMontage));
+	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), TAttackMontage);
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("NewSection : %d "), NewSection));
 }
 
 void UMyAnimInstance::AnimNotify_AttackHitCheck()
@@ -79,6 +108,11 @@ void UMyAnimInstance::AnimNotify_SAttackHitCheck()
 	OnSAttackHitCheck.Broadcast();
 }
 
+void UMyAnimInstance::AnimNotify_TAttackHitCheck()
+{
+	OnTAttackHitCheck.Broadcast();
+}
+
 void UMyAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();
@@ -89,6 +123,16 @@ void UMyAnimInstance::AnimNotify_IsChecked()
 	OnIsChecked.Broadcast();
 }
 
+void UMyAnimInstance::AnimNotify_TNextAttackCheck()
+{
+	OnTNextAttackCheck.Broadcast();
+}
+
+void UMyAnimInstance::AnimNotify_TIsChecked()
+{
+	OnTIsChecked.Broadcast();
+}
+
 FName UMyAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Section : %d "), Section));
@@ -96,3 +140,9 @@ FName UMyAnimInstance::GetAttackMontageSectionName(int32 Section)
 	return FName(*FString::Printf(TEXT("Attack%d"), Section));
 }
 
+FName UMyAnimInstance::GetTAttackMontageSectionName(int32 Section)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Section : %d "), Section));
+	ABCHECK(FMath::IsWithinInclusive<int32>(Section, 1, 3), NAME_None);
+	return FName(*FString::Printf(TEXT("TAttack%d"), Section));
+}

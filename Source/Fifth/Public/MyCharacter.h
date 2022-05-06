@@ -33,8 +33,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		UStaticMeshComponent* Weapon;
+	
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UWarriorStatComponent* WarriorStat;
@@ -60,16 +59,27 @@ private:
 
 	void Attack();
 	void SAttack();
+	void TAttack();
+	void Damaged();
 
 	UFUNCTION()
 		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
 		void OnSAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		void OnTAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		void OnDamagedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void AttackStartComboState();
 	void AttackEndComboState();
+
+	void TAttackStartComboState();
+	void TAttackEndComboState();
+
 	void AttackCheck();
 	void SAttackCheck();
+	void TAttackCheck();
 
 	void OnAssetLoadCompleted();
 
@@ -80,13 +90,22 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		bool IsSAttacking;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = TAttack, Meta = (AllowPrivateAccess = true))
+		bool IsTAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Damage, Meta = (AllowPrivateAccess = true))
+		bool IsDamaging;
+
 	//강제 이동이 아닌 조건 성립 체크
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool beChecked;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = TAttack, Meta = (AllowPrivateAccess = true))
+		bool TbeChecked;
 	
+	double VelSum = 0.f;
+	double Velocity = 5.f;
 
-
-
+//OneHandComboAttack
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool CanNextCombo; 
 
@@ -98,6 +117,21 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		int32 MaxCombo;
+
+//TwoHandComboAttack
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool TCanNextCombo;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool TIsComboInputOn;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 TCurrentCombo;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 TMaxCombo;
+
+
 
 	UPROPERTY()
 		class UMyAnimInstance* MyAnim;

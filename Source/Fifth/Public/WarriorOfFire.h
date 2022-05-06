@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Fifth.h"
-#include "NetCharacter.h"
+#include "MyCharacter.h"
 #include "WarriorOfFire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FIFTH_API AWarriorOfFire : public ANetCharacter
+class FIFTH_API AWarriorOfFire : public AMyCharacter
 {
 	GENERATED_BODY()
 
@@ -18,7 +18,9 @@ public:
 	// Sets default values for this character's properties
 	AWarriorOfFire();
 
-	
+public:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 
 
 private:

@@ -6,6 +6,10 @@
 #include "ManStatComponent.h"
 #include "DrawDebugHelpers.h"
 #include "ManSetting.h"
+#include "MyPlayerController.h"
+#include "WarriorOfFire.h"
+#include "MyGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AManOfFire::AManOfFire()
@@ -25,12 +29,7 @@ AManOfFire::AManOfFire()
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
-	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> ManOfFire(TEXT
-	("/Game/MyCharacter/Characters/ManOfFire.ManOfFire"));
-	if (ManOfFire.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(ManOfFire.Object);
-	}*/
+	
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -55,6 +54,8 @@ AManOfFire::AManOfFire()
 
 	AttackRange = 200.0f;
 	AttackRadius = 50.0f;
+
+	//ChangePawn = false;
 }
 
 // Called when the game starts or when spawned
@@ -75,7 +76,7 @@ void AManOfFire::SetControlMode(int32 ControlMode)
 		SpringArm->bInheritPitch = true;
 		SpringArm->bInheritRoll = true;
 		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = true;
+		SpringArm->bDoCollisionTest = false;
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
@@ -108,6 +109,12 @@ void AManOfFire::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void AManOfFire::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	NewCon = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
+	ABCHECK(nullptr != NewCon);
+
+	MyGame = Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	ABCHECK(nullptr != MyGame);
+
 	ManAnim = Cast<UManAnimInstance>(GetMesh()->GetAnimInstance());
 	ABCHECK(nullptr != ManAnim);
 
@@ -183,6 +190,12 @@ void AManOfFire::Transform()
 	ManAnim->PlayTransformMontage();
 
 	IsTransforming = true;
+	//ChangePawn = true;
+
+	//AMyPlayerController* NewCon{};
+	APawn* Newpawn = Cast<APawn>(AWarriorOfFire::StaticClass());
+	NewCon->OnPossess(Newpawn);
+	
 	
 }
 

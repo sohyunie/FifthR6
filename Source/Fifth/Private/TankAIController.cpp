@@ -9,6 +9,7 @@
 const FName ATankAIController::HomePosKey(TEXT("HomePos"));
 const FName ATankAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName ATankAIController::TargetKey(TEXT("Target"));
+const FName ATankAIController::SelectAttackNumberKey(TEXT("SelectAttackNumber"));
 
 ATankAIController::ATankAIController()
 {

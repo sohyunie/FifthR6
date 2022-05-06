@@ -16,6 +16,18 @@ bool UTBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeComp
 	uint8* NodeMemory) const
 
 {
+	int x = 0;
+	x = FMath::RandRange(1, 100);
+
+	if (x <= 50)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(ATankAIController::SelectAttackNumberKey, 1);
+	}
+	else
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(ATankAIController::SelectAttackNumberKey, 2);
+	}
+
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
 	auto ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();

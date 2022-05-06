@@ -13,5 +13,18 @@ AWarriorOfThunder::AWarriorOfThunder()
 		GetMesh()->SetSkeletalMesh(WarriorOfThunder.Object);
 	}
 
+	FName WeaponSocket(TEXT("Bip-R-HandSocket"));
+	if (GetMesh()->DoesSocketExist(WeaponSocket))
+	{
+		Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WEAPON"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> WEAPON(TEXT
+		("/Game/MyCharacter/Weapons/ThunderSword.ThunderSword"));
+		if (WEAPON.Succeeded())
+		{
+			Weapon->SetStaticMesh(WEAPON.Object);
+		}
+
+		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+	}
 }
 
