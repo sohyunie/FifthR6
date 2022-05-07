@@ -457,7 +457,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	int MonsterId;
 	RecvStream >> MonsterId;
 
-	MonstersInfo.monsters[MonsterId].Damaged(0.2f);
+	//MonstersInfo.monsters[MonsterId].Damaged(0.2f);
 
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{

@@ -56,6 +56,8 @@ int ANetPlayerController::GetSessionId()
 
 bool ANetPlayerController::GetIsMaster()
 {
+	if (ci == nullptr)
+		return true;
 	return ci->players[SessionId].IsMaster;
 }
 
@@ -182,11 +184,11 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 
 void ANetPlayerController::HitMonster(const int& MonsterId)
 {
-	//UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	//if (ci!= nullptr && ci->players[SessionId].IsMaster)
-	//{
-	//	Socket->HitMonster(MonsterId);
-	//}
+	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
+	if (ci!= nullptr && ci->players[SessionId].IsMaster)
+	{
+		Socket->HitMonster(MonsterId);
+	}
 }
 
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
@@ -579,6 +581,7 @@ void ANetPlayerController::DestroyMonster()
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
 				  Monster->SetTankHpRatio(MonsterInfo->Health);
+				  Monster->PlayTakeDamageAnim();
 				  if (Monster->GetTankHpRatio() <= 0) {
 					  Monster->Destroy();
 			 			//[TODO] dead

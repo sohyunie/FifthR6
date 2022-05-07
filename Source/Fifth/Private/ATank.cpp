@@ -373,8 +373,7 @@ void AATank::PlayAttackAnim()
 
 void AATank::PlayTakeDamageAnim()
 {
-	//[TODO] Dead Anim으로 수정 필요
-	return ATAnim->PlayAttackMontage();
+	return ATAnim->PlayDamagedMontage();
 }
 
 void AATank::MoveToLocation(const FVector& dest)
