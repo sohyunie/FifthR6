@@ -363,6 +363,9 @@ void ANetCharacter::Attack()
 		ABCHECK(CurrentCombo == 0);
 		AttackStartComboState();
 		MyAnim->PlayAttackMontage();
+		bIsAttacking = true;
+		//[TODO] Action to server
+		
 		//beChecked = true;
 		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//강제 이동이 아닌 조건성립으로
 		IsAttacking = true;
@@ -566,7 +569,9 @@ void ANetCharacter::PlayTakeDamageAnim()
 
 bool ANetCharacter::GetIsAttacking()
 {
-	return bIsAttacking;
+	bool returnValue = bIsAttacking;
+	bIsAttacking = false;
+	return returnValue;
 }
 
 void ANetCharacter::UpdateHealth(float _healthValue)

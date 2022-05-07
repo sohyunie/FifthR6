@@ -301,18 +301,18 @@ bool ANetPlayerController::UpdateWorldInfo()
 			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
 
-			UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-			switch (PlayerInfos->players.size()) {
-			case 0:
-				WhoToSpawn = AWarriorOfFire::StaticClass();
-				break;
-			case 1:
-				WhoToSpawn = AWarriorOfFire::StaticClass();
-				break;
-			case 2:
-				WhoToSpawn = AWarriorOfFire::StaticClass();
-				break;
-			}
+			//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
+			//switch (PlayerInfos->players.size()) {
+			//case 0:
+			//	WhoToSpawn = AWarriorOfFire::StaticClass();
+			//	break;
+			//case 1:
+			//	WhoToSpawn = AWarriorOfFire::StaticClass();
+			//	break;
+			//case 2:
+			//	WhoToSpawn = AWarriorOfFire::StaticClass();
+			//	break;
+			//}
 
 			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
