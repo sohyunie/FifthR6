@@ -5,7 +5,11 @@
 #include "BossTankAnimInstance.h"
 #include "BossStatComponent.h"
 #include "DrawDebugHelpers.h"
+#include "MyGameInstance.h"
 #include "BossAIController.h"
+#include "ClientSocket.h"
+#include "NetCharacter.h"
+#include "NetPlayerController.h"
 
 // Sets default values
 ABossTank::ABossTank()
@@ -55,6 +59,10 @@ ABossTank::ABossTank()
 void ABossTank::BeginPlay()
 {
 	Super::BeginPlay();
+	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	Id = MyGameInstance->uniqueMonsterID++;
+
+	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 	
 }
 
@@ -361,15 +369,42 @@ void ABossTank::KickCheck()
 			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
 
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(BossStat->GetKick(), DamageEvent, GetController(), this);
-			//UParticleSystem* ElectricAttackBoomEffect =
-				//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-					//TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
-			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
-				//this->GetActorLocation());
+			HitResult.Actor->TakeDamage(BossStat->GetAttack(), DamageEvent, GetController(), this);
 
-			//ABLOG(Warning, TEXT("2Ok!!"));
+
+			// 플레이어 공격
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
+			}
 			Damaged();
 		}
 	}
+}
+
+void ABossTank::StartAction()
+{
+	//TankAIController->RunAI();
+}
+
+float ABossTank::GetTankHpRatio()
+{
+	return BossStat->GetHPRatio();
+}
+
+bool ABossTank::GetIsAttacking()
+{
+	return IsAttacking;
+}
+
+void ABossTank::PlayTakeDamageAnim()
+{
+	return BTAnim->PlayDamagedMontage();
+}
+
+void ABossTank::SetTankHpRatio(float ratio)
+{
+	return BossStat->SetHpRatio(ratio);
 }

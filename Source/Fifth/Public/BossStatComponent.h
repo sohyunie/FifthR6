@@ -28,6 +28,7 @@ public:
 	float GetAttack();
 	float GetKick();
 	float GetSkill();
+	float GetHPRatio();
 
 	FOnHPIsZeroDelegate OnHPIsZero;
 

@@ -78,3 +78,23 @@ float UBossStatComponent::GetSkill()
 	ABCHECK(nullptr != CurrentStatData, 0.0f);
 	return CurrentStatData->Skill;
 }
+
+float UBossStatComponent::GetHPRatio()
+{
+	ABCHECK(nullptr != CurrentStatData, 0.0f);
+
+	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
+}
+
+void UBossStatComponent::SetHpRatio(float ratio)
+{
+	float hp = CurrentStatData->MaxHP * ratio;
+	CurrentHP = hp;
+	OnHPChanged.Broadcast();
+
+	if (CurrentHP <= KINDA_SMALL_NUMBER)
+	{
+		CurrentHP = 0.0f;
+		OnHPIsZero.Broadcast();
+	}
+}

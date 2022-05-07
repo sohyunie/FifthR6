@@ -150,7 +150,7 @@ void AATank::SetTankState(ECharacterState NewState)
 
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-		//TankAIController->RunAI();
+		TankAIController->RunAI();
 
 		break;
 	}
@@ -394,12 +394,12 @@ float AATank::GetTankHpRatio()
 	return TankStat->GetHPRatio();
 }
 
-void AATank::SetTankHpRatio(float ratio)
-{
-	return TankStat->SetHpRatio(ratio);
-}
-
 bool AATank::GetIsAttacking()
 {
 	return IsAttacking;
+}
+
+void AATank::SetTankHpRatio(float ratio)
+{
+	return TankStat->SetHpRatio(ratio);
 }

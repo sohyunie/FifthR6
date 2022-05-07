@@ -7,6 +7,7 @@
 #include "WarriorOfThunder.h"
 #include "WarriorOfWater.h"
 #include "ATank.h"
+#include "BossTank.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
@@ -591,6 +592,26 @@ void ANetPlayerController::DestroyMonster()
 			 }
 		}
 
+		TArray<AActor*> BossMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
+		for (auto actor : BossMonsters)
+		{
+			ABossTank* Monster = Cast<ABossTank>(actor);
+			if (Monster && Monster->Id == MonsterInfo->Id)
+			{
+				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				//Monster->GetTankHpRatio() = MonsterInfo->Health;
+				Monster->SetTankHpRatio(MonsterInfo->Health);
+				Monster->PlayTakeDamageAnim();
+				if (Monster->GetTankHpRatio() <= 0) {
+					//Monster->Destroy();
+					  //[TODO] dead
+					  //Monster->Dead();
+				}
+				break;
+			}
+		}
+
 		// 업데이트 후 초기화
 		MonsterInfo = nullptr;
 		bIsNeedToDestroyMonster = false;
@@ -612,6 +633,34 @@ bool ANetPlayerController::UpdateMonster()
 
 		TArray<AActor*> SpawnedMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+
+
+		TArray<AActor*> BossMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
+		for (auto actor : BossMonsters)
+		{
+			ABossTank* monster = Cast<ABossTank>(actor);
+			if (isTankActionStart == false)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
+				monster->StartAction();
+			}
+			if (monster)
+			{
+				const auto& Location = monster->GetActorLocation();
+				const auto& Rotation = monster->GetActorRotation();
+				const auto& Velocity = monster->GetVelocity();
+
+
+				sendMonsterSet.monsters[monster->Id].X = Location.X;
+				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
+				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
+				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
+				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
+				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
+			}
+		}
 
 		for (auto actor : SpawnedMonsters)
 		{
