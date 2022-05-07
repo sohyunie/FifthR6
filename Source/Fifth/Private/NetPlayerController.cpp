@@ -593,10 +593,8 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci == nullptr)
 		return false;
 
-	UE_LOG(LogTemp, Warning, TEXT("what?"));
 	if (ci->players[SessionId].IsMaster)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("mci->players[SessionId].IsMaster"));
 		MonsterSet sendMonsterSet;
 
 		TArray<AActor*> SpawnedMonsters;
@@ -631,7 +629,6 @@ bool ANetPlayerController::UpdateMonster()
 
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("mci->players[SessionId].Is not Master"));
 		// 몬스터 업데이트
 		UpdateMonsterSet();
 		return true;
