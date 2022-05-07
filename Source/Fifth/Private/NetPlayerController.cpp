@@ -433,15 +433,16 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
 
+				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
 				switch (PlayerInfos->players.size()) {
 				case 0:
 					WhoToSpawn = AWarriorOfFire::StaticClass();
 					break;
 				case 1:
-					WhoToSpawn = AWarriorOfWater::StaticClass();
+					WhoToSpawn = AWarriorOfFire::StaticClass();
 					break;
 				case 2:
-					WhoToSpawn = AWarriorOfThunder::StaticClass();
+					WhoToSpawn = AWarriorOfFire::StaticClass();
 					break;
 				}
 

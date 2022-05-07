@@ -2,10 +2,10 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\FifthR6_2\Server\FifthR6Server\IocpServer\x64\Debug\PacketDll.dll</FullPath>
+      <FullPath>D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\PacketDll.dll</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\FifthR6_2\Server\FifthR6Server\IocpServer\x64\Debug\iocp-server.exe</FullPath>
+      <FullPath>D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\iocp-server.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
