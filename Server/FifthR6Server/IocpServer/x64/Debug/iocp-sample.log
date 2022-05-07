@@ -1,15 +1,4 @@
-﻿  stdafx.cpp
-  DBConnector.cpp
-  IocpBase.cpp
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(127,50): warning C4311: '형식 캐스트': 'stSOCKETINFO *'에서 'DWORD'(으)로 포인터가 잘립니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(127,50): warning C4302: '형식 캐스트': 'stSOCKETINFO *'에서 'DWORD'(으)로 잘립니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(173,56): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(173,56): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(208,56): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
-D:\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.cpp(208,56): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
-  MainIocp.cpp
+﻿  MainIocp.cpp
 D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
 D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(117,56): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
@@ -30,12 +19,4 @@ D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(337,11): message : 서�
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(376,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(403,51): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(421,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Monster.cpp
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
-  main.cpp
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
-D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(108): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
-  코드를 생성하고 있습니다...
-  LINK : D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\iocp-server.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
   iocp-sample.vcxproj -> D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\iocp-server.exe

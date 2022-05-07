@@ -114,4 +114,6 @@ private:
 	bool bIsNeedToDestroyMonster;
 	void DestroyMonster();
 	bool UpdateMonster();
+
+	int nPlayers;
 };

@@ -460,7 +460,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
-	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
+	//printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
 }
