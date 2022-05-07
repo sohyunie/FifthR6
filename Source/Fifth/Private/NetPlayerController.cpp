@@ -571,6 +571,7 @@ void ANetPlayerController::DestroyMonster()
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				  Monster->Health = MonsterInfo->Health;
 				  if (Monster->Health <= 0) {
+					  Monster->Destroy();
 			 			//[TODO] dead
 			 			//Monster->Dead();
 				  }
