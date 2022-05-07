@@ -17,5 +17,9 @@ class FIFTH_API AWarriorOfThunder : public AMyCharacter
 public:
 	// Sets default values for this character's properties
 	AWarriorOfThunder();
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 	
 };

@@ -2,6 +2,7 @@
 
 
 #include "Coffee.h"
+#include "Stone.h"
 
 // Sets default values
 ACoffee::ACoffee()
@@ -15,18 +16,20 @@ ACoffee::ACoffee()
 	RootComponent = Trigger;
 	Box->SetupAttachment(RootComponent);
 
-	Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));
+	Trigger->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Coffee(
-		TEXT("/Game/MyCharacter/Drugs/Coffee.Coffee"));
+		TEXT("/Game/Map/SM_Switch.SM_Switch"));
 	if (Coffee.Succeeded())
 	{
 		Box->SetStaticMesh(Coffee.Object);
 	}
 
-	Box->SetRelativeLocation(FVector(-7000.0f, 2800.0f, -930.0f));
+	Box->SetRelativeLocation(FVector(1030.0f, 9030.0f, 150.0f));
 
 	Trigger->SetCollisionProfileName(TEXT("Coffee"));
 	Box->SetCollisionProfileName(TEXT("NoCollision"));
+
+	
 }
 
 
@@ -43,13 +46,16 @@ void ACoffee::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ACoffee::OnCharacterOverlap);
+	ABLOG(Warning, TEXT("OVER"));
 }
 
 void ACoffee::OnCharacterOverlap(UPrimitiveComponent* OverlappedComp,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABLOG_S(Warning);
+	//ABLOG_S(Warning);
+
+	
 }
 
 // Called every frame

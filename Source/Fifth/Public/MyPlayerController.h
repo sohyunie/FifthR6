@@ -7,13 +7,13 @@
 #include "MyPlayerController.generated.h"
 
 /**
- *
+ * 
  */
 UCLASS()
 class FIFTH_API AMyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
+	
 public:
 	AMyPlayerController();
 
@@ -31,5 +31,8 @@ protected:
 private:
 	UPROPERTY()
 		class UMyHUDWidget* HUDWidget;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+		bool ChangePawn;
 
 };

@@ -17,5 +17,9 @@ class FIFTH_API AWarriorOfWater : public AMyCharacter
 public:
 	// Sets default values for this character's properties
 	AWarriorOfWater();
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 	
 };

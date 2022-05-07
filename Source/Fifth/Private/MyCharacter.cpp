@@ -45,11 +45,15 @@ AMyCharacter::AMyCharacter()
 	GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(100);
 
+	
+
 
 	SetControlMode(0);
 	IsAttacking = false;
 	IsSAttacking = false;
+	IsTAttacking = false;
 	MaxCombo = 3;
+	TMaxCombo = 4;
 	AttackEndComboState();
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MyCharacter"));
@@ -61,18 +65,6 @@ AMyCharacter::AMyCharacter()
 
 	AssetIndex = 2;
 
-	
-
-	/*CharacterAssetToLoad = DefaultSetting->WarriorAssets[AssetIndex];
-	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
-	ABCHECK(nullptr != MyGameInstance);
-	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
-		FStreamableDelegate::CreateUObject(this, &AMyCharacter::OnAssetLoadCompleted));
-
-	
-
-	SetActorHiddenInGame(true);
-	SetCanBeDamaged(false);*/
 
 	DeadTimer = 5.0f;
 }
@@ -127,7 +119,7 @@ void AMyCharacter::SetWarriorState(ECharacterState NewState)
 	{
 		DisableInput(MyPlayerController);
 
-		//MyPlayerController->GetHUDWidget()->BindCharacterStat(WarriorStat);
+		MyPlayerController->GetHUDWidget()->BindCharacterStat(WarriorStat);
 
 		auto MyPlayerState = Cast<AMyPlayerState>(GetPlayerState());
 		ABCHECK(nullptr != MyPlayerState);
@@ -148,7 +140,7 @@ void AMyCharacter::SetWarriorState(ECharacterState NewState)
 			});
 
 		SetControlMode(0);
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 		EnableInput(MyPlayerController);
 
 		break;
@@ -202,7 +194,7 @@ void AMyCharacter::SetControlMode(int32 ControlMode)
 		SpringArm->bInheritPitch = true;
 		SpringArm->bInheritRoll = true;
 		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = true;
+		SpringArm->bDoCollisionTest = false;
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
@@ -218,12 +210,23 @@ void AMyCharacter::Tick(float DeltaTime)
 	if (IsAttacking || IsSAttacking)
 	{
 		//ABLOG(Warning, TEXT("TICK"));
-		
-		//FVector MyCharacter = GetActorLocation() + (100.0f, 0.0f, 0.0f);
-		SetActorLocation(GetActorLocation() + GetControlRotation().Vector());
-		
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Player Location: %s"), *MyCharacter.ToString()));
+		if (VelSum >= 200.0f) {
+			Velocity = 0.0f;
+			//ABLOG(Warning, TEXT("111"));
+		}
+		else {
+			VelSum += Velocity*1.5f;
+			//ABLOG(Warning, TEXT("222"));
+		}
+		SetActorLocation(GetActorLocation() + GetControlRotation().Vector() * Velocity);
+
+
+	}
+	else {
+		Velocity = 20.0f;
+		VelSum = 0.f;
+		//ABLOG(Warning, TEXT("Vel3"));
 	}
 
 }
@@ -235,6 +238,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed,this, &AMyCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &AMyCharacter::SAttack);
+	PlayerInputComponent->BindAction(TEXT("TAttack"), EInputEvent::IE_Pressed, this, &AMyCharacter::TAttack);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMyCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::LeftRight);
@@ -251,8 +255,45 @@ void AMyCharacter::PostInitializeComponents()
 
 	MyAnim->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
 	MyAnim->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnSAttackMontageEnded);
+	MyAnim->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnTAttackMontageEnded);
+	MyAnim->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnDamagedMontageEnded);
 
+	MyAnim->OnTNextAttackCheck.AddLambda([this]()->void {
+		ABLOG(Warning, TEXT("OnTNextAttackCheck"));
+		TCanNextCombo = false;
+
+		if (TIsComboInputOn)
+		{
+			//ABLOG(Warning, TEXT("OnNextAttackCheck"));
+			TAttackStartComboState();
+			TbeChecked = true;
+			//MyAnim->JumpToAttackMontageSection(CurrentCombo);
+		}
+		
+		});
+
+	
+	MyAnim->OnTIsChecked.AddLambda([this]()->void {
+		ABLOG(Warning, TEXT("OnTIsChecked"));
+		//CanNextCombo = false;
+
+		if (TbeChecked)
+		{
+			ABLOG(Warning, TEXT("OnTbeChecked"));
+			//AttackStartComboState();
+			MyAnim->JumpToTAttackMontageSection(TCurrentCombo);
+			TbeChecked = false;
+		}
+		else {
+			StopAnimMontage();
+			ABLOG(Warning, TEXT("STOP"));
+		}
+		});
+	
+//------------------------------------------------------
 	MyAnim->OnNextAttackCheck.AddLambda([this]()->void {
+		
+
 		ABLOG(Warning, TEXT("OnNextAttackCheck"));
 		CanNextCombo = false;
 
@@ -263,10 +304,10 @@ void AMyCharacter::PostInitializeComponents()
 			beChecked = true;
 			//MyAnim->JumpToAttackMontageSection(CurrentCombo);
 		}
-		
+
 		});
 
-	
+
 	MyAnim->OnIsChecked.AddLambda([this]()->void {
 		ABLOG(Warning, TEXT("OnIsChecked"));
 		//CanNextCombo = false;
@@ -275,7 +316,10 @@ void AMyCharacter::PostInitializeComponents()
 		{
 			ABLOG(Warning, TEXT("OnbeChecked"));
 			//AttackStartComboState();
+			
 			MyAnim->JumpToAttackMontageSection(CurrentCombo);
+			Velocity = 50.0f;
+			VelSum = 0.f;
 			beChecked = false;
 		}
 		else {
@@ -284,8 +328,7 @@ void AMyCharacter::PostInitializeComponents()
 		}
 		});
 
-	
-
+//------------------------------------------------------------------------------
 
 	MyAnim->OnAttackHitCheck.AddUObject(this, &AMyCharacter::AttackCheck);
 	MyAnim->OnSAttackHitCheck.AddUObject(this, &AMyCharacter::SAttackCheck);
@@ -304,6 +347,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 
+	Damaged();
 	WarriorStat->SetDamage(FinalDamage);
 
 	return FinalDamage;
@@ -343,25 +387,52 @@ void AMyCharacter::Turn(float NewAxisValue)
 
 void AMyCharacter::Attack()
 {
-	if (IsAttacking)
-	{
-		
-
-		ABCHECK(FMath::IsWithinInclusive<int32>(CurrentCombo, 1, MaxCombo));
-		if (CanNextCombo)
+	if (IsDamaging == false) {
+		if (IsAttacking)
 		{
-			IsComboInputOn = true;
-			
+
+
+			ABCHECK(FMath::IsWithinInclusive<int32>(CurrentCombo, 1, MaxCombo));
+			if (CanNextCombo)
+			{
+				IsComboInputOn = true;
+
+			}
+		}
+		else
+		{
+			ABCHECK(CurrentCombo == 0);
+			AttackStartComboState();
+			MyAnim->PlayAttackMontage();
+			//beChecked = true;
+			//MyAnim->JumpToAttackMontageSection(CurrentCombo);//강제 이동이 아닌 조건성립으로
+			IsAttacking = true;
+		}
+	}
+
+}
+
+void AMyCharacter::TAttack()
+{
+	if (IsTAttacking)
+	{
+
+
+		ABCHECK(FMath::IsWithinInclusive<int32>(TCurrentCombo, 1, TMaxCombo));
+		if (TCanNextCombo)
+		{
+			TIsComboInputOn = true;
+
 		}
 	}
 	else
 	{
-		ABCHECK(CurrentCombo == 0);
-		AttackStartComboState();
-		MyAnim->PlayAttackMontage();
+		ABCHECK(TCurrentCombo == 0);
+		TAttackStartComboState();
+		MyAnim->PlayTAttackMontage();
 		//beChecked = true;
 		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//강제 이동이 아닌 조건성립으로
-		IsAttacking = true;
+		IsTAttacking = true;
 	}
 
 }
@@ -372,6 +443,15 @@ void AMyCharacter::SAttack()
 	
 	MyAnim->PlaySAttackMontage();
 	IsSAttacking = true;
+}
+
+void AMyCharacter::Damaged()
+{
+	if (IsDamaging) return;
+
+	MyAnim->PlayDamagedMontage();
+	IsDamaging = true;
+
 }
 
 void AMyCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -390,6 +470,25 @@ void AMyCharacter::OnSAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 	//AttackEndComboState();
 }
 
+void AMyCharacter::OnTAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//ABCHECK(IsAttacking);
+	//ABCHECK(CurrentCombo > 0);
+	IsTAttacking = false;
+	TAttackEndComboState();
+}
+
+void AMyCharacter::OnDamagedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//ABCHECK(IsDamaging);
+
+	//IsAttacking = false;
+	IsDamaging = false;
+
+	//OnAttackEnd.Broadcast();
+
+}
+
 void AMyCharacter::AttackStartComboState()
 {
 	CanNextCombo = true;
@@ -403,6 +502,21 @@ void AMyCharacter::AttackEndComboState()
 	IsComboInputOn = false;
 	CanNextCombo = false;
 	CurrentCombo = 0;
+}
+
+void AMyCharacter::TAttackStartComboState()
+{
+	TCanNextCombo = true;
+	TIsComboInputOn = false;
+	ABCHECK(FMath::IsWithinInclusive<int32>(TCurrentCombo, 0, TMaxCombo - 1));
+	TCurrentCombo = FMath::Clamp<int32>(TCurrentCombo + 1, 1, TMaxCombo);
+}
+
+void AMyCharacter::TAttackEndComboState()
+{
+	TIsComboInputOn = false;
+	TCanNextCombo = false;
+	TCurrentCombo = 0;
 }
 
 void AMyCharacter::AttackCheck()
@@ -450,6 +564,8 @@ void AMyCharacter::AttackCheck()
 			
 		
 			HitResult.Actor->TakeDamage(WarriorStat->GetAttack(), DamageEvent, GetController(), this);
+
+			Damaged();
 		}
 	}
 }
@@ -500,8 +616,59 @@ void AMyCharacter::SAttackCheck()
 			
 			HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
 			
+			Damaged();
 		}
 	}
 }
 
+void AMyCharacter::TAttackCheck()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * 200.0f,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(50.0f),
+		Params);
+
+	#if ENABLE_DRAW_DEBUG
+
+		FVector TraceVec = GetActorForwardVector() * AttackRange;
+		FVector Center = GetActorLocation() + TraceVec * 0.5f;
+		float HalfHeight = AttackRange * 0.5f + AttackRadius;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			AttackRadius,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
+
+	#endif
+
+
+	if (bResult)
+	{
+		if (HitResult.Actor.IsValid())
+		{
+			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+
+			FDamageEvent DamageEvent;
+
+
+
+			HitResult.Actor->TakeDamage(WarriorStat->GetAttack(), DamageEvent, GetController(), this);
+
+			Damaged();
+		}
+	}
+}
 

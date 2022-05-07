@@ -34,6 +34,9 @@ private:
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 			const FHitResult& SweepResult);
 
+	UPROPERTY()
+		bool on{false};
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
