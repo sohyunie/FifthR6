@@ -43,7 +43,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::LOGOUT_PLAYER].funcProcessPacket = LogoutCharacter;
 	fnProcess[EPacketType::HIT_MONSTER].funcProcessPacket = HitMonster;
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
-	fnProcess[EPacketType::SYNC_CUBE].funcProcessPacket = SyncMonster;
+	fnProcess[EPacketType::SYNC_CUBE].funcProcessPacket = SyncCube;
 }
 
 
