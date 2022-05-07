@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Fifth.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "WarriorOfWater.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FIFTH_API AWarriorOfWater : public AMyCharacter
+class FIFTH_API AWarriorOfWater : public ANetCharacter
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,8 @@ public:
 	AWarriorOfWater();
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		UStaticMeshComponent* Weapon;
+	// [TODO] 임시주석
+	//UPROPERTY(VisibleAnywhere, Category = Weapon)
+	//	UStaticMeshComponent* Weapon;
 	
 };
