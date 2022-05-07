@@ -187,6 +187,13 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 	if (ci_ != nullptr)
 	{
 		ci = ci_;
+		for (auto& player : ci->players)
+		{
+			if (player.second.IsAttacking)
+			{
+				attackSessionID = player.second.SessionId;
+			}
+		}
 	}
 
 }
@@ -322,11 +329,6 @@ bool ANetPlayerController::UpdateWorldInfo()
 		nPlayers = ci->players.size();
 	}
 	else {
-		for (auto& player : ci->players)
-		{
-			if(player.second.IsAttacking)
-				UE_LOG(LogClass, Log, TEXT("[%d] attack motion %s"), player.second.SessionId, player.second.IsAttacking ? "true" : "false");
-		}
 		for (auto& character : SpawnedCharacters)
 		{
 			ANetCharacter* OtherPlayer = Cast<ANetCharacter>(character);
@@ -354,10 +356,16 @@ bool ANetPlayerController::UpdateWorldInfo()
 				}
 
 				// 공격중일때 타격 애니메이션 플레이
-				if (info->IsAttacking)
-				{
+				//if (info->IsAttacking)
+				//{
+				//	UE_LOG(LogClass, Log, TEXT("Attack Motion"));
+				//	OtherPlayer->PlayAttackAnim();
+				//}
+
+				if (attackSessionID == info->SessionId) {
 					UE_LOG(LogClass, Log, TEXT("Attack Motion"));
 					OtherPlayer->PlayAttackAnim();
+					attackSessionID = -1;
 				}
 
 				FVector CharacterLocation;
