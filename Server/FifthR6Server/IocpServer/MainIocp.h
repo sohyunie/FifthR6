@@ -70,4 +70,5 @@ private:
 	static void BroadcastNewPlayer(cCharactersInfo & player, int UELevel);
 	// 캐릭터 정보를 버퍼에 기록
 	static void WriteCharactersInfoToSocket(stSOCKETINFO * pSocket);	
+	static void OtherBroadcast(stringstream& SendStream, int ueLevel, int sessionID);
 };

@@ -309,6 +309,9 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	pinfo->VZ = info.VZ;
 
 	pinfo->IsAttacking = info.IsAttacking;
+	if (pinfo->IsAttacking == true) {
+		cout << pinfo->SessionId << " Attack" << endl;
+	}
 	pinfo->UELevel = info.UELevel;
 	if (LevelMaster[info.UELevel] == pinfo->SessionId)
 	{
@@ -319,12 +322,37 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		pinfo->IsMaster = false;
 	}
 
+
+	stringstream SendStream;
+	// Á÷·ÄÈ­	
+	SendStream << EPacketType::RECV_PLAYER << endl;
+	SendStream << CharactersInfo << endl;
+
+	OtherBroadcast(SendStream, pinfo->UELevel, pinfo->SessionId);
+	pinfo->IsAttacking = false;
 	LeaveCriticalSection(&csPlayers);
-
-	WriteCharactersInfoToSocket(pSocket);
-	Send(pSocket);
+	//WriteCharactersInfoToSocket(pSocket);
+	//Send(pSocket);
 }
+void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int sessionID)
+{
+	stSOCKETINFO* client = new stSOCKETINFO;
+	for (const auto& kvp : SessionSocket)
+	{
+		if (CharactersInfo.players[kvp.first].UELevel == ueLevel) {
+			if (CharactersInfo.players[kvp.first].SessionId == sessionID)
+				continue;
+			if(CharactersInfo.players[sessionID].IsAttacking)
+				cout << CharactersInfo.players[kvp.first].SessionId << " by " << sessionID << " Attack" << endl;
+			client->socket = kvp.second;
+			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
+			client->dataBuf.buf = client->messageBuffer;
+			client->dataBuf.len = SendStream.str().length();
 
+			Send(client);
+		}
+	}
+}
 void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	int SessionId;
@@ -352,6 +380,7 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 		CharactersInfo.players[DamagedSessionId].IsAlive = false;
 	}
 	LeaveCriticalSection(&csPlayers);
+
 	WriteCharactersInfoToSocket(pSocket);
 	Send(pSocket);
 }
@@ -460,7 +489,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
-	//printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
+	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
 }

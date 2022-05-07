@@ -116,4 +116,5 @@ private:
 	bool UpdateMonster();
 
 	int nPlayers;
+	int attackSessionID;
 };
