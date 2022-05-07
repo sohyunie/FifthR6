@@ -583,7 +583,7 @@ void ANetPlayerController::DestroyMonster()
 				  Monster->SetTankHpRatio(MonsterInfo->Health);
 				  Monster->PlayTakeDamageAnim();
 				  if (Monster->GetTankHpRatio() <= 0) {
-					  Monster->Destroy();
+					  //Monster->Destroy();
 			 			//[TODO] dead
 			 			//Monster->Dead();
 				  }
@@ -634,6 +634,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
+				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
 			}
 		}
 		isTankActionStart = true;

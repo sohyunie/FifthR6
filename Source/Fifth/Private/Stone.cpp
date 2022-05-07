@@ -2,6 +2,7 @@
 
 
 #include "Stone.h"
+#include "NetPlayerController.h"
 
 
 // Sets default values
@@ -58,12 +59,18 @@ void AStone::MyOverlap(UPrimitiveComponent* OverlappedComp,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABLOG_S(Warning);
-	//SetActorLocation((FVector(-13.0f, -529.0f, -733.0f)));
-	SetActorLocation(GetActorLocation()+ (FVector(0.0f, 0.0f, 300.0f)));
-	
+	//ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	//PlayerController->SendSyncCube(true);
+	Action();
+
 }
 
+void AStone::Action() {
+
+	ABLOG_S(Warning);
+	//SetActorLocation((FVector(-13.0f, -529.0f, -733.0f)));
+	SetActorLocation(GetActorLocation() + (FVector(0.0f, 0.0f, 300.0f)));
+}
 
 	
 

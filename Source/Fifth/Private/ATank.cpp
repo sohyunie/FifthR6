@@ -398,3 +398,8 @@ void AATank::SetTankHpRatio(float ratio)
 {
 	return TankStat->SetHpRatio(ratio);
 }
+
+bool AATank::GetIsAttacking()
+{
+	return IsAttacking;
+}
