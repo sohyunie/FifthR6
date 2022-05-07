@@ -78,9 +78,6 @@ AATank::AATank()
 	HPBarWidget->SetHiddenInGame(true);
 	SetCanBeDamaged(false);
 
-	//auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
-	//Id = MyGameInstance->uniqueMonsterID++;
-
 	
 	DeadTimer = 5.0f;
 }
