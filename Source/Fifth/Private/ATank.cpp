@@ -240,20 +240,25 @@ void AATank::PostInitializeComponents()
 float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-	Damaged();
-	TankStat->SetDamage(FinalDamage);
+	// Health Sync 마스터에서 담당
+	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	if(PlayerController->GetIsMaster())
+	{
+		float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+		Damaged();
+		TankStat->SetDamage(FinalDamage);
 
-	ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
-	UNiagaraSystem* HitEffect =
-		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-			TEXT("/Game/Effect/Hit.Hit")));
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
-		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
-	
+		ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+		UNiagaraSystem* HitEffect =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/Effect/Hit.Hit")));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+		return FinalDamage;
+	}
 
-	return FinalDamage;
+	return 0.0f;
 }
 
 void AATank::PossessedBy(AController* NewController)

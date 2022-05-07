@@ -82,6 +82,7 @@ public:
 	void HitMonster(const int& MonsterId);
 	void RecvSyncCube(bool isOn);
 	void SendSyncCube(bool isOn);
+	bool GetIsMaster();
 
 private:
 	ClientSocket* Socket;			// 辑滚客 立加且 家南

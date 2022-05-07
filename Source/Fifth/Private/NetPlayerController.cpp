@@ -54,6 +54,11 @@ int ANetPlayerController::GetSessionId()
 	return SessionId;
 }
 
+bool ANetPlayerController::GetIsMaster()
+{
+	return ci->players[SessionId].IsMaster;
+}
+
 void ANetPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
