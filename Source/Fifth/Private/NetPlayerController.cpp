@@ -4,6 +4,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "MyHUDWidget.h"
 #include "WarriorOfFire.h"
+#include "WarriorOfThunder.h"
+#include "WarriorOfWater.h"
 #include "ATank.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
@@ -202,7 +204,7 @@ void ANetPlayerController::RecvNewPlayer(cCharactersInfo* NewPlayer_)
 	if (NewPlayer_ != nullptr)
 	{
 		bNewPlayerEntered = true;
-		NewPlayer = NewPlayer_;
+		PlayerInfos = NewPlayer_;
 	}
 }
 
@@ -404,7 +406,7 @@ void ANetPlayerController::UpdateNewPlayer()
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 
-	for (const auto& kvp : NewPlayer->players)
+	for (const auto& kvp : PlayerInfos->players)
 	{
 		if (kvp.first == SessionId)
 			continue;
@@ -430,6 +432,19 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
+
+				switch (PlayerInfos->players.size()) {
+				case 0:
+					WhoToSpawn = AWarriorOfFire::StaticClass();
+					break;
+				case 1:
+					WhoToSpawn = AWarriorOfWater::StaticClass();
+					break;
+				case 2:
+					WhoToSpawn = AWarriorOfThunder::StaticClass();
+					break;
+				}
+
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SetSessionId(player->SessionId);
@@ -438,7 +453,7 @@ void ANetPlayerController::UpdateNewPlayer()
 	}
 
 	bNewPlayerEntered = false;
-	NewPlayer = nullptr;
+	PlayerInfos = nullptr;
 }
 
 

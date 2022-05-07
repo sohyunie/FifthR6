@@ -100,7 +100,7 @@ private:
 
 	// 새 플레이어 입장
 	bool bNewPlayerEntered;
-	cCharactersInfo* NewPlayer;
+	cCharactersInfo* PlayerInfos;
 	void UpdateNewPlayer();
 
 
