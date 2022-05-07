@@ -26,7 +26,6 @@ public:
 	void MoveToLocation(const FVector& dest);
 	void StartAction();
 
-	float	Health;			// 체력
 	int		Id;				// 고유 id
 	bool isStartAction;
 
@@ -54,6 +53,9 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	void Attack();
 	void Damaged();
+
+	float GetTankHpRatio();
+	void SetTankHpRatio(float ratio);
 
 	FOnAttackEndDelegate OnAttackEnd;
 

@@ -109,7 +109,6 @@ void AATank::BeginPlay()
 	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	Id = MyGameInstance->uniqueMonsterID++;
-	Health = 1.0f;
 
 	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 	ABCHECK(nullptr != MyGameInstance);
@@ -364,7 +363,6 @@ void AATank::AttackCheck()
 
 void AATank::PlayAttackAnim()
 {
-	//[TODO] Dead Anim으로 수정 필요
 	return ATAnim->PlayAttackMontage();
 }
 
@@ -385,4 +383,14 @@ void AATank::MoveToLocation(const FVector& dest)
 void AATank::StartAction()
 {
 	TankAIController->RunAI();
+}
+
+float AATank::GetTankHpRatio()
+{
+	return TankStat->GetHPRatio();
+}
+
+void AATank::SetTankHpRatio(float ratio)
+{
+	return TankStat->SetHpRatio(ratio);
 }

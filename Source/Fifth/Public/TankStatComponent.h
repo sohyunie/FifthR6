@@ -27,6 +27,7 @@ public:
 	void SetNewLevel(int32 NewLevel);
 	void SetDamage(float NewDamage);
 	void SetHP(float NewHP);
+	void SetHpRatio(float NewHP);
 	float GetAttack();
 	float GetHPRatio();
 
