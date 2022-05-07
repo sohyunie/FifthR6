@@ -43,6 +43,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::LOGOUT_PLAYER].funcProcessPacket = LogoutCharacter;
 	fnProcess[EPacketType::HIT_MONSTER].funcProcessPacket = HitMonster;
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
+	fnProcess[EPacketType::SYNC_CUBE].funcProcessPacket = SyncMonster;
 }
 
 
@@ -492,4 +493,17 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
+}
+
+void MainIocp::SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	bool isOn;
+	RecvStream >> isOn;
+	stringstream SendStream;
+	SendStream << EPacketType::SYNC_CUBE << endl;
+	SendStream << isOn << endl;
+
+	printf_s("[INFO]Sync Cube");
+
+	Broadcast(SendStream, 1);
 }

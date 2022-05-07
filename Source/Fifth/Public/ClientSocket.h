@@ -114,6 +114,7 @@ enum EPacketType
 	ENTER_NEW_PLAYER,
 	HIT_MONSTER,
 	SYNC_MONSTER,
+	SYNC_CUBE,
 	DESTROY_MONSTER
 };
 
@@ -267,6 +268,7 @@ public:
 	// 몬스터 피격 처리
 	void HitMonster(const int& MonsterId);
 	void SendSyncMonster(MonsterSet& monsterSet);
+	void SendSyncCube(bool isOn);
 	// UDP 테스트용 함수
 	char* UdpTest();
 	//////////////////////////////////////////////////////////////////////////	

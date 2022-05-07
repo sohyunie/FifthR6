@@ -318,6 +318,13 @@ uint32 ClientSocket::Run()
 				PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
 			}
 			break;
+			case EPacketType::SYNC_CUBE:
+			{
+				bool isOn;
+				RecvStream >> isOn;
+				PlayerController->RecvSyncCube(isOn);
+			}
+			break;
 			case EPacketType::DESTROY_MONSTER:
 			{
 				PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
@@ -391,4 +398,25 @@ void ClientSocket::SendSyncMonster(MonsterSet& monsterSet)
 	int nSendLen = send(
 		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
 	);
+}
+
+
+void ClientSocket::SendSyncCube(bool isOn)
+{
+	UE_LOG(LogClass, Log, TEXT("Sync CUBE"));
+	// 캐릭터 정보 직렬화
+	stringstream SendStream;
+	// 요청 종류
+	SendStream << EPacketType::SYNC_CUBE << endl;;
+	SendStream << isOn;
+
+	// 캐릭터 정보 전송
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
 }

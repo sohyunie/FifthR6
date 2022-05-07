@@ -639,3 +639,14 @@ bool ANetPlayerController::UpdateMonster()
 		return true;
 	}
 }
+
+void ANetPlayerController::RecvSyncCube(bool isOn)
+{
+
+
+}
+
+void ANetPlayerController::SendSyncCube(bool isOn)
+{
+	Socket->SendSyncCube(isOn);
+}
