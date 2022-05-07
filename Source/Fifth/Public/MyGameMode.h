@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Fifth.h"
+#include "ClientSocket.h"
 #include "GameFramework/GameModeBase.h"
 #include "MyGameMode.generated.h"
 
@@ -18,5 +19,8 @@ public:
 	AMyGameMode();
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+private:
 
+	ClientSocket* Socket;
+	bool bIsConnected;
 };

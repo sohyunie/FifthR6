@@ -20,6 +20,17 @@ public:
 	void SetTankState(ECharacterState NewState);
 	ECharacterState GetTankState() const;
 
+	void PlayAttackAnim();
+	void PlayTakeDamageAnim();
+	// 몬스터를 위치로 이동
+	void MoveToLocation(const FVector& dest);
+	void StartAction();
+
+	float	Health;			// 체력
+	int		Id;				// 고유 id
+	bool isStartAction;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

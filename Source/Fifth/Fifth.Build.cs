@@ -6,9 +6,11 @@ public class Fifth : ModuleRules
 {
 	public Fifth(ReadOnlyTargetRules Target) : base(Target)
 	{
+		bEnableUndefinedIdentifierWarnings = false;
+
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "NavigationSystem", "AIModule", "GameplayTasks", "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "NavigationSystem", "AIModule", "GameplayTasks", "Niagara", "Slate", "SlateCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "FifthSetting" });
 

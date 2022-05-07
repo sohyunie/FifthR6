@@ -1,0 +1,19 @@
+﻿  stdafx.cpp
+  CommonClass.cpp
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(5,1): warning C4273: 'cCharacter::cCharacter': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(29,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(9,1): warning C4273: 'cCharacter::~cCharacter': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(30,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(13,1): warning C4273: 'cCharactersInfo::cCharactersInfo': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(84,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(17,1): warning C4273: 'cCharactersInfo::~cCharactersInfo': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(85,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(21,1): warning C4273: 'CommonClass::CommonClass': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(111,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.cpp(26,1): warning C4273: 'CommonClass::~CommonClass': dll 연결이 일치하지 않습니다.
+D:\TEST\SungminWorld-Server\PacketDll\CommonClass.h(112,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+  dllmain.cpp
+  PacketDll.cpp
+  코드를 생성하고 있습니다...
+     D:\TEST\SungminWorld-Server\IocpServer\Debug\PacketDll.lib 라이브러리 및 D:\TEST\SungminWorld-Server\IocpServer\Debug\PacketDll.exp 개체를 생성하고 있습니다.
+  PacketDll.vcxproj -> D:\TEST\SungminWorld-Server\IocpServer\Debug\PacketDll.dll
