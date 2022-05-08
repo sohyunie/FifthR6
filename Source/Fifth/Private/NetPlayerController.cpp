@@ -604,7 +604,7 @@ void ANetPlayerController::DestroyMonster()
 			{
 				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
-				Monster->SetTankHpRatio(MonsterInfo->Health);
+				//Monster->SetTankHpRatio(MonsterInfo->Health);
 				Monster->PlayTakeDamageAnim();
 				if (Monster->GetTankHpRatio() <= 0) {
 					//Monster->Destroy();
@@ -623,7 +623,7 @@ void ANetPlayerController::DestroyMonster()
 			 {
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
-				  Monster->SetTankHpRatio(MonsterInfo->Health);
+				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  Monster->PlayTakeDamageAnim();
 				  if (Monster->GetTankHpRatio() <= 0) {
 					  //Monster->Destroy();
@@ -649,6 +649,7 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci == nullptr)
 		return false;
 
+	UE_LOG(LogClass, Log, TEXT("[s]"), ci->players[SessionId].IsMaster ? "true" : "false");
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
