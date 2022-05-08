@@ -32,6 +32,7 @@ ANetPlayerController::ANetPlayerController()
 	WhoToSpawn = AWarriorOfFire::StaticClass();
 
 	// 임시 파티클
+	//[TODO] particle
 	DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
 		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 	HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
@@ -186,7 +187,7 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 void ANetPlayerController::HitMonster(const int& MonsterId)
 {
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci!= nullptr && ci->players[SessionId].IsMaster)
+	if (ci != nullptr && ci->players[SessionId].IsMaster)
 	{
 		Socket->HitMonster(MonsterId);
 	}
@@ -318,16 +319,16 @@ bool ANetPlayerController::UpdateWorldInfo()
 			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
 
-			//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
+			//UE_LOG(LogClass, Log, TEXT("Player size : %d"), PlayerInfos->players.size());
 			//switch (PlayerInfos->players.size()) {
 			//case 0:
 			//	WhoToSpawn = AWarriorOfFire::StaticClass();
 			//	break;
 			//case 1:
-			//	WhoToSpawn = AWarriorOfFire::StaticClass();
+			//	WhoToSpawn = AWarriorOfWater::StaticClass();
 			//	break;
 			//case 2:
-			//	WhoToSpawn = AWarriorOfFire::StaticClass();
+			//	WhoToSpawn = AWarriorOfThunder::StaticClass();
 			//	break;
 			//}
 
@@ -408,7 +409,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -500,18 +501,18 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
 
-				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-				switch (PlayerInfos->players.size()) {
-				case 0:
-					WhoToSpawn = AWarriorOfFire::StaticClass();
-					break;
-				case 1:
-					WhoToSpawn = AWarriorOfWater::StaticClass();
-					break;
-				case 2:
-					WhoToSpawn = AWarriorOfThunder::StaticClass();
-					break;
-				}
+				//UE_LOG(LogClass, Log, TEXT("Player size : %d"), PlayerInfos->players.size());
+				//switch (PlayerInfos->players.size()) {
+				//case 0:
+				//	WhoToSpawn = AWarriorOfFire::StaticClass();
+				//	break;
+				//case 1:
+				//	WhoToSpawn = AWarriorOfWater::StaticClass();
+				//	break;
+				//case 2:
+				//	WhoToSpawn = AWarriorOfThunder::StaticClass();
+				//	break;
+				//}
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
@@ -618,20 +619,20 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 		for (auto Actor : SpawnedMonsters)
 		{
-			 AATank* Monster = Cast<AATank>(Actor);
-			 if (Monster && Monster->Id == MonsterInfo->Id)
-			 {
-				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
-				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
-				  Monster->SetTankHpRatio(MonsterInfo->Health);
-				  Monster->PlayTakeDamageAnim();
-				  if (Monster->GetTankHpRatio() <= 0) {
-					  //Monster->Destroy();
-			 			//[TODO] dead
-			 			//Monster->Dead();
-				  }
-			 	break;
-			 }
+			AATank* Monster = Cast<AATank>(Actor);
+			if (Monster && Monster->Id == MonsterInfo->Id)
+			{
+				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				//Monster->GetTankHpRatio() = MonsterInfo->Health;
+				Monster->SetTankHpRatio(MonsterInfo->Health);
+				Monster->PlayTakeDamageAnim();
+				if (Monster->GetTankHpRatio() <= 0) {
+					//Monster->Destroy();
+					  //[TODO] dead
+					  //Monster->Dead();
+				}
+				break;
+			}
 		}
 
 		// 업데이트 후 초기화
