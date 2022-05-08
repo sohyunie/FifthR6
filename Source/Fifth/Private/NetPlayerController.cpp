@@ -186,11 +186,12 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 
 void ANetPlayerController::HitMonster(const int& MonsterId)
 {
-	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci != nullptr && ci->players[SessionId].IsMaster)
-	{
-		Socket->HitMonster(MonsterId);
-	}
+	//[잠시 주석]
+	//UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
+	//if (ci != nullptr && ci->players[SessionId].IsMaster)
+	//{
+	//	Socket->HitMonster(MonsterId);
+	//}
 }
 
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
