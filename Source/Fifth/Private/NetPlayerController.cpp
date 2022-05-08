@@ -32,7 +32,6 @@ ANetPlayerController::ANetPlayerController()
 	WhoToSpawn = AWarriorOfFire::StaticClass();
 
 	// 임시 파티클
-	//[TODO] particle
 	DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
 		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 	HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
@@ -59,7 +58,7 @@ int ANetPlayerController::GetSessionId()
 bool ANetPlayerController::GetIsMaster()
 {
 	if (ci == nullptr)
-		return false;
+		return true;
 	return ci->players[SessionId].IsMaster;
 }
 
@@ -187,10 +186,9 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 void ANetPlayerController::HitMonster(const int& MonsterId)
 {
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci != nullptr)
+	if (ci!= nullptr && ci->players[SessionId].IsMaster)
 	{
-		if(ci->players[SessionId].IsMaster)
-			Socket->HitMonster(MonsterId);
+		Socket->HitMonster(MonsterId);
 	}
 }
 
@@ -320,16 +318,16 @@ bool ANetPlayerController::UpdateWorldInfo()
 			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
 
-			//UE_LOG(LogClass, Log, TEXT("Player size : %d"), PlayerInfos->players.size());
+			//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
 			//switch (PlayerInfos->players.size()) {
 			//case 0:
 			//	WhoToSpawn = AWarriorOfFire::StaticClass();
 			//	break;
 			//case 1:
-			//	WhoToSpawn = AWarriorOfWater::StaticClass();
+			//	WhoToSpawn = AWarriorOfFire::StaticClass();
 			//	break;
 			//case 2:
-			//	WhoToSpawn = AWarriorOfThunder::StaticClass();
+			//	WhoToSpawn = AWarriorOfFire::StaticClass();
 			//	break;
 			//}
 
@@ -410,7 +408,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 		}
 	}
-
+	
 	return true;
 }
 
@@ -502,7 +500,7 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
 
-				//UE_LOG(LogClass, Log, TEXT("Player size : %d"), PlayerInfos->players.size());
+				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
 				//switch (PlayerInfos->players.size()) {
 				//case 0:
 				//	WhoToSpawn = AWarriorOfFire::StaticClass();
@@ -606,7 +604,7 @@ void ANetPlayerController::DestroyMonster()
 			{
 				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
-				Monster->SetTankHpRatio(MonsterInfo->Health);
+				//Monster->SetTankHpRatio(MonsterInfo->Health);
 				Monster->PlayTakeDamageAnim();
 				if (Monster->GetTankHpRatio() <= 0) {
 					//Monster->Destroy();
@@ -620,20 +618,20 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 		for (auto Actor : SpawnedMonsters)
 		{
-			AATank* Monster = Cast<AATank>(Actor);
-			if (Monster && Monster->Id == MonsterInfo->Id)
-			{
-				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
-				//Monster->GetTankHpRatio() = MonsterInfo->Health;
-				Monster->SetTankHpRatio(MonsterInfo->Health);
-				Monster->PlayTakeDamageAnim();
-				if (Monster->GetTankHpRatio() <= 0) {
-					//Monster->Destroy();
-					  //[TODO] dead
-					  //Monster->Dead();
-				}
-				break;
-			}
+			 AATank* Monster = Cast<AATank>(Actor);
+			 if (Monster && Monster->Id == MonsterInfo->Id)
+			 {
+				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
+				  //Monster->SetTankHpRatio(MonsterInfo->Health);
+				  Monster->PlayTakeDamageAnim();
+				  if (Monster->GetTankHpRatio() <= 0) {
+					  //Monster->Destroy();
+			 			//[TODO] dead
+			 			//Monster->Dead();
+				  }
+			 	break;
+			 }
 		}
 
 		// 업데이트 후 초기화
@@ -651,6 +649,7 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci == nullptr)
 		return false;
 
+	UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
