@@ -649,7 +649,7 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci == nullptr)
 		return false;
 
-	UE_LOG(LogClass, Log, TEXT("[s]"), ci->players[SessionId].IsMaster ? "true" : "false");
+	UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
