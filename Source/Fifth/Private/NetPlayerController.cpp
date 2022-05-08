@@ -59,7 +59,7 @@ int ANetPlayerController::GetSessionId()
 bool ANetPlayerController::GetIsMaster()
 {
 	if (ci == nullptr)
-		return true;
+		return false;
 	return ci->players[SessionId].IsMaster;
 }
 

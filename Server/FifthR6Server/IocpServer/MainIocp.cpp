@@ -462,7 +462,6 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	int MonsterId;
 	RecvStream >> MonsterId;
 
-	//MonstersInfo.monsters[MonsterId].Damaged(0.2f);
 
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
@@ -495,7 +494,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
-	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
+	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[25].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
 }
