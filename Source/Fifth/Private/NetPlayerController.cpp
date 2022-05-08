@@ -548,13 +548,25 @@ void ANetPlayerController::UpdateMonsterSet()
 			{
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 
-				FVector Location;
-				Location.X = monsterInfo->X;
-				Location.Y = monsterInfo->Y;
-				Location.Z = monsterInfo->Z;
+				FVector CharacterLocation;
+				CharacterLocation.X = monsterInfo->X;
+				CharacterLocation.Y = monsterInfo->Y;
+				CharacterLocation.Z = monsterInfo->Z;
+
+				FRotator CharacterRotation;
+				CharacterRotation.Yaw = monsterInfo->Yaw;
+				CharacterRotation.Pitch = monsterInfo->Pitch;
+				CharacterRotation.Roll = monsterInfo->Roll;
+
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
 
 				monster->SetTankHpRatio(monsterInfo->Health);
-				monster->MoveToLocation(Location);
+				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(CharacterRotation);
+				monster->SetActorLocation(CharacterLocation);
 
 				if (monsterInfo->IsAttacking)
 				{
@@ -572,13 +584,25 @@ void ANetPlayerController::UpdateMonsterSet()
 			{
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 
-				FVector Location;
-				Location.X = monsterInfo->X;
-				Location.Y = monsterInfo->Y;
-				Location.Z = monsterInfo->Z;
+				FVector CharacterLocation;
+				CharacterLocation.X = monsterInfo->X;
+				CharacterLocation.Y = monsterInfo->Y;
+				CharacterLocation.Z = monsterInfo->Z;
+
+				FRotator CharacterRotation;
+				CharacterRotation.Yaw = monsterInfo->Yaw;
+				CharacterRotation.Pitch = monsterInfo->Pitch;
+				CharacterRotation.Roll = monsterInfo->Roll;
+
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
 
 				monster->SetTankHpRatio(monsterInfo->Health);
-				monster->MoveToLocation(Location);
+				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(CharacterRotation);
+				monster->SetActorLocation(CharacterLocation);
 
 				if (monsterInfo->IsAttacking)
 				{
@@ -674,7 +698,13 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].X = Location.X;
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
+				sendMonsterSet.monsters[monster->Id].Yaw = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Z;
+				sendMonsterSet.monsters[monster->Id].VZ = monster->Id;
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
@@ -702,6 +732,12 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].X = Location.X;
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;

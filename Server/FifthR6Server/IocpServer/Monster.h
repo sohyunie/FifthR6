@@ -30,6 +30,12 @@ public:
 		stream << info.X << endl;
 		stream << info.Y << endl;
 		stream << info.Z << endl;
+		stream << info.Yaw << endl;
+		stream << info.Pitch << endl;
+		stream << info.Roll << endl;
+		stream << info.VX << endl;
+		stream << info.VY << endl;
+		stream << info.VZ << endl;
 		stream << info.Health << endl;
 		stream << info.Id << endl;
 		stream << info.bIsAttacking << endl;
@@ -43,6 +49,12 @@ public:
 		stream >> info.X;
 		stream >> info.Y;
 		stream >> info.Z;
+		stream >> info.Yaw;
+		stream >> info.Pitch;
+		stream >> info.Roll;
+		stream >> info.VX;
+		stream >> info.VY;
+		stream >> info.VZ;
 		stream >> info.Health;
 		stream >> info.Id;
 		stream >> info.bIsAttacking;
@@ -54,6 +66,12 @@ public:
 	float	X;				// XÁÂÇ¥
 	float	Y;				// YÁÂÇ¥
 	float	Z;				// ZÁÂÇ¥
+	float	Yaw;				// XÁÂÇ¥
+	float	Pitch;				// YÁÂÇ¥
+	float	Roll;				// ZÁÂÇ¥
+	float	VX;				// XÁÂÇ¥
+	float	VY;				// YÁÂÇ¥
+	float	VZ;				// ZÁÂÇ¥
 	float	Health;			// Ã¼·Â
 	int		Id;				// °íÀ¯ id
 	float	TraceRange;		// Ãß°Ý ¹üÀ§
