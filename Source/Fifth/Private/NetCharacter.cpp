@@ -465,15 +465,15 @@ void ANetCharacter::AttackCheck()
 			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
 			//}
-						// 마스터에서 담당
-			ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-			if (PlayerController->GetIsMaster())
+			
+			// 마스터에서 담당
+			if (NetPlayerController->GetIsMaster())
 			{
 				AATank* Monster = Cast<AATank>(HitResult.Actor);
 				if (Monster)
 				{
-					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-					PlayerController->HitMonster(Monster->Id);
+					//ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+					NetPlayerController->HitMonster(Monster->Id);
 				}
 			}
 		}

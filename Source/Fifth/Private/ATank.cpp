@@ -362,7 +362,6 @@ void AATank::AttackCheck()
 				ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
 				if (HitCharacter && HitCharacter->GetSessionId() != -1)
 				{
-					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 					PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
 				}
 				Damaged();
