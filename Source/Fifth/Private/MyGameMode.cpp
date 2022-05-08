@@ -20,7 +20,9 @@ AMyGameMode::AMyGameMode()
 	UE_LOG(LogClass, Log, TEXT("AMyGameMode!"));
 	Socket = ClientSocket::GetSingleton();
 	Socket->InitSocket();
-	bIsConnected = Socket->Connect("219.241.96.191", 8000); 
+	string ip_addr = "192.168.55.170";
+	UE_LOG(LogClass, Log, TEXT("server addr : [%s]"), ip_addr);
+	bIsConnected = Socket->Connect(ip_addr.c_str(), 8000);
 	if (bIsConnected)
 	{
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
