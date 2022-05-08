@@ -384,7 +384,8 @@ void AATank::PlayAttackAnim()
 
 void AATank::StartAction()
 {
-	TankAIController->RunAI();
+	SetTankState(ECharacterState::READY);
+	//TankAIController->RunAI();
 }
 
 float AATank::GetTankHpRatio()
