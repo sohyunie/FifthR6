@@ -470,7 +470,10 @@ void ANetCharacter::AttackCheck()
 			if (Monster)
 			{
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				NetPlayerController->HitMonster(Monster->Id);
+				if (PlayerController->GetIsMaster())
+				{
+					NetPlayerController->HitMonster(Monster->Id);
+				}
 			}
 		}
 	}

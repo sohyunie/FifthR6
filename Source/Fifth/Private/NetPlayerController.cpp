@@ -187,9 +187,10 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 void ANetPlayerController::HitMonster(const int& MonsterId)
 {
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci != nullptr && ci->players[SessionId].IsMaster)
+	if (ci != nullptr)
 	{
-		Socket->HitMonster(MonsterId);
+		if(ci->players[SessionId].IsMaster)
+			Socket->HitMonster(MonsterId);
 	}
 }
 
