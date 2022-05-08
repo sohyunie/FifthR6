@@ -501,17 +501,17 @@ void ANetPlayerController::UpdateNewPlayer()
 
 
 				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-				switch (PlayerInfos->players.size()) {
-				case 0:
-					WhoToSpawn = AWarriorOfFire::StaticClass();
-					break;
-				case 1:
-					WhoToSpawn = AWarriorOfWater::StaticClass();
-					break;
-				case 2:
-					WhoToSpawn = AWarriorOfThunder::StaticClass();
-					break;
-				}
+				//switch (PlayerInfos->players.size()) {
+				//case 0:
+				//	WhoToSpawn = AWarriorOfFire::StaticClass();
+				//	break;
+				//case 1:
+				//	WhoToSpawn = AWarriorOfWater::StaticClass();
+				//	break;
+				//case 2:
+				//	WhoToSpawn = AWarriorOfThunder::StaticClass();
+				//	break;
+				//}
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
