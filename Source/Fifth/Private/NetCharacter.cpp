@@ -521,15 +521,15 @@ void ANetCharacter::SAttackCheck()
 		//	HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
 		//}
 		// Netwrok Hit
-		if (HitResult.Actor.IsValid())
-		{
-			AATank* Monster = Cast<AATank>(HitResult.Actor);
-			if (Monster)
-			{
-				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitMonster(Monster->Id);
-			}
-		}
+		//if (HitResult.Actor.IsValid())
+		//{
+		//	AATank* Monster = Cast<AATank>(HitResult.Actor);
+		//	if (Monster)
+		//	{
+		//		ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+		//		PlayerController->HitMonster(Monster->Id);
+		//	}
+		//}
 	}
 }
 

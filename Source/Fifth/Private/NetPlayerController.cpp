@@ -32,10 +32,10 @@ ANetPlayerController::ANetPlayerController()
 	WhoToSpawn = AWarriorOfFire::StaticClass();
 
 	// 임시 파티클
-	DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
-	HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-		TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+	//DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+	//HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -357,9 +357,9 @@ bool ANetPlayerController::UpdateWorldInfo()
 					UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
 					// 피격 파티클 소환
 					FTransform transform(OtherPlayer->GetActorLocation());
-					UGameplayStatics::SpawnEmitterAtLocation(
-						world, HitEmiiter, transform, true
-					);
+					//UGameplayStatics::SpawnEmitterAtLocation(
+					//	world, HitEmiiter, transform, true
+					//);
 					// 피격 애니메이션 플레이
 					OtherPlayer->PlayTakeDamageAnim();
 					OtherPlayer->UpdateHealth(info->HealthValue);
@@ -442,9 +442,9 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 			//UE_LOG(LogClass, Log, TEXT("Player damaged : %f / %f"), tempPlayer->GetHealthValue(), info.HealthValue);
 			// 피격 파티클 스폰
 			FTransform transform(tempPlayer->GetActorLocation());
-			UGameplayStatics::SpawnEmitterAtLocation(
-				world, HitEmiiter, transform, true
-			);
+			//UGameplayStatics::SpawnEmitterAtLocation(
+			//	world, HitEmiiter, transform, true
+			//);
 			// 피격 애니메이션 스폰
 			tempPlayer->PlayTakeDamageAnim();
 			tempPlayer->UpdateHealth(info.HealthValue);
@@ -649,7 +649,7 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci == nullptr)
 		return false;
 
-	UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
+	//UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
