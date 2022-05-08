@@ -546,6 +546,8 @@ void ANetPlayerController::UpdateMonsterSet()
 			ABossTank* monster = Cast<ABossTank>(actor);
 			if (monster)
 			{
+				if (MonsterSetInfo == nullptr || MonsterSetInfo->monsters.count(monster->Id) == 0)
+					continue;
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 
 				FVector CharacterLocation;
@@ -582,6 +584,8 @@ void ANetPlayerController::UpdateMonsterSet()
 			AATank* monster = Cast<AATank>(actor);
 			if (monster)
 			{
+				if (MonsterSetInfo == nullptr || MonsterSetInfo->monsters.count(monster->Id) == 0)
+					continue;
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 
 				FVector CharacterLocation;
