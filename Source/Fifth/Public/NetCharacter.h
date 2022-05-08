@@ -47,6 +47,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere)
+		UPointLightComponent* PL;
 	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		//bool SAttackCheck{ false };
 
