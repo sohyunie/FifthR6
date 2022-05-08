@@ -347,25 +347,21 @@ void AATank::AttackCheck()
 	{
 		//ABLOG(Warning, TEXT("1Ok!!"));
 		if (HitResult.Actor.IsValid())
-		{	
-			// 마스터에서 담당
-			ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-			if (PlayerController->GetIsMaster())
+		{
+			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
+			
+			
+			// 플레이어 공격
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
 			{
-				ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-
-				FDamageEvent DamageEvent;
-				HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
-
-
-				// 플레이어 공격
-				ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
-				if (HitCharacter && HitCharacter->GetSessionId() != -1)
-				{
-					PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
-				}
-				Damaged();
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
 			}
+			Damaged();
 		}
 	}
 }
