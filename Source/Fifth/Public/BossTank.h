@@ -46,6 +46,9 @@ public:
 	bool GetIsAttacking();
 	void PlayTakeDamageAnim();
 	void SetTankHpRatio(float ratio);
+	void PlayAttackAnim();
+
+	void MoveToLocation(const FVector& dest);
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UBossStatComponent* BossStat;

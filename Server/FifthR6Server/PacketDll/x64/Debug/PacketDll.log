@@ -1,1 +1,16 @@
-﻿  PacketDll.vcxproj -> D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\PacketDll.dll
+﻿  CommonClass.cpp
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(109,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(109): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(5,1): warning C4273: 'cCharacter::cCharacter': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(35,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(9,1): warning C4273: 'cCharacter::~cCharacter': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(36,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(13,1): warning C4273: 'cCharactersInfo::cCharactersInfo': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(106,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(17,1): warning C4273: 'cCharactersInfo::~cCharactersInfo': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(107,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(21,1): warning C4273: 'CommonClass::CommonClass': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(145,2): message : '{ctor}'의 이전 정의를 참조하십시오.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(26,1): warning C4273: 'CommonClass::~CommonClass': dll 연결이 일치하지 않습니다.
+D:\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(146,3): message : '{dtor}'의 이전 정의를 참조하십시오.
+  PacketDll.vcxproj -> D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Debug\PacketDll.dll

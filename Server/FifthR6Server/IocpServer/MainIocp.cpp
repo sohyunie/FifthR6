@@ -361,6 +361,11 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	printf_s("[INFO] (%d)로그아웃 요청 수신\n", SessionId);
 	EnterCriticalSection(&csPlayers);
 	CharactersInfo.players[SessionId].IsAlive = false;
+	if (CharactersInfo.players[SessionId].IsMaster)
+	{
+		LevelMaster.erase(CharactersInfo.players[SessionId].UELevel);
+	}
+
 	LeaveCriticalSection(&csPlayers);
 	SessionSocket.erase(SessionId);
 	printf_s("[INFO] 클라이언트 수 : %d\n", SessionSocket.size());

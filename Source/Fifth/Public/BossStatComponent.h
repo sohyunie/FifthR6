@@ -29,6 +29,7 @@ public:
 	float GetKick();
 	float GetSkill();
 	float GetHPRatio();
+	void SetHpRatio(float ratio);
 
 	FOnHPIsZeroDelegate OnHPIsZero;
 

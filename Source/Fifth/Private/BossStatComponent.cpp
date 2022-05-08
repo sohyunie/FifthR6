@@ -90,7 +90,7 @@ void UBossStatComponent::SetHpRatio(float ratio)
 {
 	float hp = CurrentStatData->MaxHP * ratio;
 	CurrentHP = hp;
-	OnHPChanged.Broadcast();
+	//OnHPChanged.Broadcast(); // [TODO] OnHpChanged
 
 	if (CurrentHP <= KINDA_SMALL_NUMBER)
 	{

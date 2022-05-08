@@ -506,10 +506,10 @@ void ANetPlayerController::UpdateNewPlayer()
 					WhoToSpawn = AWarriorOfFire::StaticClass();
 					break;
 				case 1:
-					WhoToSpawn = AWarriorOfFire::StaticClass();
+					WhoToSpawn = AWarriorOfWater::StaticClass();
 					break;
 				case 2:
-					WhoToSpawn = AWarriorOfFire::StaticClass();
+					WhoToSpawn = AWarriorOfThunder::StaticClass();
 					break;
 				}
 
@@ -539,6 +539,29 @@ void ANetPlayerController::UpdateMonsterSet()
 	UWorld* const world = GetWorld();
 	if (world)
 	{
+		TArray<AActor*> BossMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
+		for (auto actor : BossMonsters)
+		{
+			ABossTank* monster = Cast<ABossTank>(actor);
+			if (monster)
+			{
+				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+
+				FVector Location;
+				Location.X = monsterInfo->X;
+				Location.Y = monsterInfo->Y;
+				Location.Z = monsterInfo->Z;
+
+				monster->SetTankHpRatio(monsterInfo->Health);
+				monster->MoveToLocation(Location);
+
+				if (monsterInfo->IsAttacking)
+				{
+					monster->PlayAttackAnim();
+				}
+			}
+		}
 		TArray<AActor*> SpawnedMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 
@@ -571,26 +594,6 @@ void ANetPlayerController::DestroyMonster()
 	if (world)
 	{
 		// 스폰된 몬스터에서 찾아 파괴
-		TArray<AActor*> SpawnedMonsters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
-
-		for (auto Actor : SpawnedMonsters)
-		{
-			 AATank* Monster = Cast<AATank>(Actor);
-			 if (Monster && Monster->Id == MonsterInfo->Id)
-			 {
-				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
-				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
-				  Monster->SetTankHpRatio(MonsterInfo->Health);
-				  Monster->PlayTakeDamageAnim();
-				  if (Monster->GetTankHpRatio() <= 0) {
-					  //Monster->Destroy();
-			 			//[TODO] dead
-			 			//Monster->Dead();
-				  }
-			 	break;
-			 }
-		}
 
 		TArray<AActor*> BossMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
@@ -611,6 +614,25 @@ void ANetPlayerController::DestroyMonster()
 				break;
 			}
 		}
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+		for (auto Actor : SpawnedMonsters)
+		{
+			 AATank* Monster = Cast<AATank>(Actor);
+			 if (Monster && Monster->Id == MonsterInfo->Id)
+			 {
+				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
+				  Monster->SetTankHpRatio(MonsterInfo->Health);
+				  Monster->PlayTakeDamageAnim();
+				  if (Monster->GetTankHpRatio() <= 0) {
+					  //Monster->Destroy();
+			 			//[TODO] dead
+			 			//Monster->Dead();
+				  }
+			 	break;
+			 }
+		}
 
 		// 업데이트 후 초기화
 		MonsterInfo = nullptr;
@@ -630,10 +652,6 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
-
-		TArray<AActor*> SpawnedMonsters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
-
 
 		TArray<AActor*> BossMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
@@ -662,6 +680,9 @@ bool ANetPlayerController::UpdateMonster()
 			}
 		}
 
+
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 		for (auto actor : SpawnedMonsters)
 		{
 			AATank* monster = Cast<AATank>(actor);

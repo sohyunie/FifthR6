@@ -408,3 +408,18 @@ void ABossTank::SetTankHpRatio(float ratio)
 {
 	return BossStat->SetHpRatio(ratio);
 }
+
+
+void ABossTank::MoveToLocation(const FVector& dest)
+{
+	// [TODO] boss 이동로직 필요
+	//if (BossAIController)
+	//{
+	//	BossAIController->MoveToLocation(dest);
+	//}
+}
+
+void ABossTank::PlayAttackAnim()
+{
+	return BTAnim->PlayAttackMontage();
+}

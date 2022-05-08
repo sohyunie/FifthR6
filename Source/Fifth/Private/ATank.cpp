@@ -366,11 +366,6 @@ void AATank::AttackCheck()
 	}
 }
 
-void AATank::PlayAttackAnim()
-{
-	return ATAnim->PlayAttackMontage();
-}
-
 void AATank::PlayTakeDamageAnim()
 {
 	return ATAnim->PlayDamagedMontage();
@@ -382,6 +377,11 @@ void AATank::MoveToLocation(const FVector& dest)
 	{
 		TankAIController->MoveToLocation(dest);
 	}
+}
+
+void AATank::PlayAttackAnim()
+{
+	return ATAnim->PlayAttackMontage();
 }
 
 void AATank::StartAction()
