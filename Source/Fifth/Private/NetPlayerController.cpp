@@ -188,10 +188,17 @@ bool ANetPlayerController::HitMonster(const int& MonsterId)
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
 	if (ci!= nullptr && ci->players[SessionId].IsMaster)
 	{
-		Socket->HitMonster(MonsterId);
-		return true;
+		if (ci->players[SessionId].IsMaster)
+		{
+			Socket->HitMonster(MonsterId);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	return false;
+	return false
 }
 
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
