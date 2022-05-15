@@ -159,6 +159,7 @@ void MainIocp::WorkerThread()
 			continue;
 		}
 
+
 		pSocketInfo->dataBuf.len = recvBytes;
 
 		if (recvBytes == 0)
