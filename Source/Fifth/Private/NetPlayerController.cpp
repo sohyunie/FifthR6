@@ -408,6 +408,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 			else
 			{
+				UE_LOG(LogClass, Log, TEXT("[%d] Die Info. %f"), info->SessionId, info->HealthValue, info->X);
 				UE_LOG(LogClass, Log, TEXT("other player dead."));
 				FTransform transform(character->GetActorLocation());
 				UGameplayStatics::SpawnEmitterAtLocation(
@@ -428,6 +429,7 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 
 	if (!info.IsAlive)
 	{
+		UE_LOG(LogClass, Log, TEXT("[%d] Die Info. %f"), info.SessionId, info.HealthValue, info.X);
 		UE_LOG(LogClass, Log, TEXT("Player Die"));
 		FTransform transform(tempPlayer->GetActorLocation());
 		UGameplayStatics::SpawnEmitterAtLocation(
