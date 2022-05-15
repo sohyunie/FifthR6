@@ -5,12 +5,13 @@
 #include <algorithm>
 #include <string>
 
-// static º¯¼ö ÃÊ±âÈ­
+// static ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 float MainIocp::HitPoint = 0.1f;
 map<int, SOCKET> MainIocp::SessionSocket;
 cCharactersInfo MainIocp::CharactersInfo;
 //DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
+CRITICAL_SECTION MainIocp::csMonsters;
 MonsterSet MainIocp::MonstersInfo;
 map<int, int> LevelMaster;
 
@@ -25,16 +26,16 @@ MainIocp::MainIocp()
 {	
 	InitializeCriticalSection(&csPlayers);
 
-	// DB Á¢¼Ó
+	// DB ï¿½ï¿½ï¿½ï¿½
 	//if (Conn.Connect(DB_ADDRESS, DB_ID, DB_PW, DB_SCHEMA, DB_PORT))
 	//{
-	//	printf_s("[INFO] DB Á¢¼Ó ¼º°ø\n");
+	//	printf_s("[INFO] DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n");
 	//}
 	//else {
-	//	printf_s("[ERROR] DB Á¢¼Ó ½ÇÆÐ\n");
+	//	printf_s("[ERROR] DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n");
 	//}
 
-	// ÆÐÅ¶ ÇÔ¼ö Æ÷ÀÎÅÍ¿¡ ÇÔ¼ö ÁöÁ¤
+	// ï¿½ï¿½Å¶ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 	fnProcess[EPacketType::LOGIN].funcProcessPacket = Login;
 	fnProcess[EPacketType::ENROLL_PLAYER].funcProcessPacket = EnrollCharacter;
 	fnProcess[EPacketType::SEND_PLAYER].funcProcessPacket = SyncCharacters;
@@ -49,9 +50,9 @@ MainIocp::MainIocp()
 
 MainIocp::~MainIocp()
 {
-	// winsock ÀÇ »ç¿ëÀ» ³¡³½´Ù
+	// winsock ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	WSACleanup();
-	// ´Ù »ç¿ëÇÑ °´Ã¼¸¦ »èÁ¦
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (SocketInfo)
 	{
 		delete[] SocketInfo;
@@ -64,23 +65,23 @@ MainIocp::~MainIocp()
 		hWorkerHandle = NULL;
 	}
 
-	// DB ¿¬°á Á¾·á
+	// DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//Conn.Close();
 }
 
 bool MainIocp::CreateWorkerThread()
 {
 	unsigned int threadId;
-	// ½Ã½ºÅÛ Á¤º¸ °¡Á®¿È
+	// ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	SYSTEM_INFO sysInfo;
 	GetSystemInfo(&sysInfo);
-	printf_s("[INFO] CPU °¹¼ö : %d\n", sysInfo.dwNumberOfProcessors);
-	// ÀûÀýÇÑ ÀÛ¾÷ ½º·¹µåÀÇ °¹¼ö´Â (CPU * 2) + 1
+	printf_s("[INFO] CPU ï¿½ï¿½ï¿½ï¿½ : %d\n", sysInfo.dwNumberOfProcessors);
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (CPU * 2) + 1
 	nThreadCnt = sysInfo.dwNumberOfProcessors * 2;
 
-	// thread handler ¼±¾ð
+	// thread handler ï¿½ï¿½ï¿½ï¿½
 	hWorkerHandle = new HANDLE[nThreadCnt];
-	// thread »ý¼º
+	// thread ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < nThreadCnt; i++)
 	{
 		hWorkerHandle[i] = (HANDLE *)_beginthreadex(
@@ -88,12 +89,12 @@ bool MainIocp::CreateWorkerThread()
 		);
 		if (hWorkerHandle[i] == NULL)
 		{
-			printf_s("[ERROR] Worker Thread »ý¼º ½ÇÆÐ\n");
+			printf_s("[ERROR] Worker Thread ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n");
 			return false;
 		}
 		ResumeThread(hWorkerHandle[i]);
 	}
-	printf_s("[INFO] Worker Thread ½ÃÀÛ...\n");
+	printf_s("[INFO] Worker Thread ï¿½ï¿½ï¿½ï¿½...\n");
 	return true;
 }
 
@@ -115,7 +116,7 @@ void MainIocp::Send(stSOCKETINFO * pSocket)
 
 	if (nResult == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING)
 	{
-		printf_s("[ERROR] WSASend ½ÇÆÐ : ", WSAGetLastError());
+		printf_s("[ERROR] WSASend ï¿½ï¿½ï¿½ï¿½ : ", WSAGetLastError());
 	}
 
 
@@ -123,15 +124,15 @@ void MainIocp::Send(stSOCKETINFO * pSocket)
 
 void MainIocp::WorkerThread()
 {
-	// ÇÔ¼ö È£Ãâ ¼º°ø ¿©ºÎ
+	// ï¿½Ô¼ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	BOOL	bResult;
 	int		nResult;
-	// Overlapped I/O ÀÛ¾÷¿¡¼­ Àü¼ÛµÈ µ¥ÀÌÅÍ Å©±â
+	// Overlapped I/O ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
 	DWORD	recvBytes;
 	DWORD	sendBytes;
-	// Completion Key¸¦ ¹ÞÀ» Æ÷ÀÎÅÍ º¯¼ö
+	// Completion Keyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	stSOCKETINFO *	pCompletionKey;
-	// I/O ÀÛ¾÷À» À§ÇØ ¿äÃ»ÇÑ Overlapped ±¸Á¶Ã¼¸¦ ¹ÞÀ» Æ÷ÀÎÅÍ	
+	// I/O ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Overlapped ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 	stSOCKETINFO *	pSocketInfo;	
 	DWORD	dwFlags = 0;
 	
@@ -139,20 +140,20 @@ void MainIocp::WorkerThread()
 	while (bWorkerThread)
 	{		
 		/**
-		 * ÀÌ ÇÔ¼ö·Î ÀÎÇØ ¾²·¹µåµéÀº WaitingThread Queue ¿¡ ´ë±â»óÅÂ·Î µé¾î°¡°Ô µÊ
-		 * ¿Ï·áµÈ Overlapped I/O ÀÛ¾÷ÀÌ ¹ß»ýÇÏ¸é IOCP Queue ¿¡¼­ ¿Ï·áµÈ ÀÛ¾÷À» °¡Á®¿Í
-		 * µÞÃ³¸®¸¦ ÇÔ
+		 * ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ WaitingThread Queue ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½î°¡ï¿½ï¿½ ï¿½ï¿½
+		 * ï¿½Ï·ï¿½ï¿½ Overlapped I/O ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¸ï¿½ IOCP Queue ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		 * ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		 */
 		bResult = GetQueuedCompletionStatus(hIOCP,
-			&recvBytes,				// ½ÇÁ¦·Î Àü¼ÛµÈ ¹ÙÀÌÆ®
+			&recvBytes,				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
 			(PULONG_PTR)&pCompletionKey,	// completion key
-			(LPOVERLAPPED *)&pSocketInfo,			// overlapped I/O °´Ã¼
-			INFINITE				// ´ë±âÇÒ ½Ã°£
+			(LPOVERLAPPED *)&pSocketInfo,			// overlapped I/O ï¿½ï¿½Ã¼
+			INFINITE				// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
 		);
 
 		if (!bResult && recvBytes == 0)
 		{
-			printf_s("[INFO] socket(%d) Á¢¼Ó ²÷±è\n", pSocketInfo->socket);
+			printf_s("[INFO] socket(%d) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n", pSocketInfo->socket);
 			closesocket(pSocketInfo->socket);
 			free(pSocketInfo);
 			continue;
@@ -169,30 +170,30 @@ void MainIocp::WorkerThread()
 
 		try
 		{		
-			// ÆÐÅ¶ Á¾·ù
+			// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 			int PacketType;
-			// Å¬¶óÀÌ¾ðÆ® Á¤º¸ ¿ªÁ÷·ÄÈ­
+			// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­
 			stringstream RecvStream;
 
 			RecvStream << pSocketInfo->dataBuf.buf;
 			RecvStream >> PacketType;
 
-			// ÆÐÅ¶ Ã³¸®
+			// ï¿½ï¿½Å¶ Ã³ï¿½ï¿½
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
 			{
 				fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
 			}
 			else
 			{
-				printf_s("[ERROR] Á¤ÀÇ µÇÁö ¾ÊÀº ÆÐÅ¶ : %d\n", PacketType);
+				printf_s("[ERROR] ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ : %d\n", PacketType);
 			}
 		}
 		catch (const std::exception& e)
 		{
-			printf_s("[ERROR] ¾Ë ¼ö ¾ø´Â ¿¹¿Ü ¹ß»ý : %s\n", e.what());
+			printf_s("[ERROR] ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ : %s\n", e.what());
 		}
 		
-		// Å¬¶óÀÌ¾ðÆ® ´ë±â
+		// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½
 		Recv(pSocketInfo);
 	}
 }
@@ -205,7 +206,7 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	RecvStream >> Id;
 	RecvStream >> Pw;
 
-	printf_s("[INFO] ·Î±×ÀÎ ½Ãµµ {%s}/{%s}\n", Id, Pw);
+	printf_s("[INFO] ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ãµï¿½ {%s}/{%s}\n", Id, Pw);
 
 	stringstream SendStream;
 	SendStream << EPacketType::LOGIN << endl;
@@ -225,37 +226,37 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 
 	printf_s(RecvStream.str().c_str());
 
-	printf_s("[INFO][%d]Ä³¸¯ÅÍ µî·Ï - X : [%f], Y : [%f], Z : [%f], Yaw : [%f], Alive : [%d], Health : [%f], UELevel : [%d]\n",
+	printf_s("[INFO][%d]Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ - X : [%f], Y : [%f], Z : [%f], Yaw : [%f], Alive : [%d], Health : [%f], UELevel : [%d]\n",
 		info.SessionId, info.X, info.Y, info.Z, info.Yaw, info.IsAlive, info.HealthValue, info.UELevel);
 
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter* pinfo = &CharactersInfo.players[info.SessionId];
 
-	// Ä³¸¯ÅÍÀÇ À§Ä¡¸¦ ÀúÀå						
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½						
 	pinfo->SessionId = info.SessionId;
 	pinfo->X = info.X;
 	pinfo->Y = info.Y;
 	pinfo->Z = info.Z;
 
-	// Ä³¸¯ÅÍÀÇ È¸Àü°ªÀ» ÀúÀå
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	pinfo->Yaw = info.Yaw;
 	pinfo->Pitch = info.Pitch;
 	pinfo->Roll = info.Roll;
 
-	// Ä³¸¯ÅÍÀÇ ¼Óµµ¸¦ ÀúÀå
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	pinfo->VX = info.VX;
 	pinfo->VY = info.VY;
 	pinfo->VZ = info.VZ;
 
-	// Ä³¸¯ÅÍ ¼Ó¼º
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½
 	pinfo->IsAlive = info.IsAlive;
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 
 	if (LevelMaster.find(info.UELevel) == LevelMaster.end())
 	{
-		printf_s("³ª´Â ¸¶½ºÅÍ¾ß : %d\n", info.SessionId);
+		printf_s("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¾ï¿½ : %d\n", info.SessionId);
 
 		LevelMaster[info.UELevel] = info.SessionId;
 		pinfo->IsMaster = true;
@@ -271,14 +272,14 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 		}
 	}
 
-	LeaveCriticalSection(&csPlayers);
 
 	SessionSocket[info.SessionId] = pSocket->socket;
 
-	printf_s("[INFO] Å¬¶óÀÌ¾ðÆ® ¼ö : %d\n", SessionSocket.size());
+	printf_s("[INFO] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ : %d\n", SessionSocket.size());
 
 	//Send(pSocket);
 	BroadcastNewPlayer(CharactersInfo, info.UELevel);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
@@ -286,25 +287,23 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	cCharacter info;
 	RecvStream >> info;
 
-	 	//printf_s("[INFO][%d]Á¤º¸ ¼ö½Å - %d\n",
-	 	//	info.SessionId, info.UELevel);
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
 	//printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
 
-	// Ä³¸¯ÅÍÀÇ À§Ä¡¸¦ ÀúÀå						
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½						
 	pinfo->SessionId = info.SessionId;
 	pinfo->X = info.X;
 	pinfo->Y = info.Y;
 	pinfo->Z = info.Z;
 
-	// Ä³¸¯ÅÍÀÇ È¸Àü°ªÀ» ÀúÀå
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	pinfo->Yaw = info.Yaw;
 	pinfo->Pitch = info.Pitch;
 	pinfo->Roll = info.Roll;
 
-	// Ä³¸¯ÅÍÀÇ ¼Óµµ¸¦ ÀúÀå
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	pinfo->VX = info.VX;
 	pinfo->VY = info.VY;
 	pinfo->VZ = info.VZ;
@@ -325,7 +324,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 
 	stringstream SendStream;
-	// Á÷·ÄÈ­	
+	// ï¿½ï¿½ï¿½ï¿½È­	
 	SendStream << EPacketType::RECV_PLAYER << endl;
 	SendStream << CharactersInfo << endl;
 
@@ -350,6 +349,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int session
 			client->dataBuf.buf = client->messageBuffer;
 			client->dataBuf.len = SendStream.str().length();
 
+			printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
 			Send(client);
 		}
 	}
@@ -358,7 +358,7 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	int SessionId;
 	RecvStream >> SessionId;
-	printf_s("[INFO] (%d)·Î±×¾Æ¿ô ¿äÃ» ¼ö½Å\n", SessionId);
+	printf_s("[INFO] (%d)ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½\n", SessionId);
 	EnterCriticalSection(&csPlayers);
 	CharactersInfo.players[SessionId].IsAlive = false;
 	if (CharactersInfo.players[SessionId].IsMaster)
@@ -366,29 +366,30 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		LevelMaster.erase(CharactersInfo.players[SessionId].UELevel);
 	}
 
-	LeaveCriticalSection(&csPlayers);
 	SessionSocket.erase(SessionId);
-	printf_s("[INFO] Å¬¶óÀÌ¾ðÆ® ¼ö : %d\n", SessionSocket.size());
+	printf_s("[INFO] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ : %d\n", SessionSocket.size());
 	WriteCharactersInfoToSocket(pSocket);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 {
-	// ÇÇ°Ý Ã³¸®µÈ ¼¼¼Ç ¾ÆÀÌµð
+	// ï¿½Ç°ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
 	int DamagedSessionId;
 	RecvStream >> DamagedSessionId;
-	printf_s("[INFO] %d µ¥¹ÌÁö ¹ÞÀ½ \n", DamagedSessionId);
+	printf_s("[INFO] %d ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ \n", DamagedSessionId);
 	EnterCriticalSection(&csPlayers);
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
-		// Ä³¸¯ÅÍ »ç¸ÁÃ³¸®
+		printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);
+		// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
 		CharactersInfo.players[DamagedSessionId].IsAlive = false;
 	}
-	LeaveCriticalSection(&csPlayers);
 
 	WriteCharactersInfoToSocket(pSocket);
 	Send(pSocket);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::BroadcastChat(stringstream& RecvStream, stSOCKETINFO* pSocket)
@@ -446,11 +447,11 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 {
 	stringstream SendStream;
 
-	// Á÷·ÄÈ­	
+	// ï¿½ï¿½ï¿½ï¿½È­	
 	SendStream << EPacketType::RECV_PLAYER << endl;
 	SendStream << CharactersInfo << endl;
 
-	// !!! Áß¿ä !!! data.buf ¿¡´Ù Á÷Á¢ µ¥ÀÌÅÍ¸¦ ¾²¸é ¾²·¹±â°ªÀÌ Àü´ÞµÉ ¼ö ÀÖÀ½
+	// !!! ï¿½ß¿ï¿½ !!! data.buf ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½â°ªï¿½ï¿½ ï¿½ï¿½ï¿½Þµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();
@@ -458,11 +459,12 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 
 void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
-	// ¸ó½ºÅÍ ÇÇ°Ý Ã³¸®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ Ã³ï¿½ï¿½
 	int MonsterId;
 	RecvStream >> MonsterId;
 
 
+	InitializeCriticalSection(&csMonsters);
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
 		printf_s("[INFO] (%d) DESTROY_MONSTER \n", MonsterId);
@@ -483,10 +485,12 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
 	}
+	LeaveCriticalSection(&csMonsters);
 }
 
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
+	InitializeCriticalSection(&csMonsters);
 	MonsterSet monsterSet;
 	RecvStream >> monsterSet;
 	stringstream SendStream;
@@ -494,9 +498,10 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
-	printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[25].Health);
+	//printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
+	LeaveCriticalSection(&csMonsters);
 }
 
 void MainIocp::SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket)

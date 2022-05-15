@@ -23,7 +23,7 @@
     <ProjectGuid>{68A2324D-1E4F-43AC-A462-42FEBC23DE37}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>iocpsample</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>iocp-server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -79,17 +79,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\lsm_o\Documents\Unreal Projects\SungminWorld\SungminWorld-Server\PacketDll;$(IncludePath)</IncludePath>
+    <IncludePath>E:\FifthR6\Server\FifthR6Server\PacketDll;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
-    <PublicIncludeDirectories>D:\FifthR6\Server\FifthR6Server\PacketDll;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>E:\FifthR6\Server\FifthR6Server\PacketDll;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files\MySQL\MySQL Server 5.7\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <ReferencePath>C:\Program Files\MySQL\MySQL Server 5.7\lib;$(ReferencePath)</ReferencePath>
+    <IncludePath>C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll</IncludePath>
+    <ReferencePath>
+    </ReferencePath>
+    <PublicIncludeDirectories>C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,13 +116,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\FifthR6\Server\FifthR6Server\PacketDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\FifthR6\Server\FifthR6Server\PacketDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\FifthR6\Server\FifthR6Server\PacketDll</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\FifthR6\Server\FifthR6Server\PacketDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

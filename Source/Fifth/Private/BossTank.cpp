@@ -10,6 +10,8 @@
 #include "ClientSocket.h"
 #include "NetCharacter.h"
 #include "NetPlayerController.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 ABossTank::ABossTank()
@@ -118,12 +120,17 @@ void ABossTank::PostInitializeComponents()
 float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	ABLOG(Warning, TEXT("BOSSDAMAGED"));
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 	Damaged();
 	BossStat->SetDamage(FinalDamage);
 
-
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+		this->GetActorLocation() + FVector(100.0f, 20.0f, 0.0f), this->GetActorRotation());
 
 	return FinalDamage;
 }
@@ -369,10 +376,14 @@ void ABossTank::KickCheck()
 			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
 
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(BossStat->GetAttack(), DamageEvent, GetController(), this);
+			HitResult.Actor->TakeDamage(BossStat->GetKick(), DamageEvent, GetController(), this);
+			//UParticleSystem* ElectricAttackBoomEffect =
+				//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+					//TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
+				//this->GetActorLocation());
 
-
-			// ÇÃ·¹ÀÌ¾î °ø°Ý
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
 			if (HitCharacter && HitCharacter->GetSessionId() != -1)
 			{
@@ -412,7 +423,7 @@ void ABossTank::SetTankHpRatio(float ratio)
 
 void ABossTank::MoveToLocation(const FVector& dest)
 {
-	// [TODO] boss ÀÌµ¿·ÎÁ÷ ÇÊ¿ä
+	// [TODO] boss ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 	//if (BossAIController)
 	//{
 	//	BossAIController->MoveToLocation(dest);

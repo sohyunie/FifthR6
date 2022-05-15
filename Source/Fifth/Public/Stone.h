@@ -23,7 +23,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void Action();
 
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* Body;
@@ -43,6 +42,8 @@ private:
 	UFUNCTION() void MyOverlap(UPrimitiveComponent* OverlappedComp, 
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	bool TriggerON = false ;
 
 
 };

@@ -2,10 +2,10 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.dll</FullPath>
+      <FullPath>C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.dll</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\iocp-server.exe</FullPath>
+      <FullPath>C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\iocp-server.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

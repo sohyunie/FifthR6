@@ -32,7 +32,9 @@ ANetCharacter::ANetCharacter()
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
-
+	PL = CreateDefaultSubobject<UPointLightComponent>(TEXT("PL"));
+	PL->SetupAttachment(GetCapsuleComponent());
+	PL->AddRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -152,7 +154,7 @@ void ANetCharacter::SetWarriorState(ECharacterState NewState)
 			});
 
 		SetControlMode(0);
-		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 		EnableInput(NetPlayerController);
 
 		break;
@@ -367,7 +369,7 @@ void ANetCharacter::Attack()
 		//[TODO] Action to server
 		
 		//beChecked = true;
-		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//°­Á¦ ÀÌµ¿ÀÌ ¾Æ´Ñ Á¶°Ç¼º¸³À¸·Î
+		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		IsAttacking = true;
 	}
 
@@ -448,31 +450,19 @@ void ANetCharacter::AttackCheck()
 
 	if (bResult)
 	{
-		// ±âÁ¸ Hit
 		if (HitResult.Actor.IsValid())
 		{
-			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-			FDamageEvent DamageEvent;
-
-			HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
-		}
-
-		if (HitResult.Actor.IsValid())
-		{
-			//ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			//if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
-			//{
-			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
-			//}
-
 			AATank* Monster = Cast<AATank>(HitResult.Actor);
 			if (Monster)
 			{
+				// ï¿½Ç°Ý´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				if (PlayerController->GetIsMaster())
-				{
-					NetPlayerController->HitMonster(Monster->Id);
+				bool isMaster = PlayerController->HitMonster(Monster->Id);
+				if (isMaster) {
+					ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+					FDamageEvent DamageEvent;
+
+					HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
 				}
 			}
 		}
@@ -516,7 +506,7 @@ void ANetCharacter::SAttackCheck()
 
 	if (bResult)
 	{
-		// ±âÁ¸ Hit
+		// ï¿½ï¿½ï¿½ï¿½ Hit
 		//if (HitResult.Actor.IsValid())
 		//{
 		//	ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
@@ -525,15 +515,15 @@ void ANetCharacter::SAttackCheck()
 		//	HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
 		//}
 		// Netwrok Hit
-		if (HitResult.Actor.IsValid())
-		{
-			AATank* Monster = Cast<AATank>(HitResult.Actor);
-			if (Monster)
-			{
-				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitMonster(Monster->Id);
-			}
-		}
+		//if (HitResult.Actor.IsValid())
+		//{
+		//	AATank* Monster = Cast<AATank>(HitResult.Actor);
+		//	if (Monster)
+		//	{
+		//		ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+		//		PlayerController->HitMonster(Monster->Id);
+		//	}
+		//}
 	}
 }
 
@@ -566,7 +556,7 @@ void ANetCharacter::PlayAttackAnim()
 
 void ANetCharacter::PlayTakeDamageAnim()
 {
-	//[TODO] Dead AnimÀ¸·Î ¼öÁ¤ ÇÊ¿ä
+	//[TODO] Dead Animï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 	return MyAnim->PlayAttackMontage();
 }
 

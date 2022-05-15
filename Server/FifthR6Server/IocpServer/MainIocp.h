@@ -43,6 +43,7 @@ private:
 	static float			HitPoint;		// 타격 데미지
 	//static DBConnector 	Conn;			// DB 커넥터
 	static CRITICAL_SECTION csPlayers;		// CharactersInfo 임계영역
+	static CRITICAL_SECTION csMonsters;		// CharactersInfo 임계영역
 	static MonsterSet		MonstersInfo;	// 몬스터 집합 정보
 
 	FuncProcess fnProcess[100];

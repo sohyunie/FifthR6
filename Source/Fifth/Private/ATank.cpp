@@ -110,8 +110,6 @@ void AATank::BeginPlay()
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	Id = MyGameInstance->uniqueMonsterID++;
 
-	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
-	ABCHECK(nullptr != MyGameInstance);
 	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
 		FStreamableDelegate::CreateUObject(this, &AATank::OnAssetLoadCompleted));
 	
@@ -386,7 +384,8 @@ void AATank::PlayAttackAnim()
 
 void AATank::StartAction()
 {
-	TankAIController->RunAI();
+	SetTankState(ECharacterState::READY);
+	//TankAIController->RunAI();
 }
 
 float AATank::GetTankHpRatio()
