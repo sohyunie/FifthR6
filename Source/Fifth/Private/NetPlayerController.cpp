@@ -198,7 +198,7 @@ bool ANetPlayerController::HitMonster(const int& MonsterId)
 			return false;
 		}
 	}
-	return false
+	return false;
 }
 
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
