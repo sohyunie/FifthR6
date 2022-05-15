@@ -281,7 +281,11 @@ void AATank::Damaged()
 	
 	ATAnim->PlayDamagedMontage();
 	IsDamaging = true;
-	
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
 }
 
 void AATank::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
