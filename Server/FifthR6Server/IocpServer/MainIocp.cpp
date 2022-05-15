@@ -11,6 +11,7 @@ map<int, SOCKET> MainIocp::SessionSocket;
 cCharactersInfo MainIocp::CharactersInfo;
 //DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
+CRITICAL_SECTION MainIocp::csMonsters;
 MonsterSet MainIocp::MonstersInfo;
 map<int, int> LevelMaster;
 
@@ -271,7 +272,6 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 		}
 	}
 
-	LeaveCriticalSection(&csPlayers);
 
 	SessionSocket[info.SessionId] = pSocket->socket;
 
@@ -279,6 +279,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 
 	//Send(pSocket);
 	BroadcastNewPlayer(CharactersInfo, info.UELevel);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
@@ -286,8 +287,6 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	cCharacter info;
 	RecvStream >> info;
 
-	 	//printf_s("[INFO][%d]정보 수신 - %d\n",
-	 	//	info.SessionId, info.UELevel);
 	EnterCriticalSection(&csPlayers);
 
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
@@ -350,6 +349,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int session
 			client->dataBuf.buf = client->messageBuffer;
 			client->dataBuf.len = SendStream.str().length();
 
+			printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
 			Send(client);
 		}
 	}
@@ -366,10 +366,10 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		LevelMaster.erase(CharactersInfo.players[SessionId].UELevel);
 	}
 
-	LeaveCriticalSection(&csPlayers);
 	SessionSocket.erase(SessionId);
 	printf_s("[INFO] 클라이언트 수 : %d\n", SessionSocket.size());
 	WriteCharactersInfoToSocket(pSocket);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
@@ -382,13 +382,14 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
+		printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);
 		// 캐릭터 사망처리
 		CharactersInfo.players[DamagedSessionId].IsAlive = false;
 	}
-	LeaveCriticalSection(&csPlayers);
 
 	WriteCharactersInfoToSocket(pSocket);
 	Send(pSocket);
+	LeaveCriticalSection(&csPlayers);
 }
 
 void MainIocp::BroadcastChat(stringstream& RecvStream, stSOCKETINFO* pSocket)
@@ -464,6 +465,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	//MonstersInfo.monsters[MonsterId].Damaged(0.2f);
 
+	InitializeCriticalSection(&csMonsters);
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
 		printf_s("[INFO] (%d) DESTROY_MONSTER \n", MonsterId);
@@ -484,10 +486,12 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
 	}
+	LeaveCriticalSection(&csMonsters);
 }
 
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
+	InitializeCriticalSection(&csMonsters);
 	MonsterSet monsterSet;
 	RecvStream >> monsterSet;
 	stringstream SendStream;
@@ -498,6 +502,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	//printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
+	LeaveCriticalSection(&csMonsters);
 }
 
 void MainIocp::SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket)

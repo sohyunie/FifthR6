@@ -55,6 +55,7 @@ void UBossStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(nullptr != CurrentStatData);
 	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP);
+	ABLOG(Error, TEXT("SetDamage (%f) data doesn't exist"), CurrentHP);
 	if (CurrentHP <= 0.0f)
 	{
 		OnHPIsZero.Broadcast();

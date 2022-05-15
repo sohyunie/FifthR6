@@ -450,28 +450,20 @@ void ANetCharacter::AttackCheck()
 
 	if (bResult)
 	{
-		// 기존 Hit
 		if (HitResult.Actor.IsValid())
 		{
-			ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-			FDamageEvent DamageEvent;
-
-			HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
-		}
-
-		if (HitResult.Actor.IsValid())
-		{
-			//ANetCharacter* OtherCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			//if (OtherCharacter && OtherCharacter->GetSessionId() != -1 && OtherCharacter->GetSessionId() != sessionID)
-			//{
-			//	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-			//	PlayerController->HitCharacter(OtherCharacter->GetSessionId(), OtherCharacter);
-			//}
 			AATank* Monster = Cast<AATank>(HitResult.Actor);
 			if (Monster)
 			{
+				// 피격당한 동작 싱크를 위함.
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitMonster(Monster->Id);
+				bool isMaster = PlayerController->HitMonster(Monster->Id);
+				if (isMaster) {
+					ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+					FDamageEvent DamageEvent;
+
+					HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
+				}
 			}
 		}
 	}
