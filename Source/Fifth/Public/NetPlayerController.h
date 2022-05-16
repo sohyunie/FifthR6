@@ -121,4 +121,5 @@ private:
 	int nPlayers;
 
 	int attackSessionID;
+	int attackMonsterID;
 };

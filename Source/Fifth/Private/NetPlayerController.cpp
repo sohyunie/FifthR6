@@ -242,6 +242,13 @@ void ANetPlayerController::RecvMonsterSet(MonsterSet* MonstersInfo_)
 	if (MonstersInfo_ != nullptr)
 	{
 		MonsterSetInfo = MonstersInfo_;
+		//for (auto& monster : MonsterSetInfo->monsters)
+		//{
+		//	if (monster.second.IsAttacking)
+		//	{
+		//		attackMonsterID = monster.second.Id;
+		//	}
+		//}
 	}
 }
 
@@ -649,7 +656,7 @@ void ANetPlayerController::DestroyMonster()
 			 if (Monster && Monster->Id == MonsterInfo->Id)
 			 {
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
-				  Monster->SetTankHpRatio(MonsterInfo->Health);
+				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
 				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  Monster->PlayTakeDamageAnim();
