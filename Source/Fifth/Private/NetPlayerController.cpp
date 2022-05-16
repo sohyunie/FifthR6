@@ -360,14 +360,15 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 
 			cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
-			if (info->UELevel == 0) // 오류 데이터 검증
+			if (info->UELevel == 0) { // 오류 데이터 검증
+				UE_LOG(LogClass, Log, TEXT("---[%d]---. %f//%d"), info->SessionId, OtherPlayer->GetHealthValue(), info->UELevel);
 				continue;
+			}
 
 			if (info->IsAlive)
 			{
 				if (OtherPlayer->GetHealthValue() != info->HealthValue)
 				{
-					UE_LOG(LogClass, Log, TEXT("---[%d]---. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
 					// 피격 파티클 소환
 					FTransform transform(OtherPlayer->GetActorLocation());
 					//UGameplayStatics::SpawnEmitterAtLocation(
@@ -430,7 +431,10 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 {
 	auto tempPlayer = Cast<ANetCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	UWorld* const world = GetWorld();
-
+	if (info.UELevel == 0) { // 오류 데이터 검증
+		UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), info.SessionId, info.UELevel);
+		return;
+	}
 	if (!info.IsAlive)
 	{
 		UE_LOG(LogClass, Log, TEXT("[%d] Die Info. %f"), info.SessionId, info.HealthValue, info.X);
@@ -562,6 +566,8 @@ void ANetPlayerController::UpdateMonsterSet()
 			if (monster)
 			{
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+				if (monsterInfo->ueLevel == 0)
+					continue;
 
 				FVector Location;
 				Location.X = monsterInfo->X;
@@ -586,6 +592,8 @@ void ANetPlayerController::UpdateMonsterSet()
 			if (monster)
 			{
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+				if (monsterInfo->ueLevel == 0)
+					continue;
 
 				FVector Location;
 				Location.X = monsterInfo->X;
@@ -614,6 +622,8 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
 		for (auto actor : BossMonsters)
 		{
+			if (MonsterInfo->ueLevel == 0)
+				continue;
 			ABossTank* Monster = Cast<ABossTank>(actor);
 			if (Monster && Monster->Id == MonsterInfo->Id)
 			{
@@ -633,10 +643,13 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 		for (auto Actor : SpawnedMonsters)
 		{
+			if (MonsterInfo->ueLevel == 0)
+				continue;
 			 AATank* Monster = Cast<AATank>(Actor);
 			 if (Monster && Monster->Id == MonsterInfo->Id)
 			 {
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				  Monster->SetTankHpRatio(MonsterInfo->Health);
 				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
 				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  Monster->PlayTakeDamageAnim();

@@ -169,7 +169,7 @@ public:
 	float	Health;			// 체력
 	int		Id;				// 고유 id
 	bool	IsAttacking;		// 타격중인지
-	int		ueLevel;
+	int		ueLevel = 0;
 
 	friend ostream& operator<<(ostream& stream, Monster& info)
 	{
