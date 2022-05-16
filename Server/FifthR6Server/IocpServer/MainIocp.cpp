@@ -453,6 +453,12 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 	SendStream << CharactersInfo << endl;
 
 	// !!! �߿� !!! data.buf ���� ���� �����͸� ���� �����Ⱚ�� ���޵� �� ����
+	auto iter = CharactersInfo.players.begin();
+	while (iter != CharactersInfo.players.end()) {
+		cout << "[" << iter->first << ","
+			<< iter->second.X << "]\n";
+		++iter;
+	}
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();

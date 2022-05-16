@@ -208,6 +208,8 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 		ci = ci_;
 		for (auto& player : ci->players)
 		{
+			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
+
 			if (player.second.IsAttacking)
 			{
 				attackSessionID = player.second.SessionId;
@@ -358,12 +360,14 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 
 			cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
+			if (info->UELevel == 0) // 오류 데이터 검증
+				continue;
 
 			if (info->IsAlive)
 			{
 				if (OtherPlayer->GetHealthValue() != info->HealthValue)
 				{
-					UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
+					UE_LOG(LogClass, Log, TEXT("---[%d]---. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
 					// 피격 파티클 소환
 					FTransform transform(OtherPlayer->GetActorLocation());
 					//UGameplayStatics::SpawnEmitterAtLocation(
