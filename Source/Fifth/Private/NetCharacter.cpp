@@ -187,10 +187,10 @@ ECharacterState ANetCharacter::GetWarriorState() const
 
 void ANetCharacter::OnAssetLoadCompleted()
 {
-	USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
-	AssetStreamingHandle.Reset();
-	ABCHECK(nullptr != AssetLoaded);
-	GetMesh()->SetSkeletalMesh(AssetLoaded);
+	//USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
+	//AssetStreamingHandle.Reset();
+	//ABCHECK(nullptr != AssetLoaded);
+	//GetMesh()->SetSkeletalMesh(AssetLoaded);
 
 	SetWarriorState(ECharacterState::READY);
 

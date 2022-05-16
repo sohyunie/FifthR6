@@ -19,8 +19,7 @@ public:
 	AWarriorOfWater();
 
 public:
-	// [TODO] 임시주석
-	//UPROPERTY(VisibleAnywhere, Category = Weapon)
-	//	UStaticMeshComponent* Weapon;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 	
 };
