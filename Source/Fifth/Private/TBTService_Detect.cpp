@@ -3,7 +3,7 @@
 
 #include "TBTService_Detect.h"
 #include "TankAIController.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "ATank.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
@@ -42,12 +42,12 @@ void UTBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	{
 		for (auto const& OverlapResult : OverlapResults)
 		{
-			AMyCharacter* MyCharacter = Cast<AMyCharacter>(OverlapResult.GetActor());
-			if (MyCharacter && MyCharacter->GetController()->IsPlayerController())
+			ANetCharacter* NetCharacter = Cast<ANetCharacter>(OverlapResult.GetActor());
+			if (NetCharacter && NetCharacter->GetController()->IsPlayerController())
 			{
 				ABLOG(Warning, TEXT("aaaaaaaa"));
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(ATankAIController::TargetKey,
-					MyCharacter);
+					NetCharacter);
 				//ABLOG(Warning, TEXT("%s"), &ATankAIController::TargetKey.ToString());
 				//if (ATankAIController::TargetKey == TEXT("Target"))
 				/*FName aa = ATankAIController::TargetKey;
@@ -55,8 +55,8 @@ void UTBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 				ABLOG(Warning, TEXT("%s"), &bb);*/
 				DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
 
-				DrawDebugPoint(World, MyCharacter->GetActorLocation(), 10.0f, FColor::Blue, false, 0.2f);
-				DrawDebugLine(World, ControllingPawn->GetActorLocation(), MyCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+				DrawDebugPoint(World, NetCharacter->GetActorLocation(), 10.0f, FColor::Blue, false, 0.2f);
+				DrawDebugLine(World, ControllingPawn->GetActorLocation(), NetCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
 				return;
 			}
 		}
