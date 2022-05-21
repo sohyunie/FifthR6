@@ -198,7 +198,7 @@ bool ANetPlayerController::HitMonster(const int& MonsterId)
 			return false;
 		}
 	}
-	return false
+	return false;
 }
 
 void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
@@ -562,7 +562,7 @@ void ANetPlayerController::UpdateMonsterSet()
 				Location.Y = monsterInfo->Y;
 				Location.Z = monsterInfo->Z;
 
-				monster->SetTankHpRatio(monsterInfo->Health);
+				//monster->SetTankHpRatio(monsterInfo->Health);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -615,11 +615,11 @@ void ANetPlayerController::DestroyMonster()
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
 				//Monster->SetTankHpRatio(MonsterInfo->Health);
 				Monster->PlayTakeDamageAnim();
-				if (Monster->GetTankHpRatio() <= 0) {
+				/*if (Monster->GetTankHpRatio() <= 0) {
 					//Monster->Destroy();
 					  //[TODO] dead
 					  //Monster->Dead();
-				}
+				}*/
 				break;
 			}
 		}
@@ -684,7 +684,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
-				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
+				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
 			}

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Fifth.h"
-#include "CoreMinimal.h"
 #include "ClientSocket.h"
 #include "GameFramework/Character.h"
 #include "NetCharacter.generated.h"

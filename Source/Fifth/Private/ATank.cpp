@@ -12,6 +12,9 @@
 #include "MyGameInstance.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ClientSocket.h"
+#include "NetCharacter.h"
+#include "NetPlayerController.h"
 
 
 // Sets default values
@@ -116,6 +119,8 @@ void AATank::BeginPlay()
 
 	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	Id = MyGameInstance->uniqueMonsterID++;
+
 	ABCHECK(nullptr != MyGameInstance);
 	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
 		FStreamableDelegate::CreateUObject(this, &AATank::OnAssetLoadCompleted));
@@ -246,6 +251,24 @@ void AATank::PostInitializeComponents()
 float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	// Health Sync 마스터에서 담당
+	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController->GetIsMaster())
+	{
+		float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+		Damaged();
+		TankStat->SetDamage(FinalDamage);
+
+		ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+		UNiagaraSystem* HitEffect =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/Effect/Hit.Hit")));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+		return FinalDamage;
+	}
+
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 	Damaged();
@@ -258,7 +281,7 @@ float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
 		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
 	
-
+	return 0.0f;
 	return FinalDamage;
 }
 
@@ -326,25 +349,25 @@ void AATank::AttackCheck()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-/*#if ENABLE_DRAW_DEBUG
+	/*#if ENABLE_DRAW_DEBUG
 
-	FVector TraceVec = GetActorForwardVector() * AttackRange;
-	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-	float HalfHeight = AttackRange * 0.5f + AttackRadius;
-	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-	float DebugLifeTime = 5.0f;
+		FVector TraceVec = GetActorForwardVector() * AttackRange;
+		FVector Center = GetActorLocation() + TraceVec * 0.5f;
+		float HalfHeight = AttackRange * 0.5f + AttackRadius;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
 
-	DrawDebugCapsule(GetWorld(),
-		Center,
-		HalfHeight,
-		AttackRadius,
-		CapsuleRot,
-		DrawColor,
-		false,
-		DebugLifeTime);
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			AttackRadius,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
 
-#endif*/
+	#endif*/
 
 
 	if (bResult)
@@ -356,8 +379,54 @@ void AATank::AttackCheck()
 
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
-			
-			//Damaged();
+
+			// 플레이어 공격
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
+			}
+
 		}
 	}
+}
+
+	void AATank::PlayTakeDamageAnim()
+	{
+		return ATAnim->PlayDamagedMontage();
+	}
+
+	void AATank::MoveToLocation(const FVector & dest)
+	{
+		if (TankAIController)
+		{
+			TankAIController->MoveToLocation(dest);
+		}
+	}
+
+	void AATank::PlayAttackAnim()
+	{
+		return ATAnim->PlayAttackMontage();
+	}
+
+	void AATank::StartAction()
+	{
+		SetTankState(ECharacterState::READY);
+		//TankAIController->RunAI();
+	}
+
+	float AATank::GetTankHpRatio()
+	{
+		return TankStat->GetHPRatio();
+	}
+
+	bool AATank::GetIsAttacking()
+	{
+		return IsAttacking;
+	}
+
+	void AATank::SetTankHpRatio(float ratio)
+	{
+		return TankStat->SetHpRatio(ratio);
 }

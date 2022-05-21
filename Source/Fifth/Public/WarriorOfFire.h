@@ -4,13 +4,14 @@
 
 #include "Fifth.h"
 #include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "WarriorOfFire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FIFTH_API AWarriorOfFire : public AMyCharacter
+class FIFTH_API AWarriorOfFire : public ANetCharacter
 {
 	GENERATED_BODY()
 
@@ -19,8 +20,8 @@ public:
 	AWarriorOfFire();
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		UStaticMeshComponent* Weapon;
+	//UPROPERTY(VisibleAnywhere, Category = Weapon)
+		//UStaticMeshComponent* Weapon;
 
 
 private:

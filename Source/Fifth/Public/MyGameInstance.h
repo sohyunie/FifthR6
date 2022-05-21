@@ -146,7 +146,7 @@ public:
 	FManData* GetManData(int32 Level);
 
 	FStreamableManager StreamableManager;
-
+	int uniqueMonsterID = 0;
 private:
 	UPROPERTY()
 		class UDataTable* WarriorTable;

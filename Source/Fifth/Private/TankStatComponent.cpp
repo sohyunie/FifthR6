@@ -87,3 +87,16 @@ float UTankStatComponent::GetHPRatio()
 
 	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
 }
+
+void UTankStatComponent::SetHpRatio(float ratio)
+{
+	float hp = CurrentStatData->MaxHP * ratio;
+	CurrentHP = hp;
+	OnHPChanged.Broadcast();
+
+	if (CurrentHP <= KINDA_SMALL_NUMBER)
+	{
+		CurrentHP = 0.0f;
+		OnHPIsZero.Broadcast();
+	}
+}

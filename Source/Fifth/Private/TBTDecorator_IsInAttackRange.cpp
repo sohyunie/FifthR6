@@ -3,7 +3,7 @@
 
 #include "TBTDecorator_IsInAttackRange.h"
 #include "TankAIController.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "ATank.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -36,7 +36,7 @@ bool UTBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeComp
 	if (nullptr == ControllingPawn)
 		return false;
 
-	auto Target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ATankAIController::TargetKey));
+	auto Target = Cast<ANetCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ATankAIController::TargetKey));
 	if (nullptr == Target)
 		return false;
 

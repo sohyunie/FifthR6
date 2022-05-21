@@ -4,7 +4,7 @@
 #include "TBTTask_TurnToTarget.h"
 #include "TankAIController.h"
 #include "ATank.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UTBTTask_TurnToTarget::UTBTTask_TurnToTarget()
@@ -21,7 +21,7 @@ EBTNodeResult::Type UTBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& O
 	if (nullptr == ATank)
 		return EBTNodeResult::Failed;
 
-	auto Target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->
+	auto Target = Cast<ANetCharacter>(OwnerComp.GetBlackboardComponent()->
 		GetValueAsObject(ATankAIController::TargetKey));
 	if (nullptr == Target)
 		return EBTNodeResult::Failed;

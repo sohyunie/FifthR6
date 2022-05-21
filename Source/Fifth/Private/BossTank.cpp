@@ -6,8 +6,12 @@
 #include "BossStatComponent.h"
 #include "DrawDebugHelpers.h"
 #include "BossAIController.h"
+#include "MyGameInstance.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ClientSocket.h"
+#include "NetCharacter.h"
+#include "NetPlayerController.h"
 
 // Sets default values
 ABossTank::ABossTank()
@@ -57,6 +61,10 @@ ABossTank::ABossTank()
 void ABossTank::BeginPlay()
 {
 	Super::BeginPlay();
+	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	Id = MyGameInstance->uniqueMonsterID++;
+
+	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
 	
 }
 
@@ -376,7 +384,55 @@ void ABossTank::KickCheck()
 				//this->GetActorLocation());
 
 			//ABLOG(Warning, TEXT("2Ok!!"));
-			Damaged();
+
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
+			}
+
 		}
 	}
 }
+
+	void ABossTank::StartAction()
+	{
+		//TankAIController->RunAI();
+	}
+
+	/*float ABossTank::GetTankHpRatio()
+	{
+		return BossStat->GetHPRatio();
+	}*/
+
+	bool ABossTank::GetIsAttacking()
+	{
+		return IsAttacking;
+	}
+
+	void ABossTank::PlayTakeDamageAnim()
+	{
+		return BTAnim->PlayDamagedMontage();
+	}
+
+	/*void ABossTank::SetTankHpRatio(float ratio)
+	{
+		return BossStat->SetHpRatio(ratio);
+	}*/
+
+
+	void ABossTank::MoveToLocation(const FVector & dest)
+	{
+		// [TODO] boss
+		//if (BossAIController)
+		//{
+		//	BossAIController->MoveToLocation(dest);
+		//}
+	}
+
+	void ABossTank::PlayAttackAnim()
+	{
+		return BTAnim->PlayAttackMontage();
+	}
+
