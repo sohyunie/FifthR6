@@ -40,22 +40,11 @@ public:
 	void Skill();
 	void SpecialAttack();
 	void Screaming();
-	void StartAction();
-
-	float GetTankHpRatio();
-	bool GetIsAttacking();
-	void PlayTakeDamageAnim();
-	void SetTankHpRatio(float ratio);
-	void PlayAttackAnim();
-
-	void MoveToLocation(const FVector& dest);
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UBossStatComponent* BossStat;
 
 	FOnAttackEndDelegate OnAttackEnd;
-
-	int Id;
 
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))

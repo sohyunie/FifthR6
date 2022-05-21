@@ -55,6 +55,7 @@ void UTankStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(nullptr != CurrentStatData);
 	SetHP(FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP));
+	
 }
 
 
@@ -62,7 +63,6 @@ void UTankStatComponent::SetHP(float NewHP)
 {
 	CurrentHP = NewHP;
 	OnHPChanged.Broadcast();
-	ABLOG(Error, TEXT("SetHP (%f)"), NewHP);
 
 	if (CurrentHP <= KINDA_SMALL_NUMBER)
 	{
@@ -86,17 +86,4 @@ float UTankStatComponent::GetHPRatio()
 	ABCHECK(nullptr != CurrentStatData, 0.0f);
 
 	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
-}
-
-void UTankStatComponent::SetHpRatio(float ratio)
-{
-	float hp = CurrentStatData->MaxHP * ratio;
-	CurrentHP = hp;
-	OnHPChanged.Broadcast();
-
-	if (CurrentHP <= KINDA_SMALL_NUMBER)
-	{
-		CurrentHP = 0.0f;
-		OnHPIsZero.Broadcast();
-	}
 }

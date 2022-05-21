@@ -20,17 +20,6 @@ public:
 	void SetTankState(ECharacterState NewState);
 	ECharacterState GetTankState() const;
 
-	void PlayAttackAnim();
-	void PlayTakeDamageAnim();
-	// 몬스터를 위치로 이동
-	void MoveToLocation(const FVector& dest);
-	void StartAction();
-	bool GetIsAttacking();
-
-	int		Id;				// 고유 id
-	bool isStartAction;
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,15 +44,16 @@ public:
 	void Attack();
 	void Damaged();
 
-	float GetTankHpRatio();
-	void SetTankHpRatio(float ratio);
-
 	FOnAttackEndDelegate OnAttackEnd;
 
 	
 	
 
 private:
+	UFUNCTION() void DeathOverlap(UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Damage, Meta = (AllowPrivateAccess = true))

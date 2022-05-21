@@ -241,6 +241,16 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed,this, &AMyCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &AMyCharacter::SAttack);
 	PlayerInputComponent->BindAction(TEXT("TAttack"), EInputEvent::IE_Pressed, this, &AMyCharacter::TAttack);
+	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_One);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Two);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Three);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Four"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Four);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Five"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Five);
+
+	PlayerInputComponent->BindAction(TEXT("Cheat_Six"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Six);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Seven"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Seven);
+
+	PlayerInputComponent->BindAction(TEXT("Cheat_Zero"), EInputEvent::IE_Pressed, this, &AMyCharacter::Cheat_Zero);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMyCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::LeftRight);
@@ -412,6 +422,46 @@ void AMyCharacter::Attack()
 		}
 	}
 
+}
+
+void AMyCharacter::Cheat_One()
+{
+	SetActorLocation(FVector(-36284.0f, 45270.0f, 420.0f));
+}
+
+void AMyCharacter::Cheat_Two()
+{
+	SetActorLocation(FVector(-30677.0f, 47236.0f, 430.0f));
+}
+
+void AMyCharacter::Cheat_Three()
+{
+	SetActorLocation(FVector(-18540.0f, 56317.0f, 420.0f));
+}
+
+void AMyCharacter::Cheat_Four()
+{
+	SetActorLocation(FVector(-17437.0f, 42309.0f, 427.0f));
+}
+
+void AMyCharacter::Cheat_Five()
+{
+	SetActorLocation(FVector(-25473.0f, 32975.0f, 435.0f));
+}
+
+void AMyCharacter::Cheat_Six()
+{
+	SetActorLocation(FVector(-10251.0f, 21547.0f, 430.0f));
+}
+
+void AMyCharacter::Cheat_Seven()
+{
+	SetActorLocation(FVector(-5318.0f, 12869.0f, 429.0f));
+}
+
+void AMyCharacter::Cheat_Zero()
+{
+	SetActorLocation(FVector(-27284.0f, 50397.0f, 3778.0f));
 }
 
 void AMyCharacter::TAttack()

@@ -12,9 +12,6 @@
 #include "MyGameInstance.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
-#include "ClientSocket.h"
-#include "NetCharacter.h"
-#include "NetPlayerController.h"
 
 
 // Sets default values
@@ -64,6 +61,7 @@ AATank::AATank()
 
 	IsAttacking = false;
 
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AATank::DeathOverlap);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ATank"));
 
 	AttackRange = 200.0f;
@@ -79,7 +77,17 @@ AATank::AATank()
 	SetCanBeDamaged(false);
 
 	
+	
 	DeadTimer = 5.0f;
+}
+
+void AATank::DeathOverlap(UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABLOG_S(Warning);
+	TankStat->SetHP(0);
+
 }
 
 void AATank::OnAssetLoadCompleted()
@@ -103,13 +111,12 @@ void AATank::BeginPlay()
 	ABCHECK(nullptr != TankAIController);
 
 	auto DefaultSetting = GetDefault<UTankSetting>();
-	
+
 	AssetIndex = 0;
 
 	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
-	Id = MyGameInstance->uniqueMonsterID++;
-
+	ABCHECK(nullptr != MyGameInstance);
 	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,
 		FStreamableDelegate::CreateUObject(this, &AATank::OnAssetLoadCompleted));
 	
@@ -200,6 +207,7 @@ void AATank::Tick(float DeltaTime)
 
 	if (IsDamaging)
 	{
+
 		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
 			->GetControlRotation().Vector()/**10*/);
 	}
@@ -238,25 +246,20 @@ void AATank::PostInitializeComponents()
 float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	// Health Sync 마스터에서 담당
-	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-	if(PlayerController->GetIsMaster())
-	{
-		float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-		ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-		Damaged();
-		TankStat->SetDamage(FinalDamage);
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+	Damaged();
+	TankStat->SetDamage(FinalDamage);
+	
+	ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+	
 
-		ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
-		UNiagaraSystem* HitEffect =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/Effect/Hit.Hit")));
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
-			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
-		return FinalDamage;
-	}
-
-	return 0.0f;
+	return FinalDamage;
 }
 
 void AATank::PossessedBy(AController* NewController)
@@ -269,14 +272,17 @@ void AATank::PossessedBy(AController* NewController)
 
 void AATank::Attack()
 {
-	if (IsAttacking) return;
+	if (IsDamaging == false) {
+		if (IsAttacking) return;
 
-	ATAnim->PlayAttackMontage();
-	IsAttacking = true;
+		ATAnim->PlayAttackMontage();
+		IsAttacking = true;
+	}
 }
 
 void AATank::Damaged()
 {
+	//ABLOG(Warning, TEXT("TANK HIT"));
 	if (IsDamaging) return;
 	
 	ATAnim->PlayDamagedMontage();
@@ -351,54 +357,7 @@ void AATank::AttackCheck()
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(TankStat->GetAttack(), DamageEvent, GetController(), this);
 			
-			
-			// 플레이어 공격
-			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
-			if (HitCharacter && HitCharacter->GetSessionId() != -1)
-			{
-				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
-			}
-			Damaged();
+			//Damaged();
 		}
 	}
-}
-
-void AATank::PlayTakeDamageAnim()
-{
-	return ATAnim->PlayDamagedMontage();
-}
-
-void AATank::MoveToLocation(const FVector& dest)
-{
-	if (TankAIController)
-	{
-		TankAIController->MoveToLocation(dest);
-	}
-}
-
-void AATank::PlayAttackAnim()
-{
-	return ATAnim->PlayAttackMontage();
-}
-
-void AATank::StartAction()
-{
-	SetTankState(ECharacterState::READY);
-	//TankAIController->RunAI();
-}
-
-float AATank::GetTankHpRatio()
-{
-	return TankStat->GetHPRatio();
-}
-
-bool AATank::GetIsAttacking()
-{
-	return IsAttacking;
-}
-
-void AATank::SetTankHpRatio(float ratio)
-{
-	return TankStat->SetHpRatio(ratio);
 }

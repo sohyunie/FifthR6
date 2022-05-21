@@ -63,6 +63,17 @@ private:
 	void TAttack();
 	void Damaged();
 
+	void Cheat_One();
+	void Cheat_Two();
+	void Cheat_Three();
+	void Cheat_Four();
+	void Cheat_Five();
+
+	void Cheat_Six();
+	void Cheat_Seven();
+
+	void Cheat_Zero();
+
 	UFUNCTION()
 		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
