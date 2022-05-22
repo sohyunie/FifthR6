@@ -31,13 +31,17 @@ AMyGameMode::AMyGameMode()
 	}
 
 	//UE_LOG(LogTemp, Display, TEXT("START"));
-	//DefaultPawnClass = AWarriorOfFire::StaticClass();
-	DefaultPawnClass = AWarriorOfWater::StaticClass();
+
+	DefaultPawnClass = AWarriorOfFire::StaticClass();
+	//DefaultPawnClass = AWarriorOfWater::StaticClass();
 	//DefaultPawnClass = AWarriorOfThunder::StaticClass();
 	//DefaultPawnClass = AMFire::StaticClass();
+	
+
 	//DefaultPawnClass = AMWater::StaticClass();
 	//DefaultPawnClass = AMThunder::StaticClass();
 	PlayerControllerClass = ANetPlayerController::StaticClass();
+	//PlayerControllerClass = AMyPlayerController::StaticClass();
 	PlayerStateClass = AMyPlayerState::StaticClass();
 }
 

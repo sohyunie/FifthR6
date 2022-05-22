@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Fifth.h"
 #include "GameFramework/PlayerController.h"
 #include "ClientSocket.h"
 #include "NetCharacter.h"

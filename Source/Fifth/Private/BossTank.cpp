@@ -5,13 +5,13 @@
 #include "BossTankAnimInstance.h"
 #include "BossStatComponent.h"
 #include "DrawDebugHelpers.h"
-#include "MyGameInstance.h"
 #include "BossAIController.h"
+#include "MyGameInstance.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "ClientSocket.h"
 #include "NetCharacter.h"
 #include "NetPlayerController.h"
-#include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
 
 // Sets default values
 ABossTank::ABossTank()
@@ -383,54 +383,56 @@ void ABossTank::KickCheck()
 			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
 				//this->GetActorLocation());
 
-			// �÷��̾� ����
+			//ABLOG(Warning, TEXT("2Ok!!"));
+
 			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
 			if (HitCharacter && HitCharacter->GetSessionId() != -1)
 			{
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
 			}
-			Damaged();
+
 		}
 	}
 }
 
-void ABossTank::StartAction()
-{
-	//TankAIController->RunAI();
-}
+	void ABossTank::StartAction()
+	{
+		//TankAIController->RunAI();
+	}
 
-float ABossTank::GetTankHpRatio()
-{
-	return BossStat->GetHPRatio();
-}
+	/*float ABossTank::GetTankHpRatio()
+	{
+		return BossStat->GetHPRatio();
+	}*/
 
-bool ABossTank::GetIsAttacking()
-{
-	return IsAttacking;
-}
+	bool ABossTank::GetIsAttacking()
+	{
+		return IsAttacking;
+	}
 
-void ABossTank::PlayTakeDamageAnim()
-{
-	return BTAnim->PlayDamagedMontage();
-}
+	void ABossTank::PlayTakeDamageAnim()
+	{
+		return BTAnim->PlayDamagedMontage();
+	}
 
-void ABossTank::SetTankHpRatio(float ratio)
-{
-	return BossStat->SetHpRatio(ratio);
-}
+	/*void ABossTank::SetTankHpRatio(float ratio)
+	{
+		return BossStat->SetHpRatio(ratio);
+	}*/
 
 
-void ABossTank::MoveToLocation(const FVector& dest)
-{
-	// [TODO] boss �̵����� �ʿ�
-	//if (BossAIController)
-	//{
-	//	BossAIController->MoveToLocation(dest);
-	//}
-}
+	void ABossTank::MoveToLocation(const FVector & dest)
+	{
+		// [TODO] boss
+		//if (BossAIController)
+		//{
+		//	BossAIController->MoveToLocation(dest);
+		//}
+	}
 
-void ABossTank::PlayAttackAnim()
-{
-	return BTAnim->PlayAttackMontage();
-}
+	void ABossTank::PlayAttackAnim()
+	{
+		return BTAnim->PlayAttackMontage();
+	}
+

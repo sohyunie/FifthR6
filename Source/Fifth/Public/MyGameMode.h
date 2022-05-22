@@ -19,6 +19,7 @@ public:
 	AMyGameMode();
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 private:
 
 	ClientSocket* Socket;

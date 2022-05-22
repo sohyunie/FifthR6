@@ -14,8 +14,7 @@ AWarriorOfFire::AWarriorOfFire()
 		GetMesh()->SetSkeletalMesh(WarriorOfFire.Object);
 	}
 
-
-	// [TODO] 임시주석
+	
 	FName WeaponSocket(TEXT("Bip-R-HandSocket"));
 	if (GetMesh()->DoesSocketExist(WeaponSocket))
 	{

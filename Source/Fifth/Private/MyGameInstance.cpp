@@ -3,6 +3,7 @@
 
 #include "MyGameInstance.h"
 
+
 UMyGameInstance::UMyGameInstance()
 {
 	FString WarriorDataPath = TEXT("/Game/GameData/WarriorData.WarriorData");

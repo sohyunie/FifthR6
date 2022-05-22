@@ -55,7 +55,6 @@ void UBossStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(nullptr != CurrentStatData);
 	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP);
-	ABLOG(Error, TEXT("SetDamage (%f) data doesn't exist"), CurrentHP);
 	if (CurrentHP <= 0.0f)
 	{
 		OnHPIsZero.Broadcast();
@@ -78,24 +77,4 @@ float UBossStatComponent::GetSkill()
 {
 	ABCHECK(nullptr != CurrentStatData, 0.0f);
 	return CurrentStatData->Skill;
-}
-
-float UBossStatComponent::GetHPRatio()
-{
-	ABCHECK(nullptr != CurrentStatData, 0.0f);
-
-	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
-}
-
-void UBossStatComponent::SetHpRatio(float ratio)
-{
-	float hp = CurrentStatData->MaxHP * ratio;
-	CurrentHP = hp;
-	//OnHPChanged.Broadcast(); // [TODO] OnHpChanged
-
-	if (CurrentHP <= KINDA_SMALL_NUMBER)
-	{
-		CurrentHP = 0.0f;
-		OnHPIsZero.Broadcast();
-	}
 }

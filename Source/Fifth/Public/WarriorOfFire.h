@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Fifth.h"
+#include "MyCharacter.h"
 #include "NetCharacter.h"
 #include "WarriorOfFire.generated.h"
 
@@ -19,9 +20,8 @@ public:
 	AWarriorOfFire();
 
 public:
-	// [TODO] 임시주석
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		UStaticMeshComponent* Weapon;
+	//UPROPERTY(VisibleAnywhere, Category = Weapon)
+		//UStaticMeshComponent* Weapon;
 
 
 private:
