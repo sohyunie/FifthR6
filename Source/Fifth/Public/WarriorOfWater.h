@@ -19,7 +19,7 @@ public:
 	AWarriorOfWater();
 
 public:
-	//UPROPERTY(VisibleAnywhere, Category = Weapon)
-		//UStaticMeshComponent* Weapon;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 	
 };

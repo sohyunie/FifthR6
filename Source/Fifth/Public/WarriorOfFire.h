@@ -20,8 +20,8 @@ public:
 	AWarriorOfFire();
 
 public:
-	//UPROPERTY(VisibleAnywhere, Category = Weapon)
-		//UStaticMeshComponent* Weapon;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		UStaticMeshComponent* Weapon;
 
 
 private:
