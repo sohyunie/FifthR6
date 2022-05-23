@@ -103,6 +103,8 @@ void AATank::OnAssetLoadCompleted()
 	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController->GetIsMaster())
 		SetTankState(ECharacterState::READY);
+	else
+		TankAIController->StopAI();
 }
 
 // Called when the game starts or when spawned

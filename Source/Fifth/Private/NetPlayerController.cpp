@@ -59,6 +59,8 @@ bool ANetPlayerController::GetIsMaster()
 {
 	if (ci == nullptr)
 		return true;
+
+	UE_LOG(LogClass, Log, TEXT("%s"), ci->players[SessionId].IsMaster ? "1" : "0");
 	return ci->players[SessionId].IsMaster;
 }
 
