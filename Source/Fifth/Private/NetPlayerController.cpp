@@ -752,6 +752,26 @@ bool ANetPlayerController::UpdateMonster()
 	}
 	else {
 		// 몬스터 업데이트
+		if (isTankActionStart == false)
+		{
+			TArray<AActor*> BossMonsters;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
+			for (auto actor : BossMonsters)
+			{
+				ABossTank* monster = Cast<ABossTank>(actor);
+				monster->StartAction();
+			}
+
+			TArray<AActor*> SpawnedMonsters;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+			for (auto actor : SpawnedMonsters)
+			{
+				AATank* monster = Cast<AATank>(actor);
+				monster->StartAction();
+			}
+			isTankActionStart = true;
+		}
+
 		UpdateMonsterSet();
 		return true;
 	}
