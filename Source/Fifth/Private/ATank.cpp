@@ -99,7 +99,7 @@ void AATank::OnAssetLoadCompleted()
 	AssetStreamingHandle.Reset();
 	ABCHECK(nullptr != AssetLoaded);
 	GetMesh()->SetSkeletalMesh(AssetLoaded);
-
+	SetTankState(ECharacterState::READY);
 	//ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 	//if (PlayerController->GetIsMaster())
 	//	SetTankState(ECharacterState::READY);
