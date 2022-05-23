@@ -536,7 +536,7 @@ void ANetCharacter::PlayAttackAnim()
 void ANetCharacter::PlayTakeDamageAnim()
 {
 	//[TODO] Dead Anim���� ���� �ʿ�
-	return MyAnim->PlayAttackMontage();
+	return MyAnim->PlayDamagedMontage();
 }
 
 bool ANetCharacter::GetIsAttacking()
