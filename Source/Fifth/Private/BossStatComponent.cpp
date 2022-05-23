@@ -55,8 +55,9 @@ void UBossStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(nullptr != CurrentStatData);
 	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP);
-	if (CurrentHP <= 0.0f)
+	if (!isDead && CurrentHP <= 0.0f)
 	{
+		isDead = true;
 		OnHPIsZero.Broadcast();
 	}
 }
