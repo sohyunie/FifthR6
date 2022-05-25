@@ -583,7 +583,12 @@ void ANetPlayerController::UpdateMonsterSet()
 				Location.Y = monsterInfo->Y;
 				Location.Z = monsterInfo->Z;
 
-				//monster->SetTankHpRatio(monsterInfo->Health);
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
+
+				monster->AddMovementInput(CharacterVelocity);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -609,6 +614,12 @@ void ANetPlayerController::UpdateMonsterSet()
 				Location.Y = monsterInfo->Y;
 				Location.Z = monsterInfo->Z;
 
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
+
+				monster->AddMovementInput(CharacterVelocity);
 				monster->SetTankHpRatio(monsterInfo->Health);
 				monster->MoveToLocation(Location);
 
@@ -712,6 +723,12 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+
+
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
+
 				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
@@ -740,6 +757,13 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+
+
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
+
+
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = 1;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
