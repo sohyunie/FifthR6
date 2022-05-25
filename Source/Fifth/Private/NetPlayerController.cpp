@@ -588,7 +588,13 @@ void ANetPlayerController::UpdateMonsterSet()
 				CharacterVelocity.Y = monsterInfo->VY;
 				CharacterVelocity.Z = monsterInfo->VZ;
 
+				FRotator spawnRotation;
+				spawnRotation.Yaw = monsterInfo->Yaw;
+				spawnRotation.Pitch = monsterInfo->Pitch;
+				spawnRotation.Roll = monsterInfo->Roll;
+
 				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -619,8 +625,14 @@ void ANetPlayerController::UpdateMonsterSet()
 				CharacterVelocity.Y = monsterInfo->VY;
 				CharacterVelocity.Z = monsterInfo->VZ;
 
-				monster->AddMovementInput(CharacterVelocity);
+				FRotator spawnRotation;
+				spawnRotation.Yaw = monsterInfo->Yaw;
+				spawnRotation.Pitch = monsterInfo->Pitch;
+				spawnRotation.Roll = monsterInfo->Roll;
+
 				monster->SetTankHpRatio(monsterInfo->Health);
+				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -729,6 +741,11 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
 				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
 
+
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
+
 				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
@@ -763,6 +780,10 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
 				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
 
+
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
 
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = 1;
