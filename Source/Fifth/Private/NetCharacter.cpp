@@ -64,8 +64,6 @@ ANetCharacter::ANetCharacter()
 
 	AssetIndex = 2;
 
-
-
 	/*CharacterAssetToLoad = DefaultSetting->WarriorAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	ABCHECK(nullptr != MyGameInstance);
@@ -76,6 +74,7 @@ ANetCharacter::ANetCharacter()
 
 	SetActorHiddenInGame(true);
 	SetCanBeDamaged(false);*/
+
 
 	DeadTimer = 5.0f;
 	HealthValue = 1.0f;

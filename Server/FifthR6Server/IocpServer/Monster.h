@@ -69,11 +69,6 @@ public:
 	float	VX;				// XÁÂÇ¥
 	float	VY;				// YÁÂÇ¥
 	float	VZ;				// ZÁÂÇ¥
-	// È¸Àü°ª
-	float Yaw;
-	float Pitch;
-	float Roll;
-	// È¸Àü°ª
 	float Yaw;
 	float Pitch;
 	float Roll;

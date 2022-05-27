@@ -527,19 +527,7 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-
 				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-				//switch (PlayerInfos->players.size()) {
-				//case 0:
-				//	WhoToSpawn = AWarriorOfFire::StaticClass();
-				//	break;
-				//case 1:
-				//	WhoToSpawn = AWarriorOfWater::StaticClass();
-				//	break;
-				//case 2:
-				//	WhoToSpawn = AWarriorOfThunder::StaticClass();
-				//	break;
-				//}
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
@@ -611,6 +599,11 @@ void ANetPlayerController::UpdateMonsterSet()
 			AATank* monster = Cast<AATank>(actor);
 			if (monster)
 			{
+				if (!MonsterSetInfo->monsters.count(monster->Id)) {
+					cout << "No Exists!" << endl;
+					continue;
+				}
+
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 				if (monsterInfo->ueLevel == 0)
 					continue;
@@ -799,6 +792,8 @@ bool ANetPlayerController::UpdateMonster()
 		// 몬스터 업데이트
 		if (isTankActionStart == false)
 		{
+			WhoToSpawn = AWarriorOfWater::StaticClass();
+
 			TArray<AActor*> BossMonsters;
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
 			for (auto actor : BossMonsters)
