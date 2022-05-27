@@ -607,6 +607,11 @@ void ANetPlayerController::UpdateMonsterSet()
 				{
 					if (MonsterSetInfo->monsters.size() != 0)
 					{
+						//if (MonsterSetInfo.monsters[monster->Id].UELevel == 0) { // 오류 데이터 검증
+						//	UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), info.SessionId, info.UELevel);
+						//	return;
+						//}
+
 						if (monster == NULL) {
 							UE_LOG(LogClass, Log, TEXT("aaa"));
 							continue;
@@ -615,15 +620,19 @@ void ANetPlayerController::UpdateMonsterSet()
 							UE_LOG(LogClass, Log, TEXT("bbb"));
 							continue;
 						}
+						//if (MonsterSetInfo->monsters == NULL) {
 
-						auto item = MonsterSetInfo->monsters.find(monster->Id);
-						if (item != MonsterSetInfo->monsters.end()) {
+						//	UE_LOG(LogClass, Log, TEXT("ccc"));
+						//	continue;
+						//}
+						//auto item = MonsterSetInfo->monsters.find(monster->Id);
+						//if (item != MonsterSetInfo->monsters.end()) {
 
-						}
-						else {
-							UE_LOG(LogClass, Log, TEXT("ccc"));
-							continue;
-						}
+						//}
+						//else {
+						//	UE_LOG(LogClass, Log, TEXT("ddd"));
+						//	continue;
+						//}
 
 						//if (!MonsterSetInfo->monsters.count(monster->Id)) {
 						//	UE_LOG(LogClass, Log, TEXT("ccc"));
@@ -631,7 +640,8 @@ void ANetPlayerController::UpdateMonsterSet()
 						//}
 					}
 				}
-
+				if (monster->Id < 0 || monster->Id >50)
+					continue;
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 				if (monsterInfo->ueLevel == 0)
 					continue;
@@ -734,7 +744,6 @@ bool ANetPlayerController::UpdateMonster()
 	if (ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
-
 		TArray<AActor*> BossMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
 		for (auto actor : BossMonsters)
