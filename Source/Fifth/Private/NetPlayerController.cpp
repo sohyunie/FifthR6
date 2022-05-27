@@ -605,9 +605,11 @@ void ANetPlayerController::UpdateMonsterSet()
 				}
 				else
 				{
-					if (!MonsterSetInfo->monsters.count(monster->Id)) {
-						cout << "No Exists!" << endl;
-						continue;
+					if (MonsterSetInfo->monsters.size() != 0)
+					{
+						if (!MonsterSetInfo->monsters.count(monster->Id)) {
+							continue;
+						}
 					}
 				}
 
