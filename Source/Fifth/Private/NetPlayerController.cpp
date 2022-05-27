@@ -615,10 +615,20 @@ void ANetPlayerController::UpdateMonsterSet()
 							UE_LOG(LogClass, Log, TEXT("bbb"));
 							continue;
 						}
-						if (!MonsterSetInfo->monsters.count(monster->Id)) {
+
+						auto item = MonsterSetInfo->monsters.find(monster->Id);
+						if (item != MonsterSetInfo->monsters.end()) {
+
+						}
+						else {
 							UE_LOG(LogClass, Log, TEXT("ccc"));
 							continue;
 						}
+
+						//if (!MonsterSetInfo->monsters.count(monster->Id)) {
+						//	UE_LOG(LogClass, Log, TEXT("ccc"));
+						//	continue;
+						//}
 					}
 				}
 
