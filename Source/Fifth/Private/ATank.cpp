@@ -99,10 +99,12 @@ void AATank::OnAssetLoadCompleted()
 	AssetStreamingHandle.Reset();
 	ABCHECK(nullptr != AssetLoaded);
 	GetMesh()->SetSkeletalMesh(AssetLoaded);
-
 	SetTankState(ECharacterState::READY);
-	
-
+	//ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	//if (PlayerController->GetIsMaster())
+	//	SetTankState(ECharacterState::READY);
+	//else
+	//	TankAIController->StopAI();
 }
 
 // Called when the game starts or when spawned
@@ -144,7 +146,7 @@ void AATank::SetTankState(ECharacterState NewState)
 		SetCanBeDamaged(false);
 		break;
 	}
-	case ECharacterState::READY:
+	case ECharacterState::READY_MASTER:
 	{
 		SetActorHiddenInGame(false);
 		HPBarWidget->SetHiddenInGame(false);
@@ -161,6 +163,26 @@ void AATank::SetTankState(ECharacterState NewState)
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 		TankAIController->RunAI();
+
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		HPBarWidget->SetHiddenInGame(false);
+		SetCanBeDamaged(true);
+
+		TankStat->OnHPIsZero.AddLambda([this]()->void {
+			SetTankState(ECharacterState::DEAD);
+		});
+
+		auto TankWidget = Cast<UTankWidget>(HPBarWidget->GetUserWidgetObject());
+		ABCHECK(nullptr != TankWidget);
+		TankWidget->BindTankStat(TankStat);
+
+		SetControlMode(0);
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+		TankAIController->StopAI();
 
 		break;
 	}
@@ -212,7 +234,6 @@ void AATank::Tick(float DeltaTime)
 
 	if (IsDamaging)
 	{
-
 		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
 			->GetControlRotation().Vector()/**10*/);
 	}
@@ -242,10 +263,6 @@ void AATank::PostInitializeComponents()
 		ATAnim->SetDeadAnim();
 		SetActorEnableCollision(false);
 		});
-
-	
-
-	
 }
 
 float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -274,14 +291,6 @@ float AATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	Damaged();
 	TankStat->SetDamage(FinalDamage);
 	
-	ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
-	UNiagaraSystem* HitEffect =
-		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-			TEXT("/Game/Effect/Hit.Hit")));
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
-		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
-	
-	return 0.0f;
 	return FinalDamage;
 }
 
@@ -394,6 +403,13 @@ void AATank::AttackCheck()
 
 	void AATank::PlayTakeDamageAnim()
 	{
+		UNiagaraSystem* HitEffect =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/Effect/Hit.Hit")));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+
+
 		return ATAnim->PlayDamagedMontage();
 	}
 
@@ -412,8 +428,11 @@ void AATank::AttackCheck()
 
 	void AATank::StartAction()
 	{
-		SetTankState(ECharacterState::READY);
-		//TankAIController->RunAI();
+		ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (PlayerController->GetIsMaster())
+			SetTankState(ECharacterState::READY_MASTER);
+		else
+			SetTankState(ECharacterState::READY);
 	}
 
 	float AATank::GetTankHpRatio()

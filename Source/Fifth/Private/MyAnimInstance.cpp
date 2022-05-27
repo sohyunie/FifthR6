@@ -86,7 +86,7 @@ void UMyAnimInstance::PlayDamagedMontage()
 {
 	
 	//ABLOG(Warning, TEXT("Hey!!"));
-	//ABCHECK(!IsDead);
+	ABCHECK(!IsDead);
 	Montage_Play(DamagedMontage, 1.0f);
 
 }

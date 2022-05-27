@@ -32,9 +32,9 @@ AMyGameMode::AMyGameMode()
 
 	//UE_LOG(LogTemp, Display, TEXT("START"));
 
-	DefaultPawnClass = AWarriorOfFire::StaticClass();
+	//DefaultPawnClass = AWarriorOfFire::StaticClass();
 	//DefaultPawnClass = AWarriorOfWater::StaticClass();
-	//DefaultPawnClass = AWarriorOfThunder::StaticClass();
+	DefaultPawnClass = AWarriorOfThunder::StaticClass();
 	//DefaultPawnClass = AMFire::StaticClass();
 	
 

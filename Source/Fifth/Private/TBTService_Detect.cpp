@@ -43,7 +43,7 @@ void UTBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			ANetCharacter* NetCharacter = Cast<ANetCharacter>(OverlapResult.GetActor());
-			if (NetCharacter && NetCharacter->GetController()->IsPlayerController())
+			if (NetCharacter)
 			{
 				ABLOG(Warning, TEXT("aaaaaaaa"));
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(ATankAIController::TargetKey,

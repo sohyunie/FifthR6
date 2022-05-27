@@ -4,4 +4,5 @@
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
+CommonClass.obj : warning LNK4204: ''에 참조 모듈에 대한 디버깅 정보가 없습니다. 디버깅 정보가 없는 것처럼 개체를 링크합니다.
   PacketDll.vcxproj -> C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.dll

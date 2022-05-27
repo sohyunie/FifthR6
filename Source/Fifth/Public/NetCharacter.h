@@ -34,8 +34,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		UStaticMeshComponent* Weapon;
+	//UPROPERTY(VisibleAnywhere, Category = Weapon)
+	//	UStaticMeshComponent* Weapon;
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UWarriorStatComponent* WarriorStat;

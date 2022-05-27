@@ -62,8 +62,9 @@ void UWarriorStatComponent::SetHP(float NewHP)
 	CurrentHP = NewHP;
 	OnHPChanged.Broadcast();
 
-	if (CurrentHP < KINDA_SMALL_NUMBER)
+	if (!isDead && CurrentHP < KINDA_SMALL_NUMBER)
 	{
+		isDead = true;
 		CurrentHP = 0.0f;
 		OnHPIsZero.Broadcast();
 	}

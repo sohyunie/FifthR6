@@ -10,6 +10,7 @@ enum class ECharacterState :uint8
 	PREINIT,
 	LOADING,
 	READY,
+	READY_MASTER,
 	DEAD
 };
 

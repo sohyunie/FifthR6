@@ -30,6 +30,12 @@ public:
 		stream << info.X << endl;
 		stream << info.Y << endl;
 		stream << info.Z << endl;
+		stream << info.VX << endl;
+		stream << info.VY << endl;
+		stream << info.VZ << endl;
+		stream << info.Yaw << endl;
+		stream << info.Pitch << endl;
+		stream << info.Roll << endl;
 		stream << info.Health << endl;
 		stream << info.Id << endl;
 		stream << info.bIsAttacking << endl;
@@ -43,6 +49,12 @@ public:
 		stream >> info.X;
 		stream >> info.Y;
 		stream >> info.Z;
+		stream >> info.VX;
+		stream >> info.VY;
+		stream >> info.VZ;
+		stream >> info.Yaw;
+		stream >> info.Pitch;
+		stream >> info.Roll;
 		stream >> info.Health;
 		stream >> info.Id;
 		stream >> info.bIsAttacking;
@@ -54,12 +66,14 @@ public:
 	float	X;				// X좌표
 	float	Y;				// Y좌표
 	float	Z;				// Z좌표
+	float	VX;				// X좌표
+	float	VY;				// Y좌표
+	float	VZ;				// Z좌표
+	float Yaw;
+	float Pitch;
+	float Roll;
 	float	Health;			// 체력
 	int		Id;				// 고유 id
-	float	TraceRange;		// 추격 범위
-	float	HitRange;		// 타격 범위
-	float	MovePoint;		// 이동 포인트
-	float	HitPoint;		// 타격 포인트	
 	bool	bIsAttacking;	// 공격중인지
 	int		ueLevel;
 

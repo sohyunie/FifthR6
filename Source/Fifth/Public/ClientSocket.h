@@ -55,7 +55,7 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
-	int UELevel;
+	int UELevel = 0;
 	bool IsMaster;
 
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
@@ -166,16 +166,29 @@ public:
 	float	X;				// XÁÂÇ¥
 	float	Y;				// YÁÂÇ¥
 	float	Z;				// ZÁÂÇ¥
+	float	VX;				// XÁÂÇ¥
+	float	VY;				// YÁÂÇ¥
+	float	VZ;				// ZÁÂÇ¥
+	// È¸Àü°ª
+	float Yaw;
+	float Pitch;
+	float Roll;
 	float	Health;			// Ã¼·Â
 	int		Id;				// °íÀ¯ id
 	bool	IsAttacking;		// Å¸°ÝÁßÀÎÁö
-	int		ueLevel;
+	int		ueLevel = 0;
 
 	friend ostream& operator<<(ostream& stream, Monster& info)
 	{
 		stream << info.X << endl;
 		stream << info.Y << endl;
 		stream << info.Z << endl;
+		stream << info.VX << endl;
+		stream << info.VY << endl;
+		stream << info.VZ << endl;
+		stream << info.Yaw << endl;
+		stream << info.Pitch << endl;
+		stream << info.Roll << endl;
 		stream << info.Health << endl;
 		stream << info.Id << endl;
 		stream << info.IsAttacking << endl;
@@ -189,6 +202,12 @@ public:
 		stream >> info.X;
 		stream >> info.Y;
 		stream >> info.Z;
+		stream >> info.VX;
+		stream >> info.VY;
+		stream >> info.VZ;
+		stream >> info.Yaw;
+		stream >> info.Pitch;
+		stream >> info.Roll;
 		stream >> info.Health;
 		stream >> info.Id;
 		stream >> info.IsAttacking;

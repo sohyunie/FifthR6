@@ -64,8 +64,6 @@ ANetCharacter::ANetCharacter()
 
 	AssetIndex = 2;
 
-
-
 	/*CharacterAssetToLoad = DefaultSetting->WarriorAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	ABCHECK(nullptr != MyGameInstance);
@@ -76,6 +74,7 @@ ANetCharacter::ANetCharacter()
 
 	SetActorHiddenInGame(true);
 	SetCanBeDamaged(false);*/
+
 
 	DeadTimer = 5.0f;
 	HealthValue = 1.0f;
@@ -187,10 +186,10 @@ ECharacterState ANetCharacter::GetWarriorState() const
 
 void ANetCharacter::OnAssetLoadCompleted()
 {
-	USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
-	AssetStreamingHandle.Reset();
-	ABCHECK(nullptr != AssetLoaded);
-	GetMesh()->SetSkeletalMesh(AssetLoaded);
+	//USkeletalMesh* AssetLoaded = Cast<USkeletalMesh>(AssetStreamingHandle->GetLoadedAsset());
+	//AssetStreamingHandle.Reset();
+	//ABCHECK(nullptr != AssetLoaded);
+	//GetMesh()->SetSkeletalMesh(AssetLoaded);
 
 	SetWarriorState(ECharacterState::READY);
 
@@ -536,7 +535,7 @@ void ANetCharacter::PlayAttackAnim()
 void ANetCharacter::PlayTakeDamageAnim()
 {
 	//[TODO] Dead Anim���� ���� �ʿ�
-	return MyAnim->PlayAttackMontage();
+	return MyAnim->PlayDamagedMontage();
 }
 
 bool ANetCharacter::GetIsAttacking()

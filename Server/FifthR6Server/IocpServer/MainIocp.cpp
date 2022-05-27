@@ -159,6 +159,7 @@ void MainIocp::WorkerThread()
 			continue;
 		}
 
+
 		pSocketInfo->dataBuf.len = recvBytes;
 
 		if (recvBytes == 0)
@@ -349,7 +350,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int session
 			client->dataBuf.buf = client->messageBuffer;
 			client->dataBuf.len = SendStream.str().length();
 
-			printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
+			//printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
 			Send(client);
 		}
 	}
@@ -452,6 +453,12 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 	SendStream << CharactersInfo << endl;
 
 	// !!! �߿� !!! data.buf ���� ���� �����͸� ���� �����Ⱚ�� ���޵� �� ����
+	auto iter = CharactersInfo.players.begin();
+	//while (iter != CharactersInfo.players.end()) {
+	//	cout << "[" << iter->first << ","
+	//		<< iter->second.X << "]\n";
+	//	++iter;
+	//}
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();

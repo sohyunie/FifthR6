@@ -18,7 +18,7 @@ ANetPlayerController::ANetPlayerController()
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
 	Socket->InitSocket();
-	bIsConnected = Socket->Connect("127.0.0.1", 8000);
+	bIsConnected = Socket->Connect("14.51.90.214", 8080);
 	if (bIsConnected)
 	{
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
@@ -59,6 +59,8 @@ bool ANetPlayerController::GetIsMaster()
 {
 	if (ci == nullptr)
 		return true;
+
+	UE_LOG(LogClass, Log, TEXT("%s"), ci->players[SessionId].IsMaster ? "1" : "0");
 	return ci->players[SessionId].IsMaster;
 }
 
@@ -208,6 +210,8 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 		ci = ci_;
 		for (auto& player : ci->players)
 		{
+			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
+
 			if (player.second.IsAttacking)
 			{
 				attackSessionID = player.second.SessionId;
@@ -240,6 +244,13 @@ void ANetPlayerController::RecvMonsterSet(MonsterSet* MonstersInfo_)
 	if (MonstersInfo_ != nullptr)
 	{
 		MonsterSetInfo = MonstersInfo_;
+		//for (auto& monster : MonsterSetInfo->monsters)
+		//{
+		//	if (monster.second.IsAttacking)
+		//	{
+		//		attackMonsterID = monster.second.Id;
+		//	}
+		//}
 	}
 }
 
@@ -358,12 +369,15 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 
 			cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
+			if (info->UELevel == 0) { // 오류 데이터 검증
+				UE_LOG(LogClass, Log, TEXT("---[%d]---. %f//%d"), info->SessionId, OtherPlayer->GetHealthValue(), info->UELevel);
+				continue;
+			}
 
 			if (info->IsAlive)
 			{
 				if (OtherPlayer->GetHealthValue() != info->HealthValue)
 				{
-					UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), info->SessionId, OtherPlayer->GetHealthValue(), info->HealthValue);
 					// 피격 파티클 소환
 					FTransform transform(OtherPlayer->GetActorLocation());
 					//UGameplayStatics::SpawnEmitterAtLocation(
@@ -408,6 +422,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 			else
 			{
+				UE_LOG(LogClass, Log, TEXT("[%d] Die Info. %f"), info->SessionId, info->HealthValue, info->X);
 				UE_LOG(LogClass, Log, TEXT("other player dead."));
 				FTransform transform(character->GetActorLocation());
 				UGameplayStatics::SpawnEmitterAtLocation(
@@ -425,9 +440,13 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 {
 	auto tempPlayer = Cast<ANetCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	UWorld* const world = GetWorld();
-
+	if (info.UELevel == 0) { // 오류 데이터 검증
+		UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), info.SessionId, info.UELevel);
+		return;
+	}
 	if (!info.IsAlive)
 	{
+		UE_LOG(LogClass, Log, TEXT("[%d] Die Info. %f"), info.SessionId, info.HealthValue, info.X);
 		UE_LOG(LogClass, Log, TEXT("Player Die"));
 		FTransform transform(tempPlayer->GetActorLocation());
 		UGameplayStatics::SpawnEmitterAtLocation(
@@ -508,19 +527,7 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-
 				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-				//switch (PlayerInfos->players.size()) {
-				//case 0:
-				//	WhoToSpawn = AWarriorOfFire::StaticClass();
-				//	break;
-				//case 1:
-				//	WhoToSpawn = AWarriorOfWater::StaticClass();
-				//	break;
-				//case 2:
-				//	WhoToSpawn = AWarriorOfThunder::StaticClass();
-				//	break;
-				//}
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
@@ -556,13 +563,26 @@ void ANetPlayerController::UpdateMonsterSet()
 			if (monster)
 			{
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+				if (monsterInfo->ueLevel == 0)
+					continue;
 
 				FVector Location;
 				Location.X = monsterInfo->X;
 				Location.Y = monsterInfo->Y;
 				Location.Z = monsterInfo->Z;
 
-				//monster->SetTankHpRatio(monsterInfo->Health);
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
+
+				FRotator spawnRotation;
+				spawnRotation.Yaw = monsterInfo->Yaw;
+				spawnRotation.Pitch = monsterInfo->Pitch;
+				spawnRotation.Roll = monsterInfo->Roll;
+
+				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -579,14 +599,51 @@ void ANetPlayerController::UpdateMonsterSet()
 			AATank* monster = Cast<AATank>(actor);
 			if (monster)
 			{
+				if (MonsterSetInfo == nullptr)
+				{
+					continue;
+				}
+				else
+				{
+					if (MonsterSetInfo->monsters.size() != 0)
+					{
+						if (monster == NULL) {
+							UE_LOG(LogClass, Log, TEXT("aaa"));
+							continue;
+						}
+						if (monster->Id == NULL) {
+							UE_LOG(LogClass, Log, TEXT("bbb"));
+							continue;
+						}
+						if (!MonsterSetInfo->monsters.count(monster->Id)) {
+							UE_LOG(LogClass, Log, TEXT("ccc"));
+							continue;
+						}
+					}
+				}
+
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
+				if (monsterInfo->ueLevel == 0)
+					continue;
 
 				FVector Location;
 				Location.X = monsterInfo->X;
 				Location.Y = monsterInfo->Y;
 				Location.Z = monsterInfo->Z;
 
+				FVector CharacterVelocity;
+				CharacterVelocity.X = monsterInfo->VX;
+				CharacterVelocity.Y = monsterInfo->VY;
+				CharacterVelocity.Z = monsterInfo->VZ;
+
+				FRotator spawnRotation;
+				spawnRotation.Yaw = monsterInfo->Yaw;
+				spawnRotation.Pitch = monsterInfo->Pitch;
+				spawnRotation.Roll = monsterInfo->Roll;
+
 				monster->SetTankHpRatio(monsterInfo->Health);
+				monster->AddMovementInput(CharacterVelocity);
+				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);
 
 				if (monsterInfo->IsAttacking)
@@ -608,6 +665,8 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
 		for (auto actor : BossMonsters)
 		{
+			if (MonsterInfo->ueLevel == 0)
+				continue;
 			ABossTank* Monster = Cast<ABossTank>(actor);
 			if (Monster && Monster->Id == MonsterInfo->Id)
 			{
@@ -627,10 +686,13 @@ void ANetPlayerController::DestroyMonster()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
 		for (auto Actor : SpawnedMonsters)
 		{
+			if (MonsterInfo->ueLevel == 0)
+				continue;
 			 AATank* Monster = Cast<AATank>(Actor);
 			 if (Monster && Monster->Id == MonsterInfo->Id)
 			 {
 				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
 				  //Monster->SetTankHpRatio(MonsterInfo->Health);
 				  Monster->PlayTakeDamageAnim();
@@ -684,6 +746,17 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+
+
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
+
+
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
+
 				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
@@ -712,6 +785,17 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
 				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+
+
+				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
+				sendMonsterSet.monsters[monster->Id].VY = Velocity.Y;
+				sendMonsterSet.monsters[monster->Id].VZ = Velocity.Z;
+
+
+				sendMonsterSet.monsters[monster->Id].Yaw = Rotation.Yaw;
+				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
+				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
+
 				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				sendMonsterSet.monsters[monster->Id].ueLevel = 1;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
@@ -724,6 +808,28 @@ bool ANetPlayerController::UpdateMonster()
 	}
 	else {
 		// 몬스터 업데이트
+		if (isTankActionStart == false)
+		{
+			WhoToSpawn = AWarriorOfWater::StaticClass();
+
+			TArray<AActor*> BossMonsters;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossTank::StaticClass(), BossMonsters);
+			for (auto actor : BossMonsters)
+			{
+				ABossTank* monster = Cast<ABossTank>(actor);
+				monster->StartAction();
+			}
+
+			TArray<AActor*> SpawnedMonsters;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AATank::StaticClass(), SpawnedMonsters);
+			for (auto actor : SpawnedMonsters)
+			{
+				AATank* monster = Cast<AATank>(actor);
+				monster->StartAction();
+			}
+			isTankActionStart = true;
+		}
+
 		UpdateMonsterSet();
 		return true;
 	}

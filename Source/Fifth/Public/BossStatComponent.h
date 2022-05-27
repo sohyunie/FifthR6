@@ -43,4 +43,5 @@ private:
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 		float CurrentHP;
 		
+	bool isDead = false;
 };
