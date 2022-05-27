@@ -607,11 +607,11 @@ void ANetPlayerController::UpdateMonsterSet()
 				{
 					if (MonsterSetInfo->monsters.size() != 0)
 					{
+						if (monster == NULL)
+							continue;
+						if (monster->Id == NULL)
+							continue;
 						if (!MonsterSetInfo->monsters.count(monster->Id)) {
-							if (monster == NULL)
-								continue;
-							if (monster->Id == NULL)
-								continue;
 						}
 					}
 				}
