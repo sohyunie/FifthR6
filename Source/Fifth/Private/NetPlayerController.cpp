@@ -599,9 +599,12 @@ void ANetPlayerController::UpdateMonsterSet()
 			AATank* monster = Cast<AATank>(actor);
 			if (monster)
 			{
-				if (!MonsterSetInfo->monsters.count(monster->Id)) {
-					cout << "No Exists!" << endl;
-					continue;
+				if (MonsterSetInfo == nullptr)
+				{
+					if (!MonsterSetInfo->monsters.count(monster->Id)) {
+						cout << "No Exists!" << endl;
+						continue;
+					}
 				}
 
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
