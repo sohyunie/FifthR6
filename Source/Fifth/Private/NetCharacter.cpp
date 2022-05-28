@@ -309,7 +309,7 @@ float ANetCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 
-	WarriorStat->SetDamage(FinalDamage);
+	//WarriorStat->SetDamage(FinalDamage);
 
 	return FinalDamage;
 }
