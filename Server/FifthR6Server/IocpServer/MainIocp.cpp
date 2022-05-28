@@ -306,11 +306,12 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		LevelMaster[info.UELevel].push(info.SessionId);
 
 		pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
-		printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+		//printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 	}
 	pinfo->UELevel = info.UELevel;
 	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 
+	printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 	stringstream SendStream;
 	// ����ȭ	
 	SendStream << EPacketType::RECV_PLAYER << endl;
@@ -492,9 +493,9 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << monsterSet << endl;
 
 	MonstersInfo = monsterSet;
-	//printf_s("[INFO]SyncMonster %f \n", MonstersInfo.monsters[2].Health);
 	
 	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
+	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
 	LeaveCriticalSection(&csMonsters);
 }
 
