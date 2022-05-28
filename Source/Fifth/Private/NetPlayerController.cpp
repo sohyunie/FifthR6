@@ -209,7 +209,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 	if (ci_ != nullptr)
 	{
 		ci = ci_;
-		UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo. %d"), ci->players.size());
+		UE_LOG(LogClass, Log, TEXT("RecvWorldInfo. %d"), ci->players.size());
 		for (auto& player : ci->players)
 		{
 			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
@@ -504,6 +504,7 @@ void ANetPlayerController::UpdateNewPlayer()
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 
+	UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), PlayerInfos->players.size());
 	for (const auto& kvp : PlayerInfos->players)
 	{
 		if (kvp.first == SessionId)
@@ -514,6 +515,7 @@ void ANetPlayerController::UpdateNewPlayer()
 			continue;
 		if (player->IsAlive)
 		{
+			UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), player->SessionId);
 			auto Actor = FindActorBySessionId(SpawnedCharacters, player->SessionId);
 			if (Actor == nullptr)
 			{
@@ -532,7 +534,6 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-				UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), PlayerInfos->players.size());
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();

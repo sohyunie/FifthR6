@@ -274,6 +274,8 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	EnterCriticalSection(&csPlayers);
 
+	if (CharactersInfo.players.count(info.SessionId) == 0)
+		return;
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
 	//printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
 
@@ -319,7 +321,8 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	OtherBroadcast(SendStream, pinfo->UELevel, pinfo->SessionId);
 	pinfo->IsAttacking = false;
-                                                                                                	LeaveCriticalSection(&csPlayers);
+
+    LeaveCriticalSection(&csPlayers);
 	//WriteCharactersInfoToSocket(pSocket);
 	//Send(pSocket);
 }
@@ -328,6 +331,8 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int session
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
+		if (CharactersInfo.players.count(kvp.first) == 0)
+			continue;
 		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			if (CharactersInfo.players[kvp.first].SessionId == sessionID)
 				continue;
@@ -369,6 +374,8 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	RecvStream >> DamagedSessionId;
 	//printf_s("[INFO] %d ������ ���� \n", DamagedSessionId);
 	EnterCriticalSection(&csPlayers);
+	if (CharactersInfo.players.count(DamagedSessionId) == 0)
+		return;
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
