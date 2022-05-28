@@ -255,10 +255,10 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 
-	LevelMaster[info.UELevel].push(info.SessionId);
+	//LevelMaster[info.UELevel].push(info.SessionId);
 
-	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
-	printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+	//pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
+	//printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 
 	SessionSocket[info.SessionId] = pSocket->socket;
 
