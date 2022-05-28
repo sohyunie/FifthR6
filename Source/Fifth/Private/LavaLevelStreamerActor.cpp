@@ -41,6 +41,6 @@ void ALavaLevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedCompo
 		ANetCharacter* NetCharacter = Cast<ANetCharacter>(MyCharacter);
 		FLatentActionInfo LatentInfo;
 		UGameplayStatics::LoadStreamLevel(this, LevelToLoad, true, true, LatentInfo);
-		NetCharacter->ChangeUELevel();
+		NetCharacter->ChangeUELevel(3);
 	}
 }

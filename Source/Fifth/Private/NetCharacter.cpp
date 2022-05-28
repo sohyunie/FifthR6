@@ -555,7 +555,7 @@ float ANetCharacter::GetHealthValue()
 	return HealthValue;
 }
 
-void ANetCharacter::ChangeUELevel()
+void ANetCharacter::ChangeUELevel(int level)
 {
-	UELevel++;
+	UELevel = level;
 }
