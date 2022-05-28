@@ -143,7 +143,7 @@ public:
 		int nPlayers = 0;
 		int SessionId = 0;
 		cCharacter Player;
-		info.players.clear();
+		//info.players.clear();
 
 		stream >> nPlayers;
 		for (int i = 0; i < nPlayers; i++)

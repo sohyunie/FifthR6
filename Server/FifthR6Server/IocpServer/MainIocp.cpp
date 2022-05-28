@@ -328,7 +328,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int session
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
-		if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
+		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			if (CharactersInfo.players[kvp.first].SessionId == sessionID)
 				continue;
 			if(CharactersInfo.players[sessionID].IsAttacking)
@@ -340,7 +340,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int session
 
 			//printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
 			Send(client);
-		}
+		//}
 	}
 	delete(client);
 }
@@ -443,7 +443,7 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 	SendStream << CharactersInfo << endl;
 
 	// !!! �߿� !!! data.buf ���� ���� �����͸� ���� �����Ⱚ�� ���޵� �� ����
-	auto iter = CharactersInfo.players.begin();
+	//auto iter = CharactersInfo.players.begin();
 	//while (iter != CharactersInfo.players.end()) {
 	//	cout << "[" << iter->first << ","
 	//		<< iter->second.X << "]\n";
