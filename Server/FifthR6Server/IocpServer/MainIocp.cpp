@@ -306,12 +306,12 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		LevelMaster[info.UELevel].push(info.SessionId);
 
 		pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
-		//printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+		printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 	}
 	pinfo->UELevel = info.UELevel;
 	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 
-	printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+	//printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 	stringstream SendStream;
 	// ����ȭ	
 	SendStream << EPacketType::RECV_PLAYER << endl;
@@ -342,6 +342,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int session
 			Send(client);
 		}
 	}
+	delete(client);
 }
 void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
@@ -430,6 +431,7 @@ void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 			Send(client);
 		}
 	}
+	delete(client);
 }
 
 void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
