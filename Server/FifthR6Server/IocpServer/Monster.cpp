@@ -6,8 +6,7 @@
 Monster::Monster()
 	:X(0), Y(0), Z(0),
 	Health(0),
-	bIsAttacking(false),
-	bIsTracking(false)
+	IsAttacking(false)
 {
 	// 고유 id 할당
 }
@@ -60,10 +59,10 @@ bool Monster::IsAlive()
 	return true;
 }
 
-bool Monster::IsAttacking()
-{
-	return bIsAttacking;
-}
+//bool Monster::IsAttacking()
+//{
+//	return IsAttacking;
+//}
 
 //bool Monster::IsPlayerInTraceRange(const cCharacter& target)
 //{

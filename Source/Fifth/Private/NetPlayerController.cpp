@@ -563,10 +563,10 @@ void ANetPlayerController::UpdateMonsterSet()
 			ABossTank* monster = Cast<ABossTank>(actor);
 			if (monster)
 			{
+				//UE_LOG(LogClass, Log, TEXT("monster ID : [%d]."), monster->Id);
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 				if (monsterInfo->UELevel == 0) {
-					UE_LOG(LogClass, Log, TEXT("monster : ---[%d]---."), monsterInfo->UELevel);
-					MonsterSetInfo->monsters.erase(monster->Id);
+					//MonsterSetInfo->monsters.erase(monster->Id);
 					continue;
 				}
 				FVector Location;
@@ -608,10 +608,11 @@ void ANetPlayerController::UpdateMonsterSet()
 				}
 				else
 				{
-					const Monster* monsterInfo = &MonsterSetInfo->monsters.at(monster->ID);
+					//UE_LOG(LogClass, Log, TEXT("monster ID : [%d]."), monster->ID);
+					const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->ID];
 					if (monsterInfo->UELevel == 0) {
-						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]---."), monsterInfo->UELevel);
-						MonsterSetInfo->monsters.erase(monster->ID);
+						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]--- size : (%d)"), monster->ID, MonsterSetInfo->monsters.size());
+						//MonsterSetInfo->monsters.erase(monster->ID);
 						continue;
 					}
 
@@ -738,7 +739,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].X = Location.X;
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+				//sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 
 
 				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
@@ -787,7 +788,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->ID].X = Location.X;
 				sendMonsterSet.monsters[monster->ID].Y = Location.Y;
 				sendMonsterSet.monsters[monster->ID].Z = Location.Z;
-				sendMonsterSet.monsters[monster->ID].Id = monster->ID;
+				//sendMonsterSet.monsters[monster->ID].Id = monster->ID;
 
 
 				sendMonsterSet.monsters[monster->ID].VX = Velocity.X;

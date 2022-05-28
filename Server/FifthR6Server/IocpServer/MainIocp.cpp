@@ -323,12 +323,12 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	//WriteCharactersInfoToSocket(pSocket);
 	//Send(pSocket);
 }
-void MainIocp::OtherBroadcast(stringstream& SendStream, int ueLevel, int sessionID)
+void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int sessionID)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
-		if (CharactersInfo.players[kvp.first].UELevel == ueLevel) {
+		if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			if (CharactersInfo.players[kvp.first].SessionId == sessionID)
 				continue;
 			if(CharactersInfo.players[sessionID].IsAttacking)
@@ -469,7 +469,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
-		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
+		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].UELevel);
 
 		MonstersInfo.monsters.erase(MonsterId);
 	}
@@ -480,7 +480,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
-		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].ueLevel);
+		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].UELevel);
 	}
 	LeaveCriticalSection(&csMonsters);
 }
@@ -488,17 +488,17 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	InitializeCriticalSection(&csMonsters);
-	MonsterSet monsterSet;
-	RecvStream >> monsterSet;
+	//MonsterSet monsterSet;
+	RecvStream >> MonstersInfo;
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
-	SendStream << monsterSet << endl;
+	SendStream << MonstersInfo << endl;
 
-	MonstersInfo = monsterSet;
-	
-	Broadcast(SendStream, monsterSet.monsters[0].ueLevel);
-	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
+	//MonstersInfo = monsterSet;
 	LeaveCriticalSection(&csMonsters);
+	
+	Broadcast(SendStream, MonstersInfo.monsters[0].UELevel);
+	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
 }
 
 void MainIocp::SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket)
