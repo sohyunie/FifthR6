@@ -3,7 +3,7 @@
 
 #include "BossDecorator_IsInRealAttack.h"
 #include "BossAIController.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBossDecorator_IsInRealAttack::UBossDecorator_IsInRealAttack()
@@ -41,7 +41,7 @@ bool UBossDecorator_IsInRealAttack::CalculateRawConditionValue(UBehaviorTreeComp
 	if (nullptr == ControllingPawn)
 		return false;
 
-	auto Target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABossAIController::TargetKey));
+	auto Target = Cast<ANetCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABossAIController::TargetKey));
 	if (nullptr == Target)
 		return false;
 
