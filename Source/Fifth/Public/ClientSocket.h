@@ -63,7 +63,7 @@ public:
 		stream << info.SessionId << endl;
 		stream << info.X << endl;
 		stream << info.Y << endl;
-		stream << info.Z << endl;
+		stream << info.Z << endl; 
 		stream << info.VX << endl;
 		stream << info.VY << endl;
 		stream << info.VZ << endl;
