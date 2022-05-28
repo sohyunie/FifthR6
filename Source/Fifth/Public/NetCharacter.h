@@ -65,7 +65,7 @@ public:
 	void PlayTakeDamageAnim();
 	void ChangeUELevel(int level);
 	bool GetIsAttacking();
-	int UELevel = 1;
+	int UELevel = 0;
 
 private:
 	void UpDown(float NewAxisValue);

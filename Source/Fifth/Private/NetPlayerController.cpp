@@ -766,8 +766,8 @@ bool ANetPlayerController::UpdateMonster()
 		for (auto actor : SpawnedMonsters)
 		{
 			AATank* monster = Cast<AATank>(actor);
-			UE_LOG(LogTemp, Warning, TEXT("monster->UELevel : %d"), ci->players[SessionId].UELevel)
-			UE_LOG(LogTemp, Warning, TEXT("ci->players[SessionId].UELevel : %d"), ci->players[SessionId].UELevel);
+			//UE_LOG(LogTemp, Warning, TEXT("monster->UELevel : %d"), ci->players[SessionId].UELevel)
+			//UE_LOG(LogTemp, Warning, TEXT("ci->players[SessionId].UELevel : %d"), ci->players[SessionId].UELevel);
 
 			if (monster->UELevel != ci->players[SessionId].UELevel)
 				continue;
