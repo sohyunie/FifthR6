@@ -209,6 +209,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 	if (ci_ != nullptr)
 	{
 		ci = ci_;
+		UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo. %d"), ci->players.size());
 		for (auto& player : ci->players)
 		{
 			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
@@ -509,6 +510,8 @@ void ANetPlayerController::UpdateNewPlayer()
 			continue;
 
 		const cCharacter* player = &kvp.second;
+		if (player->UELevel == 0)
+			continue;
 		if (player->IsAlive)
 		{
 			auto Actor = FindActorBySessionId(SpawnedCharacters, player->SessionId);

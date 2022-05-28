@@ -187,12 +187,12 @@ void MainIocp::WorkerThread()
 			}
 			else
 			{
-				printf_s("[ERROR] ���� ���� ���� ��Ŷ : %d\n", PacketType);
+				printf_s("[ERROR] PacketType : %d\n", PacketType);
 			}
 		}
 		catch (const std::exception& e)
 		{
-			printf_s("[ERROR] �� �� ���� ���� �߻� : %s\n", e.what());
+			printf_s("[ERROR] What : %s\n", e.what());
 		}
 		
 		// Ŭ���̾�Ʈ ���
@@ -208,7 +208,7 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	RecvStream >> Id;
 	RecvStream >> Pw;
 
-	printf_s("[INFO] �α��� �õ� {%s}/{%s}\n", Id, Pw);
+	printf_s("[INFO] Login {%s}/{%s}\n", Id, Pw);
 
 	stringstream SendStream;
 	SendStream << EPacketType::LOGIN << endl;
@@ -319,7 +319,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	OtherBroadcast(SendStream, pinfo->UELevel, pinfo->SessionId);
 	pinfo->IsAttacking = false;
-	LeaveCriticalSection(&csPlayers);
+                                                                                                	LeaveCriticalSection(&csPlayers);
 	//WriteCharactersInfoToSocket(pSocket);
 	//Send(pSocket);
 }
@@ -348,7 +348,7 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	int SessionId;
 	RecvStream >> SessionId;
-	printf_s("[INFO] (%d)�α׾ƿ� ��û ����\n", SessionId);
+	printf_s("[INFO] (%d) Log out\n", SessionId);
 	EnterCriticalSection(&csPlayers);
 	CharactersInfo.players[SessionId].IsAlive = false;
 	if (CharactersInfo.players[SessionId].IsMaster)
@@ -357,7 +357,7 @@ void MainIocp::LogoutCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	}
 
 	SessionSocket.erase(SessionId);
-	printf_s("[INFO] Ŭ���̾�Ʈ �� : %d\n", SessionSocket.size());
+	printf_s("[INFO] Size : %d\n", SessionSocket.size());
 	WriteCharactersInfoToSocket(pSocket);
 	LeaveCriticalSection(&csPlayers);
 }
@@ -367,7 +367,7 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	// �ǰ� ó���� ���� ���̵�
 	int DamagedSessionId;
 	RecvStream >> DamagedSessionId;
-	printf_s("[INFO] %d ������ ���� \n", DamagedSessionId);
+	//printf_s("[INFO] %d ������ ���� \n", DamagedSessionId);
 	EnterCriticalSection(&csPlayers);
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
