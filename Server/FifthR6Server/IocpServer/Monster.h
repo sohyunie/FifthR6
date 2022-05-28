@@ -103,7 +103,7 @@ public:
 		int nMonsters = 0;
 		int PrimaryId = 0;
 		Monster monster;
-		info.monsters.clear();
+		//info.monsters.clear();
 
 		stream >> nMonsters;
 		for (int i = 0; i < nMonsters; i++)

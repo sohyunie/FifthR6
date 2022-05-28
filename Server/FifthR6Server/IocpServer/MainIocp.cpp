@@ -462,6 +462,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 
 	InitializeCriticalSection(&csMonsters);
+	MonstersInfo.monsters[MonsterId].Id = MonsterId;
 	if (!MonstersInfo.monsters[MonsterId].IsAlive())
 	{
 		printf_s("[INFO] (%d) DESTROY_MONSTER \n", MonsterId);

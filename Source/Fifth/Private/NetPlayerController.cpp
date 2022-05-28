@@ -320,9 +320,10 @@ bool ANetPlayerController::UpdateWorldInfo()
 	{
 		for (auto& player : ci->players)
 		{
-			if (player.first == SessionId || !player.second.IsAlive)
+			if (player.first == SessionId || !player.second.IsAlive || !player.second.UELevel == 0)
 				continue;
 
+			UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
 			FVector spawnLocation;
 			spawnLocation.X = player.second.X;
 			spawnLocation.Y = player.second.Y;
@@ -528,7 +529,7 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-				UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
+				UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), PlayerInfos->players.size());
 
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
@@ -621,7 +622,7 @@ void ANetPlayerController::UpdateMonsterSet()
 
 					const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->ID];
 					if (monsterInfo->UELevel == 0) {
-						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]--- size : (%d)"), monster->ID, MonsterSetInfo->monsters.size());
+						//UE_LOG(LogClass, Log, TEXT("monster : ---[%d]--- size : (%d)"), monster->ID, MonsterSetInfo->monsters.size());
 						//MonsterSetInfo->monsters.erase(monster->ID);
 						continue;
 					}
@@ -749,7 +750,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].X = Location.X;
 				sendMonsterSet.monsters[monster->Id].Y = Location.Y;
 				sendMonsterSet.monsters[monster->Id].Z = Location.Z;
-				//sendMonsterSet.monsters[monster->Id].Id = monster->Id;
+				sendMonsterSet.monsters[monster->Id].Id = monster->Id;
 
 
 				sendMonsterSet.monsters[monster->Id].VX = Velocity.X;
@@ -794,11 +795,11 @@ bool ANetPlayerController::UpdateMonster()
 				const auto& Rotation = monster->GetActorRotation();
 				const auto& Velocity = monster->GetVelocity();
 
+				sendMonsterSet.monsters[monster->ID].Id = monster->ID;
 
 				sendMonsterSet.monsters[monster->ID].X = Location.X;
 				sendMonsterSet.monsters[monster->ID].Y = Location.Y;
 				sendMonsterSet.monsters[monster->ID].Z = Location.Z;
-				//sendMonsterSet.monsters[monster->ID].Id = monster->ID;
 
 
 				sendMonsterSet.monsters[monster->ID].VX = Velocity.X;
