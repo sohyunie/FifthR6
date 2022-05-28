@@ -55,7 +55,7 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
-	int UELevel = 0;
+	int UELevel = 1;
 	bool IsMaster;
 
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
