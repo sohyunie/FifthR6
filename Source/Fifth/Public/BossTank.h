@@ -25,6 +25,10 @@ protected:
 	void SetControlMode(int32 ControlMode);
 
 public:	
+	UPROPERTY(EditAnywhere, Category = ID)
+		int32 ID;
+	UPROPERTY(EditAnywhere, Category = UELevel)
+		int32 UELevel;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
