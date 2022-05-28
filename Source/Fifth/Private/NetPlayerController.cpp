@@ -608,9 +608,7 @@ void ANetPlayerController::UpdateMonsterSet()
 				}
 				else
 				{
-					if (monster->ID < 0 || monster->ID >50)
-						continue;
-					const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->ID];
+					const Monster* monsterInfo = &MonsterSetInfo->monsters.at(monster->ID);
 					if (monsterInfo->UELevel == 0) {
 						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]---."), monsterInfo->UELevel);
 						MonsterSetInfo->monsters.erase(monster->ID);
