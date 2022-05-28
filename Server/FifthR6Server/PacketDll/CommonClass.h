@@ -110,6 +110,7 @@ public:
 
 	friend ostream& operator<<(ostream &stream, cCharactersInfo& info)
 	{
+		//cout << "cCharactersInfo size : " << info.players.size() << endl;
 		stream << info.players.size() << endl;
 		for (auto& kvp : info.players)
 		{
@@ -127,6 +128,7 @@ public:
 		cCharacter Player;
 		info.players.clear();
 
+		//cout << "cCharactersInfo nPlayers : " << nPlayers << endl;
 		stream >> nPlayers;
 		for (int i = 0; i < nPlayers; i++)
 		{

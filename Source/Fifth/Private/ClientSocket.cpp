@@ -154,6 +154,7 @@ void ClientSocket::SendPlayer(cCharacter& info)
 
 cCharactersInfo* ClientSocket::RecvCharacterInfo(stringstream& RecvStream)
 {
+	//CharactersInfo.players.clear();
 	//UE_LOG(LogClass, Log, TEXT("ClientSocket RecvCharacterInfo"));
 	// 서버에서 캐릭터 정보를 얻어 반환		
 	RecvStream >> CharactersInfo;
@@ -171,7 +172,8 @@ string* ClientSocket::RecvChat(stringstream& RecvStream)
 
 cCharactersInfo* ClientSocket::RecvNewPlayer(stringstream& RecvStream)
 {
-	UE_LOG(LogClass, Log, TEXT("ClientSocket RecvNewPlayer"));
+	NewPlayer.players.clear();
+	UE_LOG(LogClass, Log, TEXT("Client Socket RecvNewPlayer"));
 	RecvStream >> NewPlayer;
 	return &NewPlayer;
 }
