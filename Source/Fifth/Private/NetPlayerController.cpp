@@ -566,8 +566,7 @@ void ANetPlayerController::UpdateMonsterSet()
 				//UE_LOG(LogClass, Log, TEXT("monster ID : [%d]."), monster->Id);
 				const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->Id];
 				if (monsterInfo->UELevel == 0) {
-					UE_LOG(LogClass, Log, TEXT("monster : ---[%d]---."), monsterInfo->UELevel);
-					MonsterSetInfo->monsters.erase(monster->Id);
+					//MonsterSetInfo->monsters.erase(monster->Id);
 					continue;
 				}
 				FVector Location;
@@ -612,8 +611,8 @@ void ANetPlayerController::UpdateMonsterSet()
 					//UE_LOG(LogClass, Log, TEXT("monster ID : [%d]."), monster->ID);
 					const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->ID];
 					if (monsterInfo->UELevel == 0) {
-						UE_LOG(LogClass, Log, TEXT("monster Level 0 : ---[%d]---."), monster->ID);
-						MonsterSetInfo->monsters.erase(monster->ID);
+						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]--- size : (%d)"), monster->ID, MonsterSetInfo->monsters.size());
+						//MonsterSetInfo->monsters.erase(monster->ID);
 						continue;
 					}
 

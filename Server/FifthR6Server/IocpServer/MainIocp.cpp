@@ -497,7 +497,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	//MonstersInfo = monsterSet;
 	LeaveCriticalSection(&csMonsters);
 	
-	//Broadcast(SendStream, monsterSet.monsters[0].UELevel);
+	Broadcast(SendStream, MonstersInfo.monsters[0].UELevel);
 	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
 }
 
