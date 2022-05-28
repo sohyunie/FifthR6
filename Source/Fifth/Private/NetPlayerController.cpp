@@ -722,6 +722,8 @@ bool ANetPlayerController::UpdateMonster()
 		for (auto actor : BossMonsters)
 		{
 			ABossTank* monster = Cast<ABossTank>(actor);
+			if (ci->players[SessionId].UELevel != monster->UELevel)
+				continue;
 			if (monster->isMasterStartAction == false)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("monster->StartAction()"));
@@ -750,8 +752,10 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->Id].Pitch = Rotation.Pitch;
 				sendMonsterSet.monsters[monster->Id].Roll = Rotation.Roll;
 
+				sendMonsterSet.monsters[monster->Id].UELevel = monster->UELevel;
+
 				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
-				sendMonsterSet.monsters[monster->Id].UELevel = ci->players[SessionId].UELevel;
+				//sendMonsterSet.monsters[monster->Id].UELevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
 			}
 		}
@@ -792,6 +796,8 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->ID].Yaw = Rotation.Yaw;
 				sendMonsterSet.monsters[monster->ID].Pitch = Rotation.Pitch;
 				sendMonsterSet.monsters[monster->ID].Roll = Rotation.Roll;
+
+				sendMonsterSet.monsters[monster->ID].UELevel = monster->UELevel;
 
 				sendMonsterSet.monsters[monster->ID].Health = monster->GetTankHpRatio();
 				//sendMonsterSet.monsters[monster->ID].UELevel = 1;
