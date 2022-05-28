@@ -17,7 +17,7 @@ public:
 	// 살아있는지 여부
 	bool IsAlive();
 	// 공격중인지 여부
-	bool IsAttacking();
+	//bool IsAttacking();
 	// 플레이어가 추격 범위에 있는지
 	bool IsPlayerInTraceRange(const cCharacter& target);
 	// 플레이어가 타격 범위에 있는지
@@ -38,8 +38,8 @@ public:
 		stream << info.Roll << endl;
 		stream << info.Health << endl;
 		stream << info.Id << endl;
-		stream << info.bIsAttacking << endl;
-		stream << info.ueLevel << endl;
+		stream << info.IsAttacking << endl;
+		stream << info.UELevel << endl;
 
 		return stream;
 	}
@@ -57,8 +57,8 @@ public:
 		stream >> info.Roll;
 		stream >> info.Health;
 		stream >> info.Id;
-		stream >> info.bIsAttacking;
-		stream >> info.ueLevel;
+		stream >> info.IsAttacking;
+		stream >> info.UELevel;
 
 		return stream;
 	}
@@ -74,11 +74,11 @@ public:
 	float Roll;
 	float	Health;			// 체력
 	int		Id;				// 고유 id
-	bool	bIsAttacking;	// 공격중인지
-	int		ueLevel;
+	bool	IsAttacking;	// 공격중인지
+	int		UELevel;
 
 private:
-	bool	bIsTracking;	// 추격중인지
+	//bool	bIsTracking;	// 추격중인지
 };
 
 class MonsterSet
