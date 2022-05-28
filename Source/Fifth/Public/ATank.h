@@ -27,8 +27,9 @@ public:
 	void StartAction();
 	bool GetIsAttacking();
 
-	int		Id;				// 고유 id
-	bool isStartAction;
+	//int		Id;				// 고유 id
+	bool isStartAction = false;
+	bool isMasterStartAction = false;
 
 
 protected:
@@ -39,6 +40,11 @@ protected:
 public:	
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HPBarWidget;
+	UPROPERTY(EditAnywhere, Category = ID)
+		int32 ID;
+	UPROPERTY(EditAnywhere, Category = UELevel)
+		int32 UELevel;
+
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

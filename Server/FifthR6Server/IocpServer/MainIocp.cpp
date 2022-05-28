@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <string>
+#include <queue>
 
 // static ���� �ʱ�ȭ
 float MainIocp::HitPoint = 0.1f;
@@ -13,7 +14,7 @@ cCharactersInfo MainIocp::CharactersInfo;
 CRITICAL_SECTION MainIocp::csPlayers;
 CRITICAL_SECTION MainIocp::csMonsters;
 MonsterSet MainIocp::MonstersInfo;
-map<int, int> LevelMaster;
+map<int, queue<int>> LevelMaster;
 
 unsigned int WINAPI CallWorkerThread(LPVOID p)
 {
@@ -227,8 +228,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 
 	printf_s(RecvStream.str().c_str());
 
-	printf_s("[INFO][%d]ĳ���� ��� - X : [%f], Y : [%f], Z : [%f], Yaw : [%f], Alive : [%d], Health : [%f], UELevel : [%d]\n",
-		info.SessionId, info.X, info.Y, info.Z, info.Yaw, info.IsAlive, info.HealthValue, info.UELevel);
+	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
 	EnterCriticalSection(&csPlayers);
 
@@ -255,28 +255,12 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 
-	if (LevelMaster.find(info.UELevel) == LevelMaster.end())
-	{
-		printf_s("���� �����;� : %d\n", info.SessionId);
+	LevelMaster[info.UELevel].push(info.SessionId);
 
-		LevelMaster[info.UELevel] = info.SessionId;
-		pinfo->IsMaster = true;
-	}
-	else {
-		if (LevelMaster[info.UELevel] == pinfo->SessionId)
-		{
-			pinfo->IsMaster = true;
-		}
-		else
-		{
-			pinfo->IsMaster = false;
-		}
-	}
-
+	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
+	printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 
 	SessionSocket[info.SessionId] = pSocket->socket;
-
-	printf_s("[INFO] Ŭ���̾�Ʈ �� : %d\n", SessionSocket.size());
 
 	//Send(pSocket);
 	BroadcastNewPlayer(CharactersInfo, info.UELevel);
@@ -310,19 +294,21 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	pinfo->VZ = info.VZ;
 
 	pinfo->IsAttacking = info.IsAttacking;
-	if (pinfo->IsAttacking == true) {
+	if (pinfo->IsAttacking == true)
+	{
 		cout << pinfo->SessionId << " Attack" << endl;
 	}
-	pinfo->UELevel = info.UELevel;
-	if (LevelMaster[info.UELevel] == pinfo->SessionId)
-	{
-		pinfo->IsMaster = true;
-	}
-	else
-	{
-		pinfo->IsMaster = false;
-	}
 
+	// Level이 변경하는 상황 발생.
+	if (pinfo->UELevel != info.UELevel)
+	{
+		LevelMaster[pinfo->UELevel].pop(); // 마스터면 자신은 Queue에서 빠짐
+		LevelMaster[info.UELevel].push(info.SessionId);
+
+		pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
+		printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+	}
+	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 
 	stringstream SendStream;
 	// ����ȭ	

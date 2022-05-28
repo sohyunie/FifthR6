@@ -435,7 +435,7 @@ void ANetCharacter::AttackCheck()
 			{
 				// �ǰݴ��� ���� ��ũ�� ����.
 				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				bool isMaster = PlayerController->HitMonster(Monster->Id);
+				bool isMaster = PlayerController->HitMonster(Monster->ID);
 				if (isMaster) {
 					ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
 					FDamageEvent DamageEvent;
@@ -553,4 +553,9 @@ void ANetCharacter::UpdateHealth(float _healthValue)
 float ANetCharacter::GetHealthValue()
 {
 	return HealthValue;
+}
+
+void ANetCharacter::ChangeUELevel()
+{
+	UELevel++;
 }

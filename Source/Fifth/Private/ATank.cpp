@@ -121,7 +121,7 @@ void AATank::BeginPlay()
 
 	CharacterAssetToLoad = DefaultSetting->TankAssets[AssetIndex];
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
-	Id = MyGameInstance->uniqueMonsterID++;
+	//Id = MyGameInstance->uniqueMonsterID++;
 
 	ABCHECK(nullptr != MyGameInstance);
 	AssetStreamingHandle = MyGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad,

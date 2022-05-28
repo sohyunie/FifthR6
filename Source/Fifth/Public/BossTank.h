@@ -16,6 +16,8 @@ class FIFTH_API ABossTank : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABossTank();
+	bool isStartAction = false;
+	bool isMasterStartAction = false;
 
 protected:
 	// Called when the game starts or when spawned
