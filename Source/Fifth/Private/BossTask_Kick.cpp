@@ -3,7 +3,7 @@
 
 #include "BossTask_Kick.h"
 #include "BossAIController.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "BossTank.h"
 
 

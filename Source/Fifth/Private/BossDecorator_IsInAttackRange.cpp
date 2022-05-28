@@ -3,7 +3,7 @@
 
 #include "BossDecorator_IsInAttackRange.h"
 #include "BossAIController.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "BossTank.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -34,7 +34,7 @@ bool UBossDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCom
 	if (nullptr == ControllingPawn)
 		return false;
 
-	auto Target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABossAIController::TargetKey));
+	auto Target = Cast<ANetCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABossAIController::TargetKey));
 	if (nullptr == Target)
 		return false;
 

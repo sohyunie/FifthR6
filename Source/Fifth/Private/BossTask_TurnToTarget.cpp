@@ -4,7 +4,7 @@
 #include "BossTask_TurnToTarget.h"
 #include "BossAIController.h"
 #include "BossTank.h"
-#include "MyCharacter.h"
+#include "NetCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBossTask_TurnToTarget::UBossTask_TurnToTarget()
@@ -21,7 +21,7 @@ EBTNodeResult::Type UBossTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& 
 	if (nullptr == ATank)
 		return EBTNodeResult::Failed;
 
-	auto Target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->
+	auto Target = Cast<ANetCharacter>(OwnerComp.GetBlackboardComponent()->
 		GetValueAsObject(ABossAIController::TargetKey));
 	if (nullptr == Target)
 		return EBTNodeResult::Failed;
