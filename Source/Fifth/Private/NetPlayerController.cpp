@@ -609,6 +609,16 @@ void ANetPlayerController::UpdateMonsterSet()
 				else
 				{
 					//UE_LOG(LogClass, Log, TEXT("monster ID : [%d]."), monster->ID);
+					if (MonsterSetInfo->monsters.size() == 0) {
+						UE_LOG(LogClass, Log, TEXT("size 0"));
+						continue;
+					}
+					
+					if (monster->ID < 0 || monster->ID > 200) {
+						UE_LOG(LogClass, Log, TEXT("error id number : %d"), monster->ID);
+						continue;
+					}
+
 					const Monster* monsterInfo = &MonsterSetInfo->monsters[monster->ID];
 					if (monsterInfo->UELevel == 0) {
 						UE_LOG(LogClass, Log, TEXT("monster : ---[%d]--- size : (%d)"), monster->ID, MonsterSetInfo->monsters.size());

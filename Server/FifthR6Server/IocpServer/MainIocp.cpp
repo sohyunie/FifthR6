@@ -422,14 +422,14 @@ void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
-		if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
+		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			client->socket = kvp.second;
 			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 			client->dataBuf.buf = client->messageBuffer;
 			client->dataBuf.len = SendStream.str().length();
 
 			Send(client);
-		}
+		//}
 	}
 	delete(client);
 }
