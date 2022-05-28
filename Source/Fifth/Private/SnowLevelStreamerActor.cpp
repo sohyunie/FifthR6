@@ -34,10 +34,13 @@ void ASnowLevelStreamerActor::Tick(float DeltaTime)
 void ASnowLevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ACharacter* MyCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
+	//ANetCharacter MyCharacter = Cast<ANetCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 	if (OtherActor == MyCharacter && LevelToLoad != "")
 	{
+		ANetCharacter* NetCharacter = Cast<ANetCharacter>(MyCharacter);
 		FLatentActionInfo LatentInfo;
 		UGameplayStatics::LoadStreamLevel(this, LevelToLoad, true, true, LatentInfo);
+		NetCharacter->ChangeUELevel();
 	}
 }

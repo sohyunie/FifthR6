@@ -226,7 +226,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	printf_s(RecvStream.str().c_str());
+	//printf_s(RecvStream.str().c_str());
 
 	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
@@ -308,6 +308,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 		printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 	}
+	pinfo->UELevel = info.UELevel;
 	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 
 	stringstream SendStream;

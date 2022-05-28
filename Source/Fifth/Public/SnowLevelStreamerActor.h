@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Fifth.h"
+#include "NetCharacter.h"
 #include "GameFramework/Actor.h"
 #include "SnowLevelStreamerActor.generated.h"
 
