@@ -312,6 +312,9 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
+	if (ci->players.empty())
+		return false;
+
 	UpdatePlayerInfo(ci->players[SessionId]);
 
 	// 다른 플레이어 업데이트
@@ -370,6 +373,9 @@ bool ANetPlayerController::UpdateWorldInfo()
 			{
 				continue;
 			}
+
+			if (ci->players.empty())
+				continue;
 
 			cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
 			if (info->UELevel == 0) { // 오류 데이터 검증
