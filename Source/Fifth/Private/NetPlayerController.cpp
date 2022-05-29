@@ -312,8 +312,10 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
-	if(!ci->IsLock)
+	if (!ci->IsLock) {
+		UE_LOG(LogClass, Log, TEXT("Is Lock updateworldinfo"));
 		UpdatePlayerInfo(ci->players[SessionId]);
+	}
 
 	// 다른 플레이어 업데이트
 	TArray<AActor*> SpawnedCharacters;
@@ -372,7 +374,10 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 
 			if (ci->IsLock)
+			{
+				UE_LOG(LogClass, Log, TEXT("Is Lock"));
 				continue;
+			}
 
 			cCharacter* info = &ci->players[OtherPlayer->GetSessionId()];
 			if (info->UELevel == 0) { // 오류 데이터 검증
