@@ -143,15 +143,18 @@ public:
 		int nPlayers = 0;
 		int SessionId = 0;
 		cCharacter Player;
-		info.players.clear();
+		map<int, cCharacter> newPlayer;
+		//info.players.clear();
 
 		stream >> nPlayers;
 		for (int i = 0; i < nPlayers; i++)
 		{
 			stream >> SessionId;
 			stream >> Player;
-			info.players[SessionId] = Player;
+			newPlayer[SessionId] = Player;
 		}
+
+		info.players = newPlayer;
 
 		return stream;
 	}

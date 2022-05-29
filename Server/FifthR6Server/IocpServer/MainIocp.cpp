@@ -188,6 +188,7 @@ void MainIocp::WorkerThread()
 			else
 			{
 				printf_s("[ERROR] PacketType : %d\n", PacketType);
+				printf_s("[ERROR] RecvStream : %s\n", RecvStream.str());
 			}
 		}
 		catch (const std::exception& e)
