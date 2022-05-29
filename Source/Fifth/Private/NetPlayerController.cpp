@@ -211,6 +211,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 {
 	if (ci_ != nullptr)
 	{
+		ci->players.clear();
 		ci = ci_;
 		UE_LOG(LogClass, Log, TEXT("RecvWorldInfo. %d"), ci->players.size());
 		for (auto& player : ci->players)
