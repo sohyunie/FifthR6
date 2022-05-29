@@ -76,6 +76,23 @@ private:
 	void Attack();
 	void SAttack();
 
+	void Cheat_One();
+	void Cheat_Two();
+	void Cheat_Three();
+	void Cheat_Four();
+	void Cheat_Five();
+	void Cheat_Six();
+	void Cheat_Seven();
+	void Cheat_Eight();
+	void Cheat_Nine();
+	void Cheat_Zero();
+	void Cheat_Y();
+	void Cheat_U();
+	void Cheat_I();
+	void Cheat_O();
+	void Cheat_P();
+	void Cheat_L();
+
 	UFUNCTION()
 		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
