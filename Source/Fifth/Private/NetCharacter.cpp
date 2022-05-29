@@ -236,11 +236,22 @@ void ANetCharacter::Tick(float DeltaTime)
 	{
 		//ABLOG(Warning, TEXT("TICK"));
 
-		//FVector MyCharacter = GetActorLocation() + (100.0f, 0.0f, 0.0f);
-		SetActorLocation(GetActorLocation() + GetControlRotation().Vector());
+		if (VelSum >= 200.0f) {
+			Velocity = 0.0f;
+			//ABLOG(Warning, TEXT("111"));
+		}
+		else {
+			VelSum += Velocity * 1.5f;
+			//ABLOG(Warning, TEXT("222"));
+		}
+		SetActorLocation(GetActorLocation() + GetControlRotation().Vector() * Velocity);
 
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Player Location: %s"), *MyCharacter.ToString()));
+	}
+	else {
+		Velocity = 20.0f;
+		VelSum = 0.f;
+		//ABLOG(Warning, TEXT("Vel3"));
 	}
 
 }
@@ -389,7 +400,10 @@ void ANetCharacter::PostInitializeComponents()
 		{
 			ABLOG(Warning, TEXT("OnbeChecked"));
 			//AttackStartComboState();
+
 			MyAnim->JumpToAttackMontageSection(CurrentCombo);
+			Velocity = 50.0f;
+			VelSum = 0.f;
 			beChecked = false;
 		}
 		else {
