@@ -11,6 +11,7 @@
 ClientSocket::ClientSocket()
 	:StopTaskCounter(0)
 {
+	CharactersInfo.players.clear();
 }
 
 
