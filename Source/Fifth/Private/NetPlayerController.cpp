@@ -313,7 +313,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 
 	// 플레이어 업데이트
 	if (!ci->IsLock) {
-		UE_LOG(LogClass, Log, TEXT("Is Lock updateworldinfo"));
+		//UE_LOG(LogClass, Log, TEXT("Is Lock updateworldinfo"));
 		UpdatePlayerInfo(ci->players[SessionId]);
 	}
 

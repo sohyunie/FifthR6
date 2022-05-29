@@ -145,6 +145,7 @@ public:
 		int SessionId = 0;
 		cCharacter Player;
 		info.IsLock = true;
+		UE_LOG(LogClass, Log, TEXT("Is Lock true"));
 		info.players.clear();
 
 		stream >> nPlayers;
@@ -155,6 +156,7 @@ public:
 			info.players[SessionId] = Player;
 		}
 		info.IsLock = false;
+		UE_LOG(LogClass, Log, TEXT("Is Lock false"));
 
 		return stream;
 	}
