@@ -55,6 +55,8 @@ ANetCharacter::ANetCharacter()
 	MaxCombo = 3;
 	AttackEndComboState();
 
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ANetCharacter::DeathOverlap);
+	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MyCharacter"));
 
 	AttackRange = 200.0f;
@@ -81,6 +83,16 @@ ANetCharacter::ANetCharacter()
 	isAlived = true;
 	bIsAttacking = false;
 }
+
+/*void ANetCharacter::DeathOverlap(UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("SetHP")));
+	ABLOG_S(Warning);
+	WarriorStat->SetHP(0);
+
+}*/
 
 // Called when the game starts or when spawned
 void ANetCharacter::BeginPlay()
