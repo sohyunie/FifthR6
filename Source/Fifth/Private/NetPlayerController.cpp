@@ -209,7 +209,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 	if (ci_ != nullptr)
 	{
 		ci = ci_;
-		UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo. %d"), ci->players.size());
+		UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo"), ci->players.size());
 		for (auto& player : ci->players)
 		{
 			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
@@ -510,8 +510,10 @@ void ANetPlayerController::UpdateNewPlayer()
 			continue;
 
 		const cCharacter* player = &kvp.second;
-		if (player->UELevel == 0)
-			continue;
+		//if (player->UELevel == 0) {
+		//	UE_LOG(LogClass, Log, TEXT("new player uelevel = 0."));
+		//	continue;
+		//}
 		if (player->IsAlive)
 		{
 			auto Actor = FindActorBySessionId(SpawnedCharacters, player->SessionId);
@@ -735,8 +737,8 @@ bool ANetPlayerController::UpdateMonster()
 		for (auto actor : BossMonsters)
 		{
 			ABossTank* monster = Cast<ABossTank>(actor);
-			if (ci->players[SessionId].UELevel != monster->UELevel)
-				continue;
+			//if (ci->players[SessionId].UELevel != monster->UELevel)
+			//	continue;
 			if (monster->isMasterStartAction == false)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("[Master] monster->StartAction()"));
@@ -782,8 +784,8 @@ bool ANetPlayerController::UpdateMonster()
 			//UE_LOG(LogTemp, Warning, TEXT("monster->UELevel : %d"), ci->players[SessionId].UELevel)
 			//UE_LOG(LogTemp, Warning, TEXT("ci->players[SessionId].UELevel : %d"), ci->players[SessionId].UELevel);
 
-			if (monster->UELevel != ci->players[SessionId].UELevel)
-				continue;
+			//if (monster->UELevel != ci->players[SessionId].UELevel)
+			//	continue;
 			
 			if (monster->isMasterStartAction == false)
 			{
