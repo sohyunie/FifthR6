@@ -430,7 +430,7 @@ void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
-		cout << kvp.first << endl;
+		//cout << kvp.first << endl;
 		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			client->socket = kvp.second;
 			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());

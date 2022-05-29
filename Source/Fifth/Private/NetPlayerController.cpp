@@ -209,7 +209,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 	if (ci_ != nullptr)
 	{
 		ci = ci_;
-		UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo"), ci->players.size());
+		//UE_LOG(LogClass, Log, TEXT("[%d] RecvWorldInfo"), ci->players.size());
 		for (auto& player : ci->players)
 		{
 			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
@@ -729,7 +729,7 @@ bool ANetPlayerController::UpdateMonster()
 		return false;
 
 	//UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
-	if (ci->players[SessionId].IsMaster)
+	if (!ci->players.empty() && ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
 		TArray<AActor*> BossMonsters;
