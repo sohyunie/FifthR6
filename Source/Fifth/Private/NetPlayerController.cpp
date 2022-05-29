@@ -312,8 +312,9 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
-	if (ci->IsLock) {
-		UE_LOG(LogClass, Log, TEXT("lock 중이야"));
+	if (ci->IsLock)
+	{
+		UE_LOG(LogClass, Log, TEXT("isLock"));
 		return false;
 	}
 
