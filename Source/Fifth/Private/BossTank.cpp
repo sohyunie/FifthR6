@@ -120,17 +120,29 @@ void ABossTank::PostInitializeComponents()
 float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	// Health Sync 마스터에서 담당
 	ABLOG(Warning, TEXT("BOSSDAMAGED"));
+	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController->GetIsMaster())
+	{
+		float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+		Damaged();
+		BossStat->SetDamage(FinalDamage);
+
+		ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+		UNiagaraSystem* HitEffect =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/Effect/Hit.Hit")));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+		return FinalDamage;
+	}
+
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 	Damaged();
 	BossStat->SetDamage(FinalDamage);
-
-	UNiagaraSystem* HitEffect =
-		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-			TEXT("/Game/Effect/Hit.Hit")));
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
-		this->GetActorLocation() + FVector(100.0f, 20.0f, 0.0f), this->GetActorRotation());
 
 	return FinalDamage;
 }
@@ -258,6 +270,26 @@ void ABossTank::AttackCheck()
 #endif
 
 
+	//if (bResult)
+	//{
+	//	//ABLOG(Warning, TEXT("1Ok!!"));
+	//	if (HitResult.Actor.IsValid())
+	//	{
+	//		ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+
+	//		FDamageEvent DamageEvent;
+	//		HitResult.Actor->TakeDamage(BossStat->GetAttack(), DamageEvent, GetController(), this);
+	//		//UParticleSystem* ElectricAttackBoomEffect =
+	//			//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+	//				//TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+	//		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
+	//			//this->GetActorLocation());
+
+	//		//ABLOG(Warning, TEXT("2Ok!!"));
+	//		Damaged();
+	//	}
+	//}
+
 	if (bResult)
 	{
 		//ABLOG(Warning, TEXT("1Ok!!"));
@@ -267,14 +299,15 @@ void ABossTank::AttackCheck()
 
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(BossStat->GetAttack(), DamageEvent, GetController(), this);
-			//UParticleSystem* ElectricAttackBoomEffect =
-				//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-					//TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
-			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ElectricAttackBoomEffect,
-				//this->GetActorLocation());
 
-			//ABLOG(Warning, TEXT("2Ok!!"));
-			Damaged();
+			// 플레이어 공격
+			ANetCharacter* HitCharacter = Cast<ANetCharacter>(HitResult.Actor);
+			if (HitCharacter && HitCharacter->GetSessionId() != -1)
+			{
+				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitCharacter(HitCharacter->GetSessionId(), HitCharacter);
+			}
+
 		}
 	}
 }

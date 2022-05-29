@@ -334,7 +334,7 @@ void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int session
 	for (const auto& kvp : SessionSocket)
 	{
 		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
-		cout << kvp.first << endl;
+		//cout << kvp.first << endl;
 		if (CharactersInfo.players[kvp.first].SessionId == sessionID)
 			continue;
 		if (CharactersInfo.players[kvp.first].IsAttacking)
