@@ -491,16 +491,16 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	InitializeCriticalSection(&csMonsters);
-	//MonsterSet monsterSet;
-	RecvStream >> MonstersInfo;
+	MonsterSet monsterSet;
+	RecvStream >> monsterSet;
+	MonstersInfo = monsterSet;
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
 	SendStream << MonstersInfo << endl;
 
-	//MonstersInfo = monsterSet;
+
 	LeaveCriticalSection(&csMonsters);
-	
-	Broadcast(SendStream, MonstersInfo.monsters[0].UELevel);
+	Broadcast(SendStream, 1);
 	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
 }
 

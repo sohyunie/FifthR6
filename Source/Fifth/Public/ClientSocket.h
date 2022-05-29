@@ -15,7 +15,7 @@ class ANetPlayerController;
 
 using namespace std;
 
-#define	MAX_BUFFER		4096
+#define	MAX_BUFFER		8192
 #define SERVER_PORT		8000
 #define UDP_SERVER_PORT	8001
 #define SERVER_IP		"127.0.0.1"

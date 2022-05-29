@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define	MAX_BUFFER		4096
+#define	MAX_BUFFER		8192
 #define SERVER_PORT		8080
 #define MAX_CLIENTS		100
 
