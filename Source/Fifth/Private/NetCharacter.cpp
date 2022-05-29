@@ -55,6 +55,8 @@ ANetCharacter::ANetCharacter()
 	MaxCombo = 3;
 	AttackEndComboState();
 
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ANetCharacter::DeathOverlap);
+	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MyCharacter"));
 
 	AttackRange = 200.0f;
@@ -81,6 +83,16 @@ ANetCharacter::ANetCharacter()
 	isAlived = true;
 	bIsAttacking = false;
 }
+
+/*void ANetCharacter::DeathOverlap(UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("SetHP")));
+	ABLOG_S(Warning);
+	WarriorStat->SetHP(0);
+
+}*/
 
 // Called when the game starts or when spawned
 void ANetCharacter::BeginPlay()
@@ -207,7 +219,7 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 		SpringArm->bInheritPitch = true;
 		SpringArm->bInheritRoll = true;
 		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = true;
+		SpringArm->bDoCollisionTest = false;
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
@@ -241,11 +253,108 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ANetCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::SAttack);
 
+	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_One);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Two);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Three);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Four"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Four);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Five"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Five);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Six"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Six);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Seven"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Seven);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Eight"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Eight);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Nine"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Nine);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Zero"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Zero);
+	PlayerInputComponent->BindAction(TEXT("Cheat_Y"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Y);
+	PlayerInputComponent->BindAction(TEXT("Cheat_U"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_U);
+	PlayerInputComponent->BindAction(TEXT("Cheat_I"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_I); 
+	PlayerInputComponent->BindAction(TEXT("Cheat_O"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_O);
+	PlayerInputComponent->BindAction(TEXT("Cheat_P"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_P);
+	PlayerInputComponent->BindAction(TEXT("Cheat_L"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_L);
+
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &ANetCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &ANetCharacter::LeftRight);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ANetCharacter::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ANetCharacter::Turn);
 
+}
+
+void ANetCharacter::Cheat_One()
+{
+	SetActorLocation(FVector(-43329.0f, 25602.0f, -562.0f));
+}
+
+void ANetCharacter::Cheat_Two()
+{
+	SetActorLocation(FVector(-18484.0f, 26796.0f, -2806.0f));
+}
+
+void ANetCharacter::Cheat_Three()
+{
+	SetActorLocation(FVector(-21499.0f, 31844.0f, -469.0f));
+}
+
+void ANetCharacter::Cheat_Four()
+{
+	SetActorLocation(FVector(-28868.0f, 27612.0f, 662.0f));
+}
+
+void ANetCharacter::Cheat_Five()
+{
+	SetActorLocation(FVector(-20741.0f, 13290.0f, 1131.0f));
+}
+
+void ANetCharacter::Cheat_Six()
+{
+	SetActorLocation(FVector(3267.0f, -3688.0f, 1358.0f));
+}
+
+void ANetCharacter::Cheat_Seven()
+{
+	SetActorLocation(FVector(-6341.0f, 7896.0f, 1211.0f));
+}
+
+void ANetCharacter::Cheat_Eight()
+{
+	SetActorLocation(FVector(21285.0f, 6653.0f, 1557.0f));
+}
+
+void ANetCharacter::Cheat_Nine()
+{
+	SetActorLocation(FVector(41362.0f, 22786.0f, 1524.0f));
+}
+
+void ANetCharacter::Cheat_Zero()
+{
+	SetActorLocation(FVector(43567.0f, 37221.0f, 1514.0f));
+}
+
+void ANetCharacter::Cheat_Y()
+{
+	SetActorLocation(FVector(54406.0f, 27319.0f, 1524.0f));
+}
+
+void ANetCharacter::Cheat_U()
+{
+	SetActorLocation(FVector(56348.0f, 15996.0f, 1529.0f));
+}
+
+void ANetCharacter::Cheat_I()
+{
+	SetActorLocation(FVector(48672.0f, 39473.0f, 1514.0f));
+}
+
+void ANetCharacter::Cheat_O()
+{
+	SetActorLocation(FVector(51888.0f, 18286.0f, 6151.0f));
+}
+
+void ANetCharacter::Cheat_P()
+{
+	SetActorLocation(FVector(74660.0f, 18503.0f, 1524.0f));
+}
+
+void ANetCharacter::Cheat_L()
+{
+	SetActorLocation(FVector(83836.0f, 16071.0f, 1524.0f));
 }
 
 void ANetCharacter::PostInitializeComponents()

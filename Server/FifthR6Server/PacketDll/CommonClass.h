@@ -111,6 +111,7 @@ public:
 	friend ostream& operator<<(ostream &stream, cCharactersInfo& info)
 	{
 		stream << info.players.size() << endl;
+		cout << "cCharactersInfo size : " << info.players.size() << endl;
 		for (auto& kvp : info.players)
 		{
 			stream << kvp.first << endl;
@@ -128,6 +129,7 @@ public:
 		info.players.clear();
 
 		stream >> nPlayers;
+		cout << "cCharactersInfo nPlayers : " << nPlayers << endl;
 		for (int i = 0; i < nPlayers; i++)
 		{
 			stream >> SessionId;

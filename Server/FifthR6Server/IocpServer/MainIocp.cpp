@@ -274,6 +274,8 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	EnterCriticalSection(&csPlayers);
 
+	if (CharactersInfo.players.count(info.SessionId) == 0)
+		return;
 	cCharacter * pinfo = &CharactersInfo.players[info.SessionId];
 	//printf_s("[INFO] (%d) isMaster %s \n", info.SessionId, pinfo->IsMaster ? "true" : "false");
 
@@ -319,27 +321,31 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	OtherBroadcast(SendStream, pinfo->UELevel, pinfo->SessionId);
 	pinfo->IsAttacking = false;
-                                                                                                	LeaveCriticalSection(&csPlayers);
+
+	LeaveCriticalSection(&csPlayers);
+
 	//WriteCharactersInfoToSocket(pSocket);
 	//Send(pSocket);
 }
+
 void MainIocp::OtherBroadcast(stringstream& SendStream, int UELevel, int sessionID)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
 		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
-			if (CharactersInfo.players[kvp.first].SessionId == sessionID)
-				continue;
-			if(CharactersInfo.players[sessionID].IsAttacking)
-				cout << CharactersInfo.players[kvp.first].SessionId << " by " << sessionID << " Attack" << endl;
-			client->socket = kvp.second;
-			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
-			client->dataBuf.buf = client->messageBuffer;
-			client->dataBuf.len = SendStream.str().length();
+		cout << kvp.first << endl;
+		if (CharactersInfo.players[kvp.first].SessionId == sessionID)
+			continue;
+		if (CharactersInfo.players[kvp.first].IsAttacking)
+			cout << CharactersInfo.players[kvp.first].SessionId << " by " << sessionID << " Attack" << endl;
+		client->socket = kvp.second;
+		CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
+		client->dataBuf.buf = client->messageBuffer;
+		client->dataBuf.len = SendStream.str().length();
 
-			//printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
-			Send(client);
+		//printf_s("[INFO][%d] OtherBroadcast - %s _ %f\n", CharactersInfo.players[kvp.first].SessionId, (CharactersInfo.players[kvp.first].IsAlive) ? "true" : "false", CharactersInfo.players[kvp.first].Z);
+		Send(client);
 		//}
 	}
 	delete(client);
@@ -369,6 +375,8 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	RecvStream >> DamagedSessionId;
 	//printf_s("[INFO] %d ������ ���� \n", DamagedSessionId);
 	EnterCriticalSection(&csPlayers);
+	if (CharactersInfo.players.count(DamagedSessionId) == 0)
+		return;
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
@@ -384,28 +392,28 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 
 void MainIocp::BroadcastChat(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
-	stSOCKETINFO* client = new stSOCKETINFO;
+	//stSOCKETINFO* client = new stSOCKETINFO;
 
-	int sessionID;
-	string Temp;
-	string Chat;
+	//int sessionID;
+	//string Temp;
+	//string Chat;
 
-	RecvStream >> sessionID;
-	getline(RecvStream, Temp);
-	Chat += to_string(sessionID) + "_:_";
-	while (RecvStream >> Temp)
-	{
-		Chat += Temp + "_";
-	}
-	Chat += '\0';
+	//RecvStream >> sessionID;
+	//getline(RecvStream, Temp);
+	//Chat += to_string(sessionID) + "_:_";
+	//while (RecvStream >> Temp)
+	//{
+	//	Chat += Temp + "_";
+	//}
+	//Chat += '\0';
 
-	printf_s("[CHAT] %s\n", Chat);
+	//printf_s("[CHAT] %s\n", Chat);
 
-	stringstream SendStream;
-	SendStream << EPacketType::CHAT << endl;
-	SendStream << Chat;
-	
-	Broadcast(SendStream, CharactersInfo.players[sessionID].UELevel);
+	//stringstream SendStream;
+	//SendStream << EPacketType::CHAT << endl;
+	//SendStream << Chat;
+	//
+	//Broadcast(SendStream, CharactersInfo.players[sessionID].UELevel);
 }
 
 void MainIocp::BroadcastNewPlayer(cCharactersInfo & player, int UELevel)
@@ -422,6 +430,7 @@ void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 	stSOCKETINFO* client = new stSOCKETINFO;
 	for (const auto& kvp : SessionSocket)
 	{
+		cout << kvp.first << endl;
 		//if (CharactersInfo.players[kvp.first].UELevel == UELevel) {
 			client->socket = kvp.second;
 			CopyMemory(client->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
@@ -442,13 +451,6 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 	SendStream << EPacketType::RECV_PLAYER << endl;
 	SendStream << CharactersInfo << endl;
 
-	// !!! �߿� !!! data.buf ���� ���� �����͸� ���� �����Ⱚ�� ���޵� �� ����
-	//auto iter = CharactersInfo.players.begin();
-	//while (iter != CharactersInfo.players.end()) {
-	//	cout << "[" << iter->first << ","
-	//		<< iter->second.X << "]\n";
-	//	++iter;
-	//}
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();
