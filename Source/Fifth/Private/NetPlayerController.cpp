@@ -60,6 +60,8 @@ bool ANetPlayerController::GetIsMaster()
 	if (ci == nullptr)
 		return true;
 
+	if (ci->players.count(SessionId) == 0)
+		return true;
 	UE_LOG(LogClass, Log, TEXT("%s"), ci->players[SessionId].IsMaster ? "1" : "0");
 	return ci->players[SessionId].IsMaster;
 }
@@ -189,7 +191,8 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 bool ANetPlayerController::HitMonster(const int& MonsterId)
 {
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci!= nullptr && ci->players[SessionId].IsMaster)
+
+	if (ci!= nullptr && ci->players.count(SessionId) != 0 && ci->players[SessionId].IsMaster)
 	{
 		if (ci->players[SessionId].IsMaster)
 		{
@@ -212,6 +215,7 @@ void ANetPlayerController::RecvWorldInfo(cCharactersInfo* ci_)
 		UE_LOG(LogClass, Log, TEXT("RecvWorldInfo. %d"), ci->players.size());
 		for (auto& player : ci->players)
 		{
+			UE_LOG(LogClass, Log, TEXT("Recv ID : %d"), player.first);
 			//UE_LOG(LogClass, Log, TEXT("[%d] damaged. %f//%f"), player.first , player.second.HealthValue, player.second.X);
 
 			if (player.second.IsAttacking)
@@ -312,6 +316,8 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
+	if (ci->players.count(SessionId) == 0)
+		return false;
 	UpdatePlayerInfo(ci->players[SessionId]);
 
 	// 다른 플레이어 업데이트
@@ -504,7 +510,7 @@ void ANetPlayerController::UpdateNewPlayer()
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 
-	UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), PlayerInfos->players.size());
+	UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer size : %d"), PlayerInfos->players.size());
 	for (const auto& kvp : PlayerInfos->players)
 	{
 		if (kvp.first == SessionId)
@@ -726,7 +732,8 @@ bool ANetPlayerController::UpdateMonster()
 		return false;
 	if (ci == nullptr)
 		return false;
-
+	if (ci->players.count(SessionId) == 0)
+		return false;
 	//UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
 	if (ci->players[SessionId].IsMaster)
 	{
