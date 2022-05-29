@@ -312,8 +312,10 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
-	if (ci->players.empty())
+	if (ci->IsLock) {
+		UE_LOG(LogClass, Log, TEXT("lock 중이야"));
 		return false;
+	}
 
 	UpdatePlayerInfo(ci->players[SessionId]);
 
@@ -735,7 +737,7 @@ bool ANetPlayerController::UpdateMonster()
 		return false;
 
 	//UE_LOG(LogClass, Log, TEXT("[isMaster] %d"), ci->players[SessionId].IsMaster ? 1 : 0);
-	if (!ci->players.empty() && ci->players[SessionId].IsMaster)
+	if (!ci->IsLock && ci->players[SessionId].IsMaster)
 	{
 		MonsterSet sendMonsterSet;
 		TArray<AActor*> BossMonsters;

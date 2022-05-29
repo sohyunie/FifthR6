@@ -125,6 +125,7 @@ public:
 	~cCharactersInfo() {};
 
 	map<int, cCharacter> players;
+	bool IsLock = false;
 
 	friend ostream& operator<<(ostream& stream, cCharactersInfo& info)
 	{
@@ -143,18 +144,17 @@ public:
 		int nPlayers = 0;
 		int SessionId = 0;
 		cCharacter Player;
-		map<int, cCharacter> newPlayer;
-		//info.players.clear();
+		IsLock = true;
+		info.players.clear();
 
 		stream >> nPlayers;
 		for (int i = 0; i < nPlayers; i++)
 		{
 			stream >> SessionId;
 			stream >> Player;
-			newPlayer[SessionId] = Player;
+			info.players[SessionId] = Player;
 		}
-
-		info.players = newPlayer;
+		IsLock = false;
 
 		return stream;
 	}
