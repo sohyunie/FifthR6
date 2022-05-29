@@ -312,13 +312,8 @@ bool ANetPlayerController::UpdateWorldInfo()
 		return false;
 
 	// 플레이어 업데이트
-	if (ci->IsLock)
-	{
-		UE_LOG(LogClass, Log, TEXT("isLock"));
-		return false;
-	}
-
-	UpdatePlayerInfo(ci->players[SessionId]);
+	if(!ci->IsLock)
+		UpdatePlayerInfo(ci->players[SessionId]);
 
 	// 다른 플레이어 업데이트
 	TArray<AActor*> SpawnedCharacters;
