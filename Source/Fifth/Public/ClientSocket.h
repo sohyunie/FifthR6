@@ -144,7 +144,7 @@ public:
 		int nPlayers = 0;
 		int SessionId = 0;
 		cCharacter Player;
-		IsLock = true;
+		info.IsLock = true;
 		info.players.clear();
 
 		stream >> nPlayers;
@@ -154,7 +154,7 @@ public:
 			stream >> Player;
 			info.players[SessionId] = Player;
 		}
-		IsLock = false;
+		info.IsLock = false;
 
 		return stream;
 	}
