@@ -180,6 +180,8 @@ void MainIocp::WorkerThread()
 			RecvStream << pSocketInfo->dataBuf.buf;
 			RecvStream >> PacketType;
 
+			if (PacketType > 15)
+				continue;
 			// ��Ŷ ó��
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
 			{
