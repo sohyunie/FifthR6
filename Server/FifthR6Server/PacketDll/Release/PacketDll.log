@@ -1,4 +1,5 @@
-﻿  CommonClass.cpp
+﻿  stdafx.cpp
+  CommonClass.cpp
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(109,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(109): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(5,1): warning C4273: 'cCharacter::cCharacter': dll 연결이 일치하지 않습니다.
@@ -13,10 +14,11 @@ C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(21,1): w
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(147,2): message : '{ctor}'의 이전 정의를 참조하십시오.
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.cpp(26,1): warning C4273: 'CommonClass::~CommonClass': dll 연결이 일치하지 않습니다.
 C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(148,3): message : '{dtor}'의 이전 정의를 참조하십시오.
-     C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.lib 라이브러리 및 C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.exp 개체를 생성하고 있습니다.
+  dllmain.cpp
+  PacketDll.cpp
+     C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\Release\PacketDll.lib 라이브러리 및 C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\Release\PacketDll.exp 개체를 생성하고 있습니다.
   코드를 생성하고 있습니다.
-  0 of 63 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB not found, fall back to full compilation.
+  All 63 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
-  PacketDll.vcxproj -> C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\PacketDll.dll
+  PacketDll.vcxproj -> C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\Release\PacketDll.dll

@@ -1,0 +1,11 @@
+﻿  stdafx.cpp
+  DBConnector.cpp
+  main.cpp
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.h(12,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'CommonClass.h': No such file or directory
+  MainIocp.cpp
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.h(12,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'CommonClass.h': No such file or directory
+  IocpBase.cpp
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\IocpBase.h(12,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'CommonClass.h': No such file or directory
+  Monster.cpp
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\Monster.h(3,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'CommonClass.h': No such file or directory

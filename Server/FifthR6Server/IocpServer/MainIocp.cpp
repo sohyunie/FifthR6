@@ -10,7 +10,7 @@
 float MainIocp::HitPoint = 0.1f;
 map<int, SOCKET> MainIocp::SessionSocket;
 cCharactersInfo MainIocp::CharactersInfo;
-//DBConnector MainIocp::Conn;
+DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
 CRITICAL_SECTION MainIocp::csMonsters;
 MonsterSet MainIocp::MonstersInfo;
@@ -28,13 +28,13 @@ MainIocp::MainIocp()
 	InitializeCriticalSection(&csPlayers);
 
 	// DB ����
-	//if (Conn.Connect(DB_ADDRESS, DB_ID, DB_PW, DB_SCHEMA, DB_PORT))
-	//{
-	//	printf_s("[INFO] DB ���� ����\n");
-	//}
-	//else {
-	//	printf_s("[ERROR] DB ���� ����\n");
-	//}
+	if (Conn.Connect(DB_ADDRESS, DB_ID, DB_PW, DB_SCHEMA, DB_PORT))
+	{
+		printf_s("[INFO] DB ���� ����\n");
+	}
+	else {
+		printf_s("[ERROR] DB ���� ����\n");
+	}
 
 	// ��Ŷ �Լ� �����Ϳ� �Լ� ����
 	fnProcess[EPacketType::LOGIN].funcProcessPacket = Login;
@@ -215,7 +215,7 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 
 	stringstream SendStream;
 	SendStream << EPacketType::LOGIN << endl;
-	//SendStream << Conn.SearchAccount(Id, Pw) << endl;
+	SendStream << Conn.SearchAccount(Id, Pw) << endl;
 
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;

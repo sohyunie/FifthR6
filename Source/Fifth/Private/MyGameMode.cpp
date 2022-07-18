@@ -55,3 +55,19 @@ void AMyGameMode::PostLogin(APlayerController* NewPlayer)
 	
 }
 
+bool AMyGameMode::Login(const FText& Id, const FText& Pw)
+{
+	if (Id.IsEmpty() || Pw.IsEmpty())
+		return false;
+
+	if (!bIsConnected)
+		return false;
+
+	bool IsSuccess = Socket->Login(Id, Pw);
+
+	if (!IsSuccess)
+		return false;
+
+	Socket->CloseSocket();
+	return true;
+}

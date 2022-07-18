@@ -19,9 +19,9 @@ using namespace std;
 // DB 정보
 #define DB_ADDRESS		"localhost"
 #define	DB_PORT			3306
-#define DB_ID			"root"
-#define DB_PW			"anfrhrl"
-#define DB_SCHEMA		"sungminworld"
+#define DB_ID			"test"
+#define DB_PW			"Kk471601"
+#define DB_SCHEMA		"user_data"
 
 class MainIocp : public IocpBase
 {
@@ -41,7 +41,7 @@ private:
 	static cCharactersInfo CharactersInfo;	// 접속한 클라이언트의 정보를 저장	
 	static map<int, SOCKET> SessionSocket;	// 세션별 소켓 저장
 	static float			HitPoint;		// 타격 데미지
-	//static DBConnector 	Conn;			// DB 커넥터
+	static DBConnector 	Conn;			// DB 커넥터
 	static CRITICAL_SECTION csPlayers;		// CharactersInfo 임계영역
 	static CRITICAL_SECTION csMonsters;		// CharactersInfo 임계영역
 	static MonsterSet		MonstersInfo;	// 몬스터 집합 정보

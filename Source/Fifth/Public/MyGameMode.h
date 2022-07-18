@@ -19,6 +19,7 @@ public:
 	AMyGameMode();
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	bool Login(const FText& Id, const FText& Pw);
 
 private:
 
