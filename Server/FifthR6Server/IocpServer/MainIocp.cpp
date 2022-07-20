@@ -257,6 +257,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->IsAlive = info.IsAlive;
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
+	pinfo->UELevel = info.UELevel;
 
 	//LevelMaster[info.UELevel].push(info.SessionId);
 
@@ -494,9 +495,12 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
 	InitializeCriticalSection(&csMonsters);
+	// Recv
 	MonsterSet monsterSet;
 	RecvStream >> monsterSet;
 	MonstersInfo = monsterSet;
+
+	// Send
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
 	SendStream << MonstersInfo << endl;

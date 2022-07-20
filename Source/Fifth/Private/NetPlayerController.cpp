@@ -14,6 +14,7 @@
 ANetPlayerController::ANetPlayerController()
 {
 	SessionId = FMath::RandRange(0, 10000);
+	UE_LOG(LogClass, Log, TEXT("Random SessionId : %d"), SessionId);
 
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
