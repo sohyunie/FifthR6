@@ -5,6 +5,7 @@
 #include "Fifth.h"
 #include "ClientSocket.h"
 #include "GameFramework/Character.h"
+#include "Components/TimelineComponent.h"
 #include "NetCharacter.generated.h"
 
 UCLASS()
@@ -40,14 +41,108 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UWarriorStatComponent* WarriorStat;
 
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-		USpringArmComponent* SpringArm;
+	
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere)
-		UPointLightComponent* PL;
+
+	UPROPERTY(BlueprintReadWrite, Category = Scene)
+		USceneComponent* Scene;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GamePlay)
+		FVector MuzzleOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float FullHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float HealthPercentage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		float FullSkill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		float Skill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		float SkillPercentage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		float PreviousSkill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		float SkillValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float redFlash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+		UCurveFloat* SkillCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Health")
+		FTimeline MyTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Skill")
+		FTimerHandle MemberTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Skill")
+		FTimerHandle SkillTimerHandle;
+
+	float CurveFloatValue;
+	float TimelineValue;
+	bool bCanBeDamaged;
+	bool bCanUseSkill;
+
+	//UTimelineComponent* MyTimeline;
+	//struct FTimerHandle MemberTimerHandle;
+	//struct FTimerHandle SkillTimerHandle;
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+		float GetHealth();
+
+	//UFUNCTION(BlueprintPure, Category = "Health")
+		//FText GetHealthIntText();
+
+	UFUNCTION(BlueprintPure, Category = "Skill")
+		float GetSkill();
+
+	//UFUNCTION(BlueprintPure, Category = "Skill")
+		//FText GetSkillIntText();
+
+	UFUNCTION()
+		void DamageTimer();
+
+	UFUNCTION()
+		void SetDamageState();
+
+	UFUNCTION()
+		void SetSkillValue();
+
+	UFUNCTION()
+		void SetSkillState();
+
+	UFUNCTION()
+		void SetSkillChange(float SkillChange);
+
+	UFUNCTION()
+		void UpdateSkill();
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+		bool PlayFlash();
+
+	//UFUNCTION()
+		//void ReceivePointDamage(float Damage, const class UDamageType* DamageType, FVector HitLocation,
+			//FVector HitNormal, class UPrimitiveComponent* HitComponent, FName BoneName,
+			//FVector ShotFromDirection, class AController* InstigatedBy, AActor* DamageCauser,
+			//const FHitResult& HitInfo);
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		void UpdateMyHealth(float HealthChange);
+	
 	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		//bool SAttackCheck{ false };
 
@@ -75,6 +170,8 @@ private:
 
 	void Attack();
 	void SAttack();
+	void RAttack();
+	void Fire();
 
 	void Cheat_One();
 	void Cheat_Two();
@@ -97,6 +194,10 @@ private:
 		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
 		void OnSAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		void OnRAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		void OnFireMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void AttackStartComboState();
 	void AttackEndComboState();
@@ -115,6 +216,12 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		bool IsSAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = RAttack, Meta = (AllowPrivateAccess = true))
+		bool IsRAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
+		bool IsFireing;
 
 	//강제 이동이 아닌 조건 성립 체크
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))

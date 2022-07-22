@@ -12,6 +12,12 @@
 #include "MyPlayerState.h"
 #include "MyHUDWidget.h"
 #include "ATank.h"
+#include "FireBall.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "OverlapRangeActor.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "TimerManager.h"
 
 
 
@@ -20,21 +26,30 @@ ANetCharacter::ANetCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
+	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	WarriorStat = CreateDefaultSubobject<UWarriorStatComponent>(TEXT("WARRIORSTAT"));
 
-	SpringArm->SetupAttachment(GetCapsuleComponent());
-	Camera->SetupAttachment(SpringArm);
+	
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("/Game/UI/Skill_Curve.Skill_Curve"));
+	SkillCurve = Curve.Object;
+	
+
+	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
+
+	Camera->SetupAttachment(GetCapsuleComponent());
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),
 		FRotator(0.0f, -90.0f, 0.0f));
-	SpringArm->TargetArmLength = 400.0f;
-	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
+	
+	Scene->SetupAttachment(GetMesh());
 
-	PL = CreateDefaultSubobject<UPointLightComponent>(TEXT("PL"));
-	PL->SetupAttachment(GetCapsuleComponent());
-	PL->AddRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
+	FName BallSocket(TEXT("Bip-L-Finger2"));
+	Scene->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		BallSocket);
+
+	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
+	Camera->bUsePawnControlRotation = true;
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -52,6 +67,7 @@ ANetCharacter::ANetCharacter()
 	SetControlMode(0);
 	IsAttacking = false;
 	IsSAttacking = false;
+	IsRAttacking = false;
 	MaxCombo = 3;
 	AttackEndComboState();
 
@@ -98,6 +114,32 @@ ANetCharacter::ANetCharacter()
 void ANetCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FullHealth = 1000.f;
+	Health = FullHealth;
+	HealthPercentage = 1.0f;
+	bCanBeDamaged = true;
+
+	FullSkill = 100.f;
+	Skill = FullSkill;
+	SkillPercentage = 1.f;
+	PreviousSkill = SkillPercentage;
+	SkillValue = 0.f;
+	bCanUseSkill = true;
+
+	
+	if (SkillCurve)
+	{
+		ABLOG(Warning, TEXT("CURVE"));
+		FOnTimelineFloat TimelineCallback;
+		FOnTimelineEventStatic TimelineFinishedCallback;
+
+		TimelineCallback.BindUFunction(this, FName("SetSkillValue"));
+		TimelineFinishedCallback.BindUFunction(this, FName("SetSkillState"));
+
+		MyTimeline.AddInterpFloat(SkillCurve, TimelineCallback);
+		MyTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
+	}
 
 	NetPlayerController = Cast<ANetPlayerController>(GetController());
 
@@ -213,13 +255,7 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 	if (ControlMode == 0)
 	{
 
-		SpringArm->TargetArmLength = 450.0f;
-		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
-		SpringArm->bUsePawnControlRotation = true;
-		SpringArm->bInheritPitch = true;
-		SpringArm->bInheritRoll = true;
-		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = false;
+		
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
@@ -231,6 +267,9 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 void ANetCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//if (MyTimeline != nullptr) MyTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+	MyTimeline.TickTimeline(DeltaTime);
 
 	if (IsAttacking || IsSAttacking)
 	{
@@ -263,7 +302,8 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ANetCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::SAttack);
-
+	PlayerInputComponent->BindAction(TEXT("RAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::RAttack);
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &ANetCharacter::Fire);
 	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_One);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Two);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Three);
@@ -376,6 +416,8 @@ void ANetCharacter::PostInitializeComponents()
 
 	MyAnim->OnMontageEnded.AddDynamic(this, &ANetCharacter::OnAttackMontageEnded);
 	MyAnim->OnMontageEnded.AddDynamic(this, &ANetCharacter::OnSAttackMontageEnded);
+	MyAnim->OnMontageEnded.AddDynamic(this, &ANetCharacter::OnRAttackMontageEnded);
+	MyAnim->OnMontageEnded.AddDynamic(this, &ANetCharacter::OnFireMontageEnded);
 
 	MyAnim->OnNextAttackCheck.AddLambda([this]()->void {
 		ABLOG(Warning, TEXT("OnNextAttackCheck"));
@@ -429,12 +471,18 @@ void ANetCharacter::PostInitializeComponents()
 float ANetCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+	bCanBeDamaged = false;
+	redFlash = true;
+	UpdateMyHealth(-DamageAmount);
+	DamageTimer();
+	return DamageAmount;
+
+	//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 
 	//WarriorStat->SetDamage(FinalDamage);
 
-	return FinalDamage;
+	//return FinalDamage;
 }
 
 void ANetCharacter::UpDown(float NewAxisValue)
@@ -491,7 +539,7 @@ void ANetCharacter::Attack()
 		//[TODO] Action to server
 		
 		//beChecked = true;
-		//MyAnim->JumpToAttackMontageSection(CurrentCombo);//���� �̵��� �ƴ� ���Ǽ�������
+		//MyAnim->JumpToAttackMontageSection(CurrentCombo);
 		IsAttacking = true;
 	}
 
@@ -503,6 +551,199 @@ void ANetCharacter::SAttack()
 
 	MyAnim->PlaySAttackMontage();
 	IsSAttacking = true;
+}
+
+void ANetCharacter::RAttack()
+{
+	if (IsRAttacking) return;
+
+	if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
+	{
+		ABLOG(Warning, TEXT("RATTACK"));
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = CameraRotation;
+
+		MuzzleRotation.Pitch += 10.0f;
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+			AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
+				MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
+
+
+			UNiagaraSystem* ARange =
+				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+					TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+			//if (OvCheck)
+			//{
+				//FVector LaunchDirection = MuzzleRotation.Vector();
+				//OvCheck->FireInDirection(LaunchDirection);
+			//}
+
+		}
+
+		MyAnim->PlayRAttackMontage();
+		IsRAttacking = true;
+
+		MyTimeline.Stop();
+		GetWorldTimerManager().ClearTimer(SkillTimerHandle);
+		SetSkillChange(-20.f);
+		GetWorldTimerManager().SetTimer(SkillTimerHandle, this, &ANetCharacter::UpdateSkill, 5.f, false);
+
+
+	}
+}
+
+void ANetCharacter::Fire()
+{
+	if (IsFireing) return;
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+	FRotator MuzzleRotation = CameraRotation;
+
+	MuzzleRotation.Pitch += 10.0f;
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+		AFireBall* Projectile = World->SpawnActor<AFireBall>(AFireBall::StaticClass(), MuzzleLocation, MuzzleRotation, SpawnParams);
+
+		UNiagaraSystem* Muzzle =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
+		UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+
+		UNiagaraSystem* FireEffectMuzzle =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric.NS_Projectile_Fireball_Electric")));
+		UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		if (Projectile)
+		{
+			FVector LaunchDirection = MuzzleRotation.Vector();
+			Projectile->FireInDirection(LaunchDirection);
+		}
+
+	}
+
+	MyAnim->PlayFireMontage();
+	IsFireing = true;
+
+}
+
+float ANetCharacter::GetHealth()
+{
+	return HealthPercentage;
+}
+
+float ANetCharacter::GetSkill()
+{
+	return SkillPercentage;
+}
+
+/*FText ANetCharacter::GetHealthIntText()
+{
+	int32 HP = FMath::RoundHalfFromZero(HealthPercentage * 100);
+	FString HPS = FString::FromInt(HP);
+	FString HealthHUD = HPS + FString(TEXT("%"));
+	FText HPText = FText::FromString(HealthHUD);
+	return HPText;
+}
+
+FText ANetCharacter::GetSkillIntText()
+{
+	int32 SP = FMath::RoundHalfFromZero(SkillPercentage * 100);
+	FString SPS = FString::FromInt(SP);
+	FString FullSPS = FString::FromInt(FullSkill);
+	FString SkillHUD = SPS + FString(TEXT("/") + FullSPS);
+	FText SPText = FText::FromString(SkillHUD);
+	return SPText;
+}*/
+
+void ANetCharacter::SetDamageState()
+{
+	bCanBeDamaged = true;
+}
+
+void ANetCharacter::DamageTimer()
+{
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANetCharacter::SetDamageState, 2.f, false);
+}
+
+void ANetCharacter::SetSkillValue()
+{
+	TimelineValue = MyTimeline.GetPlaybackPosition();
+	CurveFloatValue = PreviousSkill + SkillValue * SkillCurve->GetFloatValue(TimelineValue);
+	Skill = CurveFloatValue * FullHealth;
+	Skill = FMath::Clamp(Skill, 0.f, FullSkill);
+	SkillPercentage = CurveFloatValue;
+	SkillPercentage = FMath::Clamp(SkillPercentage, 0.f, 1.f);
+
+}
+
+void ANetCharacter::SetSkillState()
+{
+	bCanUseSkill = true;
+	SkillValue = 0.f;
+
+}
+
+bool ANetCharacter::PlayFlash()
+{
+	if (redFlash)
+	{
+		redFlash = false;
+		return true;
+	}
+
+	return false;
+}
+
+/*void ANetCharacter::ReceivePointDamage(float Damage, const class UDamageType* DamageType, FVector HitLocation,
+	FVector HitNormal, class UPrimitiveComponent* HitComponent, FName BoneName,
+	FVector ShotFromDirection, class AController* InstigatedBy, AActor* DamageCauser,
+	const FHitResult& HitInfo)
+{
+	bCanBeDamaged = false;
+	redFlash = true;
+	UpdateHealth(-Damage);
+	DamageTimer();
+}*/
+
+void ANetCharacter::UpdateMyHealth(float HealthChange)
+{
+	Health = FMath::Clamp(Health += HealthChange, 0.0f, FullHealth);
+	HealthPercentage = Health / FullHealth;
+
+}
+
+void ANetCharacter::UpdateSkill()
+{
+	PreviousSkill = SkillPercentage;
+	SkillPercentage = Skill / FullSkill;
+	SkillValue = 1.f;
+	MyTimeline.PlayFromStart();
+}
+
+void ANetCharacter::SetSkillChange(float SkillChange)
+{
+	bCanUseSkill = false;
+	PreviousSkill = SkillPercentage;
+	SkillValue = SkillChange / FullSkill;
+	MyTimeline.PlayFromStart();
 }
 
 void ANetCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -518,6 +759,22 @@ void ANetCharacter::OnSAttackMontageEnded(UAnimMontage* Montage, bool bInterrupt
 	//ABCHECK(IsSAttacking);
 	//ABCHECK(CurrentCombo > 0);
 	IsSAttacking = false;
+	//AttackEndComboState();
+}
+
+void ANetCharacter::OnRAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//ABCHECK(IsSAttacking);
+	//ABCHECK(CurrentCombo > 0);
+	IsRAttacking = false;
+	//AttackEndComboState();
+}
+
+void ANetCharacter::OnFireMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	//ABCHECK(IsSAttacking);
+	//ABCHECK(CurrentCombo > 0);
+	IsFireing = false;
 	//AttackEndComboState();
 }
 
