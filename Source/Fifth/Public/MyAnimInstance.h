@@ -26,6 +26,10 @@ public:
 
 	void PlayAttackMontage();
 	void PlaySAttackMontage();
+
+	void PlayFireMontage();
+	void PlayRAttackMontage();
+
 	void PlayTAttackMontage();
 	void PlayDamagedMontage();
 
@@ -79,6 +83,12 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* SAttackMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* FireMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = RAttack, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* RAttackMontage;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = TAttack, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* TAttackMontage;

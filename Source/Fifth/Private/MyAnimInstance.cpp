@@ -23,6 +23,20 @@ UMyAnimInstance::UMyAnimInstance()
 	}
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		RATTACK_MONTAGE(TEXT("/Game/MyCharacter/Animation/WarriorOfFire_RangeAttack.WarriorOfFire_RangeAttack"));
+	if (RATTACK_MONTAGE.Succeeded())
+	{
+		RAttackMontage = RATTACK_MONTAGE.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		FIRE_MONTAGE(TEXT("/Game/MyCharacter/Animation/WarriorOfFire_SpawnFire.WarriorOfFire_SpawnFire"));
+	if (FIRE_MONTAGE.Succeeded())
+	{
+		FireMontage = FIRE_MONTAGE.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
 		TATTACK_MONTAGE(TEXT("/Game/MyCharacter/Animation/WarriorOfFire_TwoHand_Attack.WarriorOfFire_TwoHand_Attack"));
 	if (TATTACK_MONTAGE.Succeeded())
 	{
@@ -73,6 +87,20 @@ void UMyAnimInstance::PlaySAttackMontage()
 	ABCHECK(!IsDead);
 	Montage_Play(SAttackMontage, 1.0f);
 	
+}
+
+void UMyAnimInstance::PlayRAttackMontage()
+{
+	ABCHECK(!IsDead);
+	Montage_Play(RAttackMontage, 1.0f);
+
+}
+
+void UMyAnimInstance::PlayFireMontage()
+{
+	ABCHECK(!IsDead);
+	Montage_Play(FireMontage, 1.0f);
+
 }
 
 void UMyAnimInstance::PlayTAttackMontage()

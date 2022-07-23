@@ -4,12 +4,22 @@
 
 #include "Fifth.h"
 #include "ClientSocket.h"
+#include "NetCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "MyGameMode.generated.h"
 
 /**
  * 
  */
+
+UENUM()
+enum class EGamePlayState
+{
+	EPlaying, 
+	EGameOver,
+	EUnknown
+};
+
 UCLASS()
 class FIFTH_API AMyGameMode : public AGameModeBase
 {
@@ -17,10 +27,25 @@ class FIFTH_API AMyGameMode : public AGameModeBase
 
 public:
 	AMyGameMode();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	ANetCharacter* NetCharacter;
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+		EGamePlayState GetCurrentState() const;
+
+	void SetCurrentState(EGamePlayState NewState);
+
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
+	EGamePlayState CurrentState;
+
+	void HandleNewState(EGamePlayState NewState);
+		
 
 	ClientSocket* Socket;
 };
