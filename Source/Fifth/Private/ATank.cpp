@@ -15,6 +15,8 @@
 #include "ClientSocket.h"
 #include "NetCharacter.h"
 #include "NetPlayerController.h"
+#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -33,6 +35,24 @@ AATank::AATank()
 
 	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 300.0f));
 	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarWidget->SetVisibility(false);
+
+	SphereRadius = 600.0f;
+	PlayerLocationSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerLocationSphere"));
+	PlayerLocationSphere->InitSphereRadius(SphereRadius);
+	PlayerLocationSphere->SetCollisionProfileName("Trigger");
+
+	PlayerLocationSphere->SetupAttachment(GetCapsuleComponent());
+
+
+	PlayerLocationSphere->OnComponentEndOverlap.AddDynamic(this,
+		&AATank::OnOverlapEnd);
+
+	PlayerLocationSphere->OnComponentBeginOverlap.AddDynamic(this,
+		&AATank::OnOverlapBegin);
+
+	
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT
 	("/Game/UI/UI_HPBar.UI_HPBar_C"));
 	if (UI_HUD.Succeeded())
@@ -64,7 +84,7 @@ AATank::AATank()
 
 	IsAttacking = false;
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AATank::DeathOverlap);
+	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ATank"));
 
 	AttackRange = 200.0f;
@@ -84,14 +104,26 @@ AATank::AATank()
 	DeadTimer = 5.0f;
 }
 
-void AATank::DeathOverlap(UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AATank::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("SetHP")));
-	ABLOG_S(Warning);
-	TankStat->SetHP(0);
+	ABLOG(Warning, TEXT("PLPL"));
+	if (OtherActor->IsA(ANetCharacter::StaticClass()))
+	{
+		ABLOG(Warning, TEXT("PLTANK"));
+		this->HPBarWidget->SetVisibility(true);
+	}
+}
 
+void AATank::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	//ABLOG(Warning, TEXT("LPLP"));
+	//if (OtherActor->IsA(ANetCharacter::StaticClass()))
+	//{
+		//ABLOG(Warning, TEXT("LPTANK"));
+		this->HPBarWidget->SetVisibility(false);
+	//}
 }
 
 void AATank::OnAssetLoadCompleted()
@@ -238,6 +270,8 @@ void AATank::Tick(float DeltaTime)
 		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
 			->GetControlRotation().Vector()/**10*/);
 	}
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 20, FColor::Orange, false, -1, 0, 1);
 
 }
 

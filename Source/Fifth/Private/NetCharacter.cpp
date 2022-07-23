@@ -18,6 +18,8 @@
 #include "OverlapRangeActor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
+#include "Camera/PlayerCameraManager.h"
+#include "MyMatineeCameraShake.h"
 
 
 
@@ -50,6 +52,9 @@ ANetCharacter::ANetCharacter()
 
 	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	Camera->bUsePawnControlRotation = true;
+
+
+	
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -268,7 +273,9 @@ void ANetCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//if (MyTimeline != nullptr) MyTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, nullptr);
+	
+
+	
 	MyTimeline.TickTimeline(DeltaTime);
 
 	if (IsAttacking || IsSAttacking)
@@ -294,6 +301,8 @@ void ANetCharacter::Tick(float DeltaTime)
 	}
 
 }
+
+
 
 // Called to bind functionality to input
 void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -589,9 +598,14 @@ void ANetCharacter::RAttack()
 			//}
 
 		}
-
+		//if (MyShake != NULL)
+		//{
 		MyAnim->PlayRAttackMontage();
+		
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
+			//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(MyShake, 1.f);
 		IsRAttacking = true;
+		//}
 
 		MyTimeline.Stop();
 		GetWorldTimerManager().ClearTimer(SkillTimerHandle);

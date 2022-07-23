@@ -46,6 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		UCameraComponent* Camera;
 
+	
+
 
 	UPROPERTY(BlueprintReadWrite, Category = Scene)
 		USceneComponent* Scene;
@@ -142,6 +144,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 		void UpdateMyHealth(float HealthChange);
+
+	//UPROPERTY(EditAnywhere)
+		//TSubclassOf<UCameraShakeBase> MyShake;
 	
 	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = SAttack, Meta = (AllowPrivateAccess = true))
 		//bool SAttackCheck{ false };
@@ -222,6 +227,8 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
 		bool IsFireing;
+
+	
 
 	//강제 이동이 아닌 조건 성립 체크
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
