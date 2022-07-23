@@ -18,13 +18,8 @@ ANetPlayerController::ANetPlayerController()
 
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
-	Socket->InitSocket();
-	bIsConnected = Socket->Connect("127.0.0.1", 8080);
-	if (bIsConnected)
-	{
-		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
-		Socket->SetPlayerController(this);
-	}
+
+	Socket->SetPlayerController(this);
 
 	bIsChatNeedUpdate = false;
 	bNewPlayerEntered = false;

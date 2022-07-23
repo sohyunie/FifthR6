@@ -3,24 +3,21 @@
 #pragma once
 
 #include "Fifth.h"
+#include "CoreMinimal.h"
 #include "ClientSocket.h"
 #include "GameFramework/GameModeBase.h"
-#include "MyGameMode.generated.h"
+#include "TitleGameMode.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class FIFTH_API AMyGameMode : public AGameModeBase
+class FIFTH_API ATitleGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
 public:
-	AMyGameMode();
-	
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+	ATitleGameMode();
 
+	bool Login(const FText& Id, const FText& Pw);
 private:
 
 	ClientSocket* Socket;
+	bool bIsConnected;
 };
