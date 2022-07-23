@@ -18,6 +18,8 @@ AFireBall::AFireBall()
 	CollisionComponent->InitSphereRadius(15.0f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("FireBall"));
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AFireBall::OnHit);
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this,
+		&AFireBall::OnOverlapBegin);
 	RootComponent = CollisionComponent;
 
 	Capsule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Capsule"));
@@ -53,14 +55,44 @@ void AFireBall::FireInDirection(const FVector& ShootDirection)
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
 
+void AFireBall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	/*if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
+	{
+		Destroy();
+	}*/
 
+	if (OtherActor->IsA(AATank::StaticClass()))
+	{
+		UNiagaraSystem* FireHitEffect =
+			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+				TEXT("/Game/FireBall/NiagaraSystems/NS_Hit_Electric.NS_Hit_Electric")));
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect,
+			OtherActor->GetActorLocation(), this->GetActorRotation());
+
+		AFireBall::Destroy();
+		UGameplayStatics::ApplyPointDamage(OtherActor, 50.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
+
+		/*ABLOG(Warning, TEXT("HIT!!!"));
+		bCanApplyDamage = true;
+		MyCharacter = Cast<AActor>(OtherActor);
+		MyHit = SweepResult;
+		//GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ACampFire::ApplyFireDamage, 2.2f, true, 0.0f);
+
+		UGameplayStatics::ApplyPointDamage(OtherActor, 100.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
+		bCanApplyDamage = false;
+		//AOverlapRangeActor::Destroy();*/
+	}
+}
 
 void AFireBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor->IsA(AATank::StaticClass()))
 	{
 		ABLOG(Warning, TEXT("TANKHIT!!!"));
-		
+
 		UNiagaraSystem* FireHitEffect =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
 				TEXT("/Game/FireBall/NiagaraSystems/NS_Hit_Electric.NS_Hit_Electric")));
@@ -72,15 +104,11 @@ void AFireBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 
 	}
 
-	if (OtherActor != this /* && OtherComponent->IsSimulatingPhysics()*/)
-	{
-		ABLOG(Warning, TEXT("!!!"));
+	//if (OtherActor != this /* && OtherComponent->IsSimulatingPhysics()*/)
+	//{
+		//ABLOG(Warning, TEXT("!!!"));
 		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-
-		
-		
-		
-	}
+	//}
 }
 
 // Called when the game starts or when spawned

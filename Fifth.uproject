@@ -21,7 +21,8 @@
 				"AIModule",
 				"FifthSetting",
 				"UMG",
-				"CoreUObject"
+				"CoreUObject",
+				"GameplayCameras"
 			]
 		}
 	],

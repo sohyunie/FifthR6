@@ -55,7 +55,7 @@ void AOverlapRangeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		Destroy();
 	}*/
 
-	if (OtherActor->IsA(ANetCharacter::StaticClass()))
+	if (OtherActor->IsA(AATank::StaticClass()))
 	{
 		ABLOG(Warning, TEXT("HIT!!!"));
 		bCanApplyDamage = true;
@@ -63,8 +63,9 @@ void AOverlapRangeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		MyHit = SweepResult;
 		//GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ACampFire::ApplyFireDamage, 2.2f, true, 0.0f);
 
-		UGameplayStatics::ApplyPointDamage(OtherActor, 50.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherActor, 100.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
 		bCanApplyDamage = false;
+		//AOverlapRangeActor::Destroy();
 	}
 }
 
