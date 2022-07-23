@@ -6,7 +6,6 @@
 #include "ClientSocket.h"
 #include "NetCharacter.h"
 #include "GameFramework/GameModeBase.h"
-#include "NetCharacter.h"
 #include "MyGameMode.generated.h"
 
 /**

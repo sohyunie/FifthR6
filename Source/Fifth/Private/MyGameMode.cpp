@@ -51,15 +51,6 @@ void AMyGameMode::BeginPlay()
 	NetCharacter = Cast<ANetCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 }
 
-void AMyGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SetCurrentState(EGamePlayState::EPlaying);
-
-	NetCharacter = Cast<ANetCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-}
-
 void AMyGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
