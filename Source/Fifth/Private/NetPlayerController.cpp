@@ -873,26 +873,27 @@ void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
-	if (SpawnedCharacters.Num() == 0)
+	for (auto& character : SpawnedCharacters)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SpawnedCharacters Num is Zero"));
-		return;
-	}
-	auto Actor = FindActorBySessionId(SpawnedCharacters, sessionID);
+		ANetCharacter* player = Cast<ANetCharacter>(character);
 
-	ANetCharacter* player = Cast<ANetCharacter>(Actor);
-	if (player == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill player null"));
-		return;
-	}
-	if (id == 1)
-	{
-		player->RAttack();
-	}
-	else if (id == 2)
-	{
-		player->Fire();
+		if (!player || player->GetSessionId() == -1 || player->GetSessionId() == SessionId)
+		{
+			continue;
+		}
+		if (player == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill player null"));
+			return;
+		}
+		if (id == 1)
+		{
+			player->RAttack();
+		}
+		else if (id == 2)
+		{
+			player->Fire();
+		}
 	}
 }
 
