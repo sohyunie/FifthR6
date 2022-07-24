@@ -637,7 +637,7 @@ void ANetCharacter::RAttack()
 	if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
 	{
 		ABLOG(Warning, TEXT("RATTACK"));
-		FVector CameraLocation;
+		/*FVector CameraLocation;
 		FRotator CameraRotation;
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
@@ -646,7 +646,7 @@ void ANetCharacter::RAttack()
 
 		MuzzleRotation.Pitch += 10.0f;
 		UWorld* World = GetWorld();
-		/*if (World)
+		if (World)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
@@ -684,38 +684,7 @@ void ANetCharacter::Fire()
 {
 	if (IsFireing) return;
 
-	FVector CameraLocation;
-	FRotator CameraRotation;
-	GetActorEyesViewPoint(CameraLocation, CameraRotation);
-
-	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-	FRotator MuzzleRotation = CameraRotation;
-
-	MuzzleRotation.Pitch += 10.0f;
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-		AFireBall* Projectile = World->SpawnActor<AFireBall>(AFireBall::StaticClass(), MuzzleLocation, MuzzleRotation, SpawnParams);
-
-		UNiagaraSystem* Muzzle =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
-		UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-
-		UNiagaraSystem* FireEffectMuzzle =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric.NS_Projectile_Fireball_Electric")));
-		UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-		if (Projectile)
-		{
-			FVector LaunchDirection = MuzzleRotation.Vector();
-			Projectile->FireInDirection(LaunchDirection);
-		}
-
-	}
+	
 
 	MyAnim->PlayFireMontage();
 	IsFireing = true;
