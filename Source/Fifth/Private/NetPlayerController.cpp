@@ -872,12 +872,12 @@ void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
 	TArray<AActor*> SpawnedCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 	if (SpawnedCharacters.Num() == 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SpawnedCharacters Num is Zero"));
 		return;
 	}
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 	auto Actor = FindActorBySessionId(SpawnedCharacters, sessionID);
 
 	ANetCharacter* player = Cast<ANetCharacter>(Actor);
