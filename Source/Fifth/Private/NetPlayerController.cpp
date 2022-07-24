@@ -18,13 +18,8 @@ ANetPlayerController::ANetPlayerController()
 
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
-	Socket->InitSocket();
-	bIsConnected = Socket->Connect("127.0.0.1", 8080);
-	if (bIsConnected)
-	{
-		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
-		Socket->SetPlayerController(this);
-	}
+
+	Socket->SetPlayerController(this);
 
 	bIsChatNeedUpdate = false;
 	bNewPlayerEntered = false;
@@ -39,6 +34,8 @@ ANetPlayerController::ANetPlayerController()
 	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 
 	PrimaryActorTick.bCanEverTick = true;
+
+	bIsConnected = true;
 }
 
 ANetPlayerController::~ANetPlayerController()
@@ -239,6 +236,7 @@ void ANetPlayerController::RecvNewPlayer(cCharactersInfo* NewPlayer_)
 	{
 		bNewPlayerEntered = true;
 		PlayerInfos = NewPlayer_;
+		UE_LOG(LogClass, Log, TEXT("RecvNewPlayer NewPlayer : %d"), PlayerInfos->players.size());
 	}
 }
 
@@ -513,8 +511,13 @@ void ANetPlayerController::UpdateNewPlayer()
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 
+	UE_LOG(LogClass, Log, TEXT("NewPlayer : %d"), PlayerInfos->players.size());
+	int i = 0;
 	for (const auto& kvp : PlayerInfos->players)
 	{
+		i++;
+		UE_LOG(LogClass, Log, TEXT("NewPlayer : %d"), i);
+		
 		if (kvp.first == SessionId)
 			continue;
 
@@ -543,11 +546,11 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-				UE_LOG(LogClass, Log, TEXT("UpdateNewPlayer : %d"), PlayerInfos->players.size());
-
 				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SetSessionId(player->SessionId);
+
+				UE_LOG(LogClass, Log, TEXT("Create NewPlayer : %d"), PlayerInfos->players.size());
 			}
 		}
 	}

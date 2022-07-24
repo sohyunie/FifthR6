@@ -4,8 +4,8 @@
 
 #include "Fifth.h"
 #include "ClientSocket.h"
-#include "GameFramework/GameModeBase.h"
 #include "NetCharacter.h"
+#include "GameFramework/GameModeBase.h"
 #include "MyGameMode.generated.h"
 
 /**
@@ -40,7 +40,6 @@ public:
 
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-	bool Login(const FText& Id, const FText& Pw);
 
 private:
 	EGamePlayState CurrentState;
@@ -49,5 +48,4 @@ private:
 		
 
 	ClientSocket* Socket;
-	bool bIsConnected;
 };
