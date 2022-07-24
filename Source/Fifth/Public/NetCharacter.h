@@ -28,6 +28,7 @@ protected:
 	void SetControlMode(int32 ControlMode);
 
 	virtual void RAttack();
+	virtual void Fire();
 
 public:
 	// Called every frame
@@ -190,7 +191,7 @@ private:
 	void Attack();
 	void SAttack();
 	
-	void Fire();
+	
 	//void Portal();
 
 	void SaveGame();

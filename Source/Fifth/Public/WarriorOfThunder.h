@@ -23,5 +23,6 @@ public:
 		UStaticMeshComponent* Weapon;
 
 	virtual void RAttack() override;
+	virtual void Fire() override;
 	
 };
