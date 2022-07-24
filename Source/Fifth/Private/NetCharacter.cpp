@@ -676,7 +676,7 @@ void ANetCharacter::RAttack()
 		SetSkillChange(-20.f);
 		GetWorldTimerManager().SetTimer(SkillTimerHandle, this, &ANetCharacter::UpdateSkill, 5.f, false);
 
-
+		NetPlayerController->SendActionSkill(sessionID, 1);
 	}
 }
 
@@ -719,7 +719,7 @@ void ANetCharacter::Fire()
 
 	MyAnim->PlayFireMontage();
 	IsFireing = true;
-
+	NetPlayerController->SendActionSkill(sessionID, 2);
 }
 
 void ANetCharacter::SaveGame()

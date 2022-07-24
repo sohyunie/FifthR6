@@ -45,7 +45,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::LOGOUT_PLAYER].funcProcessPacket = LogoutCharacter;
 	fnProcess[EPacketType::HIT_MONSTER].funcProcessPacket = HitMonster;
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
-	fnProcess[EPacketType::SYNC_CUBE].funcProcessPacket = SyncCube;
+	fnProcess[EPacketType::ACTION_SKILL].funcProcessPacket = ActionSkill;
 }
 
 
@@ -229,13 +229,13 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	//printf_s(RecvStream.str().c_str());
+	printf_s("Enroll Character %d", info.SessionId);
 
 	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
 	EnterCriticalSection(&csPlayers);
 
-	cCharacter* pinfo = &CharactersInfo.players[info.SessionId];
+	cCharacter* pinfo = &CharactersInfo.players[info.SessionId]; // ID등록, 차후에 선 처리
 
 	// ĳ������ ��ġ�� ����						
 	pinfo->SessionId = info.SessionId;
@@ -257,7 +257,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->IsAlive = info.IsAlive;
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
-	pinfo->UELevel = info.UELevel;
+	//pinfo->UELevel = info.UELevel;
 
 	//LevelMaster[info.UELevel].push(info.SessionId);
 
@@ -511,15 +511,18 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	//printf_s("[INFO]SyncMonster %d \n", monsterSet.monsters[0].ueLevel);
 }
 
-void MainIocp::SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket)
+void MainIocp::ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
-	bool isOn;
-	RecvStream >> isOn;
+	int sessionID;
+	int id;
+	RecvStream >> sessionID;
+	RecvStream >> id;
 	stringstream SendStream;
-	SendStream << EPacketType::SYNC_CUBE << endl;
-	SendStream << isOn << endl;
+	SendStream << EPacketType::ACTION_SKILL << endl;
+	SendStream << sessionID << endl;
+	SendStream << id << endl;
 
-	printf_s("[INFO]Sync Cube");
+	printf_s("[INFO]Action Skill");
 
-	Broadcast(SendStream, 1);
+	OtherBroadcast(SendStream, 1, sessionID);
 }

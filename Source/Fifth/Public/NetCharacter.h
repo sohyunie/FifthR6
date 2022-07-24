@@ -27,7 +27,6 @@ protected:
 
 	void SetControlMode(int32 ControlMode);
 
-	virtual void RAttack();
 
 public:
 	// Called every frame
@@ -181,6 +180,8 @@ public:
 	bool GetIsAttacking();
 	int UELevel = 0;
 
+	virtual void RAttack();
+	void Fire();
 private:
 	void UpDown(float NewAxisValue);
 	void LeftRight(float NewAxisValue);
@@ -190,7 +191,6 @@ private:
 	void Attack();
 	void SAttack();
 	
-	void Fire();
 	//void Portal();
 
 	void SaveGame();

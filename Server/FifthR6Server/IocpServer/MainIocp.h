@@ -64,7 +64,7 @@ private:
 	static void HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	static void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
-	static void SyncCube(stringstream& RecvStream, stSOCKETINFO* pSocket);
+	static void ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	// 브로드캐스트 함수
 	static void Broadcast(stringstream & SendStream, int UELevel);	

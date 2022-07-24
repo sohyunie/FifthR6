@@ -321,11 +321,13 @@ uint32 ClientSocket::Run()
 				PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
 			}
 			break;
-			case EPacketType::SYNC_CUBE:
+			case EPacketType::ACTION_SKILL:
 			{
-				bool isOn;
-				RecvStream >> isOn;
-				PlayerController->RecvSyncCube(isOn);
+				int sessionID;
+				int id;
+				RecvStream >> sessionID;
+				RecvStream >> id;
+				PlayerController->RecvActionSkill(sessionID, id);
 			}
 			break;
 			case EPacketType::DESTROY_MONSTER:
@@ -404,14 +406,15 @@ void ClientSocket::SendSyncMonster(MonsterSet& monsterSet)
 }
 
 
-void ClientSocket::SendSyncCube(bool isOn)
+void ClientSocket::SendActionSkill(int sessionID, int id)
 {
-	UE_LOG(LogClass, Log, TEXT("Sync CUBE"));
+	UE_LOG(LogClass, Log, TEXT("Action Skill"));
 	// 캐릭터 정보 직렬화
 	stringstream SendStream;
 	// 요청 종류
-	SendStream << EPacketType::SYNC_CUBE << endl;;
-	SendStream << isOn;
+	SendStream << EPacketType::ACTION_SKILL << endl;
+	SendStream << sessionID;
+	SendStream << id;
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(

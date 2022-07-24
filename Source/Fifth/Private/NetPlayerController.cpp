@@ -868,13 +868,35 @@ bool ANetPlayerController::UpdateMonster()
 	}
 }
 
-void ANetPlayerController::RecvSyncCube(bool isOn)
+void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 {
+	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
+	TArray<AActor*> SpawnedCharacters;
+	if (SpawnedCharacters.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpawnedCharacters Num is Zero"));
+		return;
+	}
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
+	auto Actor = FindActorBySessionId(SpawnedCharacters, sessionID);
 
-
+	ANetCharacter* player = Cast<ANetCharacter>(Actor);
+	if (player == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill player null"));
+		return;
+	}
+	if (id == 1)
+	{
+		player->RAttack();
+	}
+	else if (id == 2)
+	{
+		player->Fire();
+	}
 }
 
-void ANetPlayerController::SendSyncCube(bool isOn)
+void ANetPlayerController::SendActionSkill(int sessionID, int id)
 {
-	Socket->SendSyncCube(isOn);
+	Socket->SendActionSkill(sessionID, id);
 }
