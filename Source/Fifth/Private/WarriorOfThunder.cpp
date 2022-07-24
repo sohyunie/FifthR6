@@ -56,7 +56,7 @@ void AWarriorOfThunder::RAttack()
 
 		UNiagaraSystem* ARange =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn1.NS_AOE_FireColumn1")));
+				TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
 		UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 
 
