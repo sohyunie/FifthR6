@@ -181,7 +181,7 @@ public:
 	int UELevel = 0;
 
 	virtual void RAttack();
-	void Fire();
+	virtual void Fire();
 private:
 	void UpDown(float NewAxisValue);
 	void LeftRight(float NewAxisValue);
