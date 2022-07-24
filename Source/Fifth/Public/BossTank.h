@@ -4,6 +4,7 @@
 
 #include "Fifth.h"
 #include "GameFramework/Character.h"
+#include "Components/TimelineComponent.h"
 #include "BossTank.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
@@ -25,6 +26,39 @@ protected:
 	void SetControlMode(int32 ControlMode);
 
 public:	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float FullHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+		float HealthPercentage;
+
+	UPROPERTY(EditAnywhere, Category = "Health")
+		FTimeline MyTimeline;
+
+	float TimelineValue;
+	bool bCanBeDamaged;
+	FTimerHandle MemberTimerHandle;
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+		float GetHealth();
+
+
+	UFUNCTION()
+		void DamageTimer();
+
+	UFUNCTION()
+		void SetDamageState();
+
+	
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		void UpdateMyHealth(float HealthChange);
+
+
+
 	UPROPERTY(EditAnywhere, Category = ID)
 		int32 ID;
 	UPROPERTY(EditAnywhere, Category = UELevel)
@@ -63,6 +97,12 @@ public:
 	FOnAttackEndDelegate OnAttackEnd;
 	int Id;
 private:
+	UPROPERTY(EditAnywhere, Category = "Health")
+		TSubclassOf<class UUserWidget> HUDWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Health")
+		class UUserWidget* CurrentWidget;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))

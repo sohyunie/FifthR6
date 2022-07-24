@@ -6,6 +6,8 @@
 #include "ClientSocket.h"
 #include "GameFramework/Character.h"
 #include "Components/TimelineComponent.h"
+#include "Door.h"
+#include "SaveCom.h"
 #include "NetCharacter.generated.h"
 
 UCLASS()
@@ -24,6 +26,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void SetControlMode(int32 ControlMode);
+
+	virtual void RAttack();
 
 public:
 	// Called every frame
@@ -46,8 +50,18 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		UCameraComponent* Camera;
 
-	
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> HelpWidgetClass;
 
+	// declare widget
+	class UUserWidget* InfoWidget;
+	
+	UPROPERTY(EditAnywhere)
+		class ASaveCom* CurrentSave;
+
+	UPROPERTY(EditAnywhere)
+		class ADoor* CurrentDoor;
 
 	UPROPERTY(BlueprintReadWrite, Category = Scene)
 		USceneComponent* Scene;
@@ -175,8 +189,13 @@ private:
 
 	void Attack();
 	void SAttack();
-	void RAttack();
+	
 	void Fire();
+	//void Portal();
+
+	void SaveGame();
+
+	void LoadGame();
 
 	void Cheat_One();
 	void Cheat_Two();

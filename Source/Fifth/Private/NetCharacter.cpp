@@ -20,7 +20,10 @@
 #include "TimerManager.h"
 #include "Camera/PlayerCameraManager.h"
 #include "MyMatineeCameraShake.h"
-
+#include "Door.h"
+#include "SaveCom.h"
+#include "Kismet/GameplayStatics.h"
+#include "MySaveGame.h"
 
 
 // Sets default values
@@ -69,6 +72,8 @@ ANetCharacter::ANetCharacter()
 	GetCapsuleComponent()->SetCapsuleRadius(100);
 
 
+	CurrentDoor = NULL;
+
 	SetControlMode(0);
 	IsAttacking = false;
 	IsSAttacking = false;
@@ -103,6 +108,11 @@ ANetCharacter::ANetCharacter()
 	HealthValue = 1.0f;
 	isAlived = true;
 	bIsAttacking = false;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> SaveHelp(
+		TEXT("/Game/UI/SaveInfo.SaveInfo_C"));
+
+	HelpWidgetClass = SaveHelp.Class;
 }
 
 /*void ANetCharacter::DeathOverlap(UPrimitiveComponent* OverlappedComp,
@@ -119,6 +129,17 @@ ANetCharacter::ANetCharacter()
 void ANetCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HelpWidgetClass)
+	{
+		InfoWidget = CreateWidget<UUserWidget>(GetWorld(), HelpWidgetClass);
+
+		if (InfoWidget)
+		{
+			InfoWidget->AddToViewport();
+		}
+
+	}
 
 	FullHealth = 1000.f;
 	Health = FullHealth;
@@ -273,7 +294,31 @@ void ANetCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
+	FHitResult Hit;
+	FVector Start = Camera->GetComponentLocation();
+
+	FVector ForwardVector = Camera->GetForwardVector();
+	FVector End = (ForwardVector * 200.f) + Start;
+	FCollisionQueryParams CollisionParams;
+
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CollisionParams))
+	{
+		if (Hit.bBlockingHit)
+		{
+			if (Hit.GetActor()->GetClass()->IsChildOf(ASaveCom::StaticClass()))
+			{
+				InfoWidget->SetVisibility(ESlateVisibility::Visible);
+				CurrentSave = Cast<ASaveCom>(Hit.GetActor());
+			}
+		}
+	}
+	else 
+	{
+		InfoWidget->SetVisibility(ESlateVisibility::Hidden);
+		CurrentSave = NULL;
+	}
 
 	
 	MyTimeline.TickTimeline(DeltaTime);
@@ -313,6 +358,7 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("SAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::SAttack);
 	PlayerInputComponent->BindAction(TEXT("RAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::RAttack);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &ANetCharacter::Fire);
+	PlayerInputComponent->BindAction(TEXT("Save"), EInputEvent::IE_Pressed, this, &ANetCharacter::SaveGame);
 	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_One);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Two);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Three);
@@ -562,6 +608,28 @@ void ANetCharacter::SAttack()
 	IsSAttacking = true;
 }
 
+
+
+/*void ANetCharacter::Portal()
+{
+	if (CurrentDoor)
+	{
+	//ABLOG(Warning, TEXT("DDD"));
+	UParticleSystem* Portal =
+		Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/P_Portal.P_Portal")));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
+		this->GetActorLocation() , this->GetActorRotation());
+
+	
+	CurrentDoor->DestructDoor();
+	}
+	else {
+		//ABLOG(Warning, TEXT("NULL"));
+		return;
+	}
+}*/
+
 void ANetCharacter::RAttack()
 {
 	if (IsRAttacking) return;
@@ -578,7 +646,7 @@ void ANetCharacter::RAttack()
 
 		MuzzleRotation.Pitch += 10.0f;
 		UWorld* World = GetWorld();
-		if (World)
+		/*if (World)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
@@ -586,18 +654,14 @@ void ANetCharacter::RAttack()
 			AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
 				MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
 
-
 			UNiagaraSystem* ARange =
 				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
 					TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
 			UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-			//if (OvCheck)
-			//{
-				//FVector LaunchDirection = MuzzleRotation.Vector();
-				//OvCheck->FireInDirection(LaunchDirection);
-			//}
+			
+			
 
-		}
+		}*/
 		//if (MyShake != NULL)
 		//{
 		MyAnim->PlayRAttackMontage();
@@ -657,6 +721,42 @@ void ANetCharacter::Fire()
 	IsFireing = true;
 
 }
+
+void ANetCharacter::SaveGame()
+{
+
+	if (CurrentSave)
+	{
+		//Create an instance of our savegame class
+		UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+
+		//Set the save game instance location equal to the players current location
+		SaveGameInstance->PlayerLocation = this->GetActorLocation();
+
+		//Save the savegameinstance
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+
+		//Log a message to show we have saved the game
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Saved."));
+	}
+	else return;
+}
+
+void ANetCharacter::LoadGame()
+{
+	//Create an instance of our savegame class
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	
+	//Load the saved game into our savegameinstance variable
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot",0));
+
+	//Set the players position from the saved game file
+	this->SetActorLocation(SaveGameInstance->PlayerLocation);
+
+	//Log
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Loaded."));
+}
+
 
 float ANetCharacter::GetHealth()
 {
@@ -824,19 +924,26 @@ void ANetCharacter::AttackCheck()
 	{
 		if (HitResult.Actor.IsValid())
 		{
-			AATank* Monster = Cast<AATank>(HitResult.Actor);
-			if (Monster)
+			if (HitResult.Actor->IsA(AATank::StaticClass()))
 			{
-				// �ǰݴ��� ���� ��ũ�� ����.
-				ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-				bool isMaster = PlayerController->HitMonster(Monster->ID);
-				if (isMaster) {
-					ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
-					FDamageEvent DamageEvent;
+				AATank* Monster = Cast<AATank>(HitResult.Actor);
+				if (Monster)
+				{
 
-					HitResult.Actor->TakeDamage(WarriorStat->GetSAttack(), DamageEvent, GetController(), this);
+					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+					bool isMaster = PlayerController->HitMonster(Monster->ID);
+					if (isMaster) {
+						ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+						FDamageEvent DamageEvent;
+
+						HitResult.Actor->TakeDamage(10.f, DamageEvent, GetController(), this);
+					}
 				}
 			}
+
+			ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(10.f, DamageEvent, GetController(), this);
 		}
 	}
 }

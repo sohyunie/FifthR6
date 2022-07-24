@@ -12,6 +12,8 @@
 #include "ClientSocket.h"
 #include "NetCharacter.h"
 #include "NetPlayerController.h"
+#include "TimerManager.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ABossTank::ABossTank()
@@ -55,12 +57,36 @@ ABossTank::ABossTank()
 
 	AIControllerClass = ABossAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> HealthBarObj(
+		TEXT("/Game/UI/Boss_HP.Boss_HP_C"));
+
+	HUDWidgetClass = HealthBarObj.Class;
 }
 
 // Called when the game starts or when spawned
 void ABossTank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FullHealth = 1000.f;
+	Health = FullHealth;
+	HealthPercentage = 1.0f;
+	bCanBeDamaged = true;
+
+	if (HUDWidgetClass)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+
+		if (CurrentWidget)
+		{
+			CurrentWidget->AddToViewport();
+		}
+
+	}
+
+	
+
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	Id = MyGameInstance->uniqueMonsterID++;
 
@@ -125,26 +151,39 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController->GetIsMaster())
 	{
-		float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-		ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-		Damaged();
-		BossStat->SetDamage(FinalDamage);
+		bCanBeDamaged = false;
+		UpdateMyHealth(-DamageAmount);
+		DamageTimer();
 
-		ABLOG(Warning, TEXT("ACCESSGRANTED!!!"));
+		Damaged();
+		
+
+		//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+		
+		//BossStat->SetDamage(FinalDamage);
+
+		
 		UNiagaraSystem* HitEffect =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
 				TEXT("/Game/Effect/Hit.Hit")));
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
 			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
-		return FinalDamage;
+		//return FinalDamage;
+		return DamageAmount;
 	}
 
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-	Damaged();
-	BossStat->SetDamage(FinalDamage);
+	//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+	bCanBeDamaged = false;
+	UpdateMyHealth(-DamageAmount);
+	DamageTimer();
 
-	return FinalDamage;
+	Damaged();
+	//BossStat->SetDamage(FinalDamage);
+
+	//return FinalDamage;
+	return DamageAmount;
 }
 
 
@@ -202,6 +241,28 @@ void ABossTank::Screaming()
 
 	BTAnim->PlayScreamMontage();
 	IsScreaming = true;
+}
+
+float ABossTank::GetHealth()
+{
+	return HealthPercentage;
+}
+
+void ABossTank::SetDamageState()
+{
+	bCanBeDamaged = true;
+}
+
+void ABossTank::DamageTimer()
+{
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ABossTank::SetDamageState, 2.f, false);
+}
+
+void ABossTank::UpdateMyHealth(float HealthChange)
+{
+	Health = FMath::Clamp(Health += HealthChange, 0.0f, FullHealth);
+	HealthPercentage = Health / FullHealth;
+
 }
 
 void ABossTank::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

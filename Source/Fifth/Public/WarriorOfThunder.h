@@ -21,5 +21,7 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 		UStaticMeshComponent* Weapon;
+
+	virtual void RAttack() override;
 	
 };
