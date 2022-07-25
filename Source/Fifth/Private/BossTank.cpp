@@ -78,10 +78,10 @@ void ABossTank::BeginPlay()
 	{
 		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
 
-		if (CurrentWidget)
-		{
-			CurrentWidget->AddToViewport();
-		}
+		//if (CurrentWidget)
+		//{
+			//CurrentWidget->AddToViewport();
+		//}
 
 	}
 

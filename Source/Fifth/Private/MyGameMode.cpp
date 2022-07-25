@@ -30,7 +30,7 @@ AMyGameMode::AMyGameMode(): Super()
 
 	//DefaultPawnClass = AWarriorOfFire::StaticClass();
 	//DefaultPawnClass = AWarriorOfWater::StaticClass();
-	DefaultPawnClass = AWarriorOfThunder::StaticClass();
+	//DefaultPawnClass = AWarriorOfThunder::StaticClass();
 	//DefaultPawnClass = AMFire::StaticClass();
 	
 

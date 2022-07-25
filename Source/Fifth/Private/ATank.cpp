@@ -271,7 +271,7 @@ void AATank::Tick(float DeltaTime)
 			->GetControlRotation().Vector()/**10*/);
 	}
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 20, FColor::Orange, false, -1, 0, 1);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 20, FColor::Orange, false, -1, 0, 1);
 
 }
 
