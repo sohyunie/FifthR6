@@ -59,6 +59,17 @@ public:
 	UPROPERTY(EditAnywhere)
 		class ASaveCom* CurrentSave;
 
+
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> ExitWidgetClass;
+
+	// declare widget
+	class UUserWidget* ExitInfoWidget;
+
+	UPROPERTY(EditAnywhere)
+		class AExitKey* CurrentKey;
+
 	UPROPERTY(EditAnywhere)
 		class ADoor* CurrentDoor;
 
@@ -111,6 +122,8 @@ public:
 	float TimelineValue;
 	bool bCanBeDamaged;
 	bool bCanUseSkill;
+
+	int KeyCount=0;
 
 	//UTimelineComponent* MyTimeline;
 	//struct FTimerHandle MemberTimerHandle;
@@ -191,7 +204,7 @@ private:
 	void Attack();
 	void SAttack();
 	
-	//void Portal();
+	void GetKey();
 
 	void SaveGame();
 

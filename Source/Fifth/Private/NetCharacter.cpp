@@ -20,10 +20,11 @@
 #include "TimerManager.h"
 #include "Camera/PlayerCameraManager.h"
 #include "MyMatineeCameraShake.h"
-#include "Door.h"
+#include "ExitKey.h"
 #include "SaveCom.h"
 #include "Kismet/GameplayStatics.h"
 #include "MySaveGame.h"
+#include "Door.h"
 
 
 // Sets default values
@@ -72,7 +73,7 @@ ANetCharacter::ANetCharacter()
 	GetCapsuleComponent()->SetCapsuleRadius(100);
 
 
-	CurrentDoor = NULL;
+	
 
 	SetControlMode(0);
 	IsAttacking = false;
@@ -102,7 +103,7 @@ ANetCharacter::ANetCharacter()
 
 	SetActorHiddenInGame(true);
 	SetCanBeDamaged(false);*/
-
+	CurrentDoor = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(),ADoor::StaticClass()));
 
 	DeadTimer = 5.0f;
 	HealthValue = 1.0f;
@@ -113,6 +114,11 @@ ANetCharacter::ANetCharacter()
 		TEXT("/Game/UI/SaveInfo.SaveInfo_C"));
 
 	HelpWidgetClass = SaveHelp.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> ExitHelp(
+		TEXT("/Game/UI/ExitKeyInfo.ExitKeyInfo_C"));
+
+	ExitWidgetClass = ExitHelp.Class;
 }
 
 /*void ANetCharacter::DeathOverlap(UPrimitiveComponent* OverlappedComp,
@@ -137,6 +143,17 @@ void ANetCharacter::BeginPlay()
 		if (InfoWidget)
 		{
 			InfoWidget->AddToViewport();
+		}
+
+	}
+
+	if (ExitWidgetClass)
+	{
+		ExitInfoWidget = CreateWidget<UUserWidget>(GetWorld(), ExitWidgetClass);
+
+		if (ExitInfoWidget)
+		{
+			ExitInfoWidget->AddToViewport();
 		}
 
 	}
@@ -312,12 +329,22 @@ void ANetCharacter::Tick(float DeltaTime)
 				InfoWidget->SetVisibility(ESlateVisibility::Visible);
 				CurrentSave = Cast<ASaveCom>(Hit.GetActor());
 			}
+			else if (Hit.GetActor()->GetClass()->IsChildOf(AExitKey::StaticClass()))
+			{
+				ExitInfoWidget->SetVisibility(ESlateVisibility::Visible);
+				CurrentKey = Cast<AExitKey>(Hit.GetActor());
+			}
 		}
+
+		
 	}
 	else 
 	{
 		InfoWidget->SetVisibility(ESlateVisibility::Hidden);
 		CurrentSave = NULL;
+
+		ExitInfoWidget->SetVisibility(ESlateVisibility::Hidden);
+		CurrentKey = NULL;
 	}
 
 	
@@ -359,6 +386,7 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("RAttack"), EInputEvent::IE_Pressed, this, &ANetCharacter::RAttack);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &ANetCharacter::Fire);
 	PlayerInputComponent->BindAction(TEXT("Save"), EInputEvent::IE_Pressed, this, &ANetCharacter::SaveGame);
+	PlayerInputComponent->BindAction(TEXT("GetKey"), EInputEvent::IE_Pressed, this, &ANetCharacter::GetKey);
 	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_One);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Two);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Three);
@@ -610,25 +638,32 @@ void ANetCharacter::SAttack()
 
 
 
-/*void ANetCharacter::Portal()
+void ANetCharacter::GetKey()
 {
-	if (CurrentDoor)
+	if (CurrentKey)
 	{
 	//ABLOG(Warning, TEXT("DDD"));
-	UParticleSystem* Portal =
-		Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-			TEXT("/Game/Effect/P_Portal.P_Portal")));
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
-		this->GetActorLocation() , this->GetActorRotation());
+		if (KeyCount == 4) {
+			CurrentDoor->DestructDoor();
+			UParticleSystem* Portal =
+				Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+					TEXT("/Game/Effect/P_Portal.P_Portal")));
 
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
+				FVector((16657.025391f, 5849.000977f, 212.000000f)));
+
+			ABLOG(Warning, TEXT("PR"));
+		}
+	++KeyCount;
+	ABLOG(Warning, TEXT("Key : %d"), KeyCount);
 	
-	CurrentDoor->DestructDoor();
+	CurrentKey->DestructKey();
 	}
 	else {
 		//ABLOG(Warning, TEXT("NULL"));
 		return;
 	}
-}*/
+}
 
 void ANetCharacter::RAttack()
 {

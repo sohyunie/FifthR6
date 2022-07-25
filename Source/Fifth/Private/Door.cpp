@@ -10,7 +10,7 @@ ADoor::ADoor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BODY"));
-	
+
 	RootComponent = Body;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Door(
@@ -20,7 +20,6 @@ ADoor::ADoor()
 	{
 		Body->SetStaticMesh(Door.Object);
 	}
-
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +39,4 @@ void ADoor::Tick(float DeltaTime)
 void ADoor::DestructDoor()
 {
 	ADoor::Destroy();
-
 }
-
