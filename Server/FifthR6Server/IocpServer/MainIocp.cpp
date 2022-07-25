@@ -250,16 +250,20 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		++iter;
 	}
 
+	stringstream SendStream;
+	SendStream << EPacketType::PLAY_GAME << endl;
+
 	if (count == 2) {
-		stringstream SendStream;
-		SendStream << EPacketType::PLAY_GAME << endl;
-
-		CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
-		pSocket->dataBuf.buf = pSocket->messageBuffer;
-		pSocket->dataBuf.len = SendStream.str().length();
-
-		Send(pSocket);
+		SendStream << true << endl;
 	}
+	else {
+		SendStream << false << endl;
+	}
+	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
+	pSocket->dataBuf.buf = pSocket->messageBuffer;
+	pSocket->dataBuf.len = SendStream.str().length();
+
+	Broadcast(SendStream, 1);
 }
 
 void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)

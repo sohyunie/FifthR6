@@ -41,7 +41,6 @@ bool ATitleGameMode::Login(const FText& Id, const FText& Pw)
 		return false;
 	}
 
-	Socket->CloseSocket();
 	return true;
 }
 
