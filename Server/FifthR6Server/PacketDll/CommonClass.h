@@ -16,6 +16,7 @@ using namespace std;
 enum COMMONCLASS_API EPacketType
 {
 	LOGIN,
+	SET_CHARACTER,
 	ENROLL_PLAYER,
 	SEND_PLAYER,
 	RECV_PLAYER,
@@ -27,7 +28,8 @@ enum COMMONCLASS_API EPacketType
 	HIT_MONSTER,
 	SYNC_MONSTER,
 	ACTION_SKILL,
-	DESTROY_MONSTER
+	DESTROY_MONSTER,
+	PLAY_GAME,
 };
 
 class COMMONCLASS_API cCharacter {
@@ -56,6 +58,8 @@ public:
 
 	int		UELevel;
 	bool	IsMaster;
+
+	int		characterID;
 
 	friend ostream& operator<<(ostream &stream, cCharacter& info)
 	{

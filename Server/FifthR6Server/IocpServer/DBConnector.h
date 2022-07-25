@@ -23,7 +23,7 @@ public:
 	void Close();
 	
 	// 유저 계정을 찾음
-	bool SearchAccount(const string& Id, const string& Password);
+	int SearchAccount(const string& Id, const string& Password);
 
 private:
 	MYSQL * Conn;		// 커넥터

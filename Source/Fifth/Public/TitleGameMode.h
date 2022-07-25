@@ -12,10 +12,15 @@ UCLASS()
 class FIFTH_API ATitleGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+		UFUNCTION(BlueprintCallable)
+		bool Login(const FText& Id, const FText& Pw);
+		UFUNCTION(BlueprintCallable)
+		void LoginFail();
+		UFUNCTION(BlueprintCallable)
+		void SetCharacter(int id);
 public:
 	ATitleGameMode();
-
-	bool Login(const FText& Id, const FText& Pw);
+	
 private:
 
 	ClientSocket* Socket;

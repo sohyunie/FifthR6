@@ -89,8 +89,10 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
 	);
 
-	if (nSendLen == -1)
+	if (nSendLen == -1) {
+		UE_LOG(LogClass, Log, TEXT("Send Fail"));
 		return false;
+	}
 
 	int nRecvLen = recv(
 		ServerSocket, (CHAR*)&recvBuffer, MAX_BUFFER, 0
@@ -101,16 +103,37 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 
 	stringstream RecvStream;
 	int PacketType;
-	bool LoginResult;
+	ID = 0;
 
 	RecvStream << recvBuffer;
 	RecvStream >> PacketType;
-	RecvStream >> LoginResult;
+	RecvStream >> ID;
 
+	UE_LOG(LogClass, Log, TEXT("---[%d]---"), ID);
 	if (PacketType != EPacketType::LOGIN)
 		return false;
 
-	return LoginResult;
+	return ID != 0;
+}
+
+void ClientSocket::SetCharacterID(int id)
+{
+	UE_LOG(LogClass, Log, TEXT("SetCharacterID"));
+
+	stringstream SendStream;
+	SendStream << EPacketType::SET_CHARACTER << endl;
+	SendStream << ID << endl;
+	UE_LOG(LogClass, Log, TEXT("---[%d]---"), ID);
+
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+
+	if (nSendLen == -1)
+	{
+		UE_LOG(LogClass, Log, TEXT("Send Fail"));
+		return;
+	}
 }
 
 void ClientSocket::EnrollPlayer(cCharacter& info)

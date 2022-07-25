@@ -13,11 +13,11 @@
 
 ANetPlayerController::ANetPlayerController()
 {
-	SessionId = FMath::RandRange(0, 10000);
-	UE_LOG(LogClass, Log, TEXT("Random SessionId : %d"), SessionId);
-
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
+	SessionId = Socket->ID;
+	// CharacterID 1~3번
+	//Socket->CharacterID;
 
 	Socket->SetPlayerController(this);
 
