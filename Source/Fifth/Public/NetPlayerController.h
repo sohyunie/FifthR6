@@ -80,8 +80,8 @@ public:
 	void RecvDestroyMonster(Monster* MonsterInfo);
 	// 몬스터 타격 정보 전달
 	bool HitMonster(const int& MonsterId);
-	void RecvSyncCube(bool isOn);
-	void SendSyncCube(bool isOn);
+	void RecvActionSkill(int sessionID, int id);
+	void SendActionSkill(int sessionID, int id);
 	bool GetIsMaster();
 
 private:
