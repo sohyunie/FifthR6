@@ -104,6 +104,7 @@ public:
 enum EPacketType
 {
 	LOGIN,
+	SET_CHARACTER,
 	ENROLL_PLAYER,
 	SEND_PLAYER,
 	RECV_PLAYER,
@@ -115,7 +116,8 @@ enum EPacketType
 	HIT_MONSTER,
 	SYNC_MONSTER,
 	ACTION_SKILL,
-	DESTROY_MONSTER
+	DESTROY_MONSTER,
+	PLAY_GAME,
 };
 
 class cCharactersInfo
@@ -293,6 +295,7 @@ public:
 	void HitMonster(const int& MonsterId);
 	void SendSyncMonster(MonsterSet& monsterSet);
 	void SendActionSkill(int sessionID, int id);
+	void SetCharacterID(int id);
 	// UDP 테스트용 함수
 	char* UdpTest();
 	//////////////////////////////////////////////////////////////////////////	
@@ -322,6 +325,9 @@ public:
 		static ClientSocket ins;
 		return &ins;
 	}
+
+	int ID;
+	int CharacterID;
 
 private:
 	SOCKET	ServerSocket;				// 서버와 연결할 소켓

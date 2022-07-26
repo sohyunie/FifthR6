@@ -23,17 +23,35 @@ ATitleGameMode::ATitleGameMode()
 
 bool ATitleGameMode::Login(const FText& Id, const FText& Pw)
 {
-	if (Id.IsEmpty() || Pw.IsEmpty())
+	UE_LOG(LogClass, Log, TEXT("Try Login!"));
+	if (Id.IsEmpty() || Pw.IsEmpty()) {
+
+		UE_LOG(LogClass, Log, TEXT("IsEmpty!"));
 		return false;
+	}
 
-	if (!bIsConnected)
+	if (!bIsConnected) {
+		UE_LOG(LogClass, Log, TEXT("Not connected!"));
 		return false;
+	}
 
-	bool IsSuccess = Socket->Login(Id, Pw);
-
-	if (!IsSuccess)
+	Socket->ID = Socket->Login(Id, Pw);
+	if (Socket->ID == 0) {
+		UE_LOG(LogClass, Log, TEXT("Login Fail!"));
 		return false;
+	}
 
-	Socket->CloseSocket();
 	return true;
+}
+
+
+void ATitleGameMode::LoginFail()
+{
+	UE_LOG(LogClass, Log, TEXT("Try Login Fail!"));
+}
+
+void ATitleGameMode::SetCharacter(int id)
+{
+	UE_LOG(LogClass, Log, TEXT("Set Character : [%d] "), id);
+	Socket->SetCharacterID(id);
 }

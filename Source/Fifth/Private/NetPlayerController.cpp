@@ -13,11 +13,11 @@
 
 ANetPlayerController::ANetPlayerController()
 {
-	SessionId = FMath::RandRange(0, 10000);
-	UE_LOG(LogClass, Log, TEXT("Random SessionId : %d"), SessionId);
-
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
+	SessionId = Socket->ID;
+	// CharacterID 1~3번
+	//Socket->CharacterID;
 
 	Socket->SetPlayerController(this);
 
@@ -150,7 +150,7 @@ void ANetPlayerController::BeginPlay()
 	Socket->EnrollPlayer(tempCharacter);
 
 	// Recv 스레드 시작
-	Socket->StartListen();
+	//Socket->StartListen();
 	UE_LOG(LogClass, Log, TEXT("BeginPlay End"));
 }
 

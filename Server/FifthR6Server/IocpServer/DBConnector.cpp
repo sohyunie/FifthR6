@@ -30,11 +30,11 @@ void DBConnector::Close()
 	mysql_close(Conn);
 }
 
-bool DBConnector::SearchAccount(const string & Id, const string & Password)
+int DBConnector::SearchAccount(const string & Id, const string & Password)
 {
 	bool bResult = false;
-	string sql = "SELECT * FROM sungminworld.playeraccount WHERE id = '";
-	sql += Id + "' and pw = '" + Password + "'";
+	string sql = "SELECT * FROM user_data.userinfo WHERE name = '";
+	sql += Id + "' and password = '" + Password + "'";
 
 	if (mysql_query(Conn, sql.c_str()))
 	{
@@ -47,13 +47,15 @@ bool DBConnector::SearchAccount(const string & Id, const string & Password)
 	if (Row != NULL)
 	{
 		bResult = true;
+		int id = atoi(Row[0]);
+		return id;
 	}
 	else
 	{
 		printf_s("[ERROR] 해당 아이디 없음\n");
-		bResult = false;
+		return 0;
 	}
 	mysql_free_result(Res);
 
-	return bResult;
+	return 0;
 }

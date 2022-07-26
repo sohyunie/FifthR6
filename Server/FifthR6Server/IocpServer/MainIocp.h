@@ -50,6 +50,8 @@ private:
 
 	// DB에 로그인
 	static void Login(stringstream & RecvStream, stSOCKETINFO * pSocket);
+	// 캐릭터 등록
+	static void SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket);
 	// 캐릭터 초기 등록
 	static void EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket);
 	// 캐릭터 위치 동기화

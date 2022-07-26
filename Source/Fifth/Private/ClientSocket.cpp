@@ -101,16 +101,39 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 
 	stringstream RecvStream;
 	int PacketType;
-	bool LoginResult;
+	ID = 0;
 
 	RecvStream << recvBuffer;
 	RecvStream >> PacketType;
-	RecvStream >> LoginResult;
+	RecvStream >> ID;
 
+	UE_LOG(LogClass, Log, TEXT("---[%d]---"), ID);
 	if (PacketType != EPacketType::LOGIN)
 		return false;
 
-	return LoginResult;
+	if (ID != 0) {
+		StartListen();
+	}
+	return ID != 0;
+}
+
+void ClientSocket::SetCharacterID(int id)
+{
+	UE_LOG(LogClass, Log, TEXT("SetCharacterID"));
+
+	stringstream SendStream;
+	SendStream << EPacketType::SET_CHARACTER << endl;
+	SendStream << ID << endl;
+	SendStream << id << endl;
+
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
 }
 
 void ClientSocket::EnrollPlayer(cCharacter& info)
@@ -333,6 +356,18 @@ uint32 ClientSocket::Run()
 			case EPacketType::DESTROY_MONSTER:
 			{
 				PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
+			}
+			case EPacketType::PLAY_GAME:
+			{
+				bool isStart = false;
+				RecvStream >> isStart;
+				// æ¿ ¿Ãµø
+				if (isStart) {
+					UE_LOG(LogClass, Log, TEXT("PLAY_GAME!!"));
+				}
+				else {
+					UE_LOG(LogClass, Log, TEXT("PLAY_GAME WAIT!!"));
+				}
 			}
 			break;
 			default:

@@ -38,6 +38,7 @@ MainIocp::MainIocp()
 
 	// ��Ŷ �Լ� �����Ϳ� �Լ� ����
 	fnProcess[EPacketType::LOGIN].funcProcessPacket = Login;
+	fnProcess[EPacketType::SET_CHARACTER].funcProcessPacket = SetCharacter;
 	fnProcess[EPacketType::ENROLL_PLAYER].funcProcessPacket = EnrollCharacter;
 	fnProcess[EPacketType::SEND_PLAYER].funcProcessPacket = SyncCharacters;
 	fnProcess[EPacketType::HIT_PLAYER].funcProcessPacket = HitCharacter;
@@ -180,7 +181,7 @@ void MainIocp::WorkerThread()
 			RecvStream << pSocketInfo->dataBuf.buf;
 			RecvStream >> PacketType;
 
-			if (PacketType > 11)
+			if (PacketType > 14)
 				continue;
 			// ��Ŷ ó��
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
@@ -222,6 +223,47 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	pSocket->dataBuf.len = SendStream.str().length();
 
 	Send(pSocket);
+}
+
+void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	int sessionID;
+	int Id;
+	RecvStream >> sessionID;
+	RecvStream >> Id;
+
+	cCharacter* pinfo = &CharactersInfo.players[sessionID]; // ID등록
+	pinfo->SessionId = sessionID;
+	pinfo->characterID = Id;
+
+	printf_s("[INFO] SetCharacter {%d}\n", Id);
+
+
+	int count = 0;
+	auto iter = CharactersInfo.players.begin();
+	while (iter != CharactersInfo.players.end()) {
+		if (iter->second.characterID != 0) {
+			count++;
+		}
+		cout << "[" << iter->first << ","
+			<< iter->second << "]\n";
+		++iter;
+	}
+
+	stringstream SendStream;
+	SendStream << EPacketType::PLAY_GAME << endl;
+
+	if (count == 2) {
+		SendStream << true << endl;
+	}
+	else {
+		SendStream << false << endl;
+	}
+	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
+	pSocket->dataBuf.buf = pSocket->messageBuffer;
+	pSocket->dataBuf.len = SendStream.str().length();
+
+	Broadcast(SendStream, 1);
 }
 
 void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
