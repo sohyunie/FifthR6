@@ -331,6 +331,7 @@ public:
 
 	int ID;
 	int CharacterID;
+	bool isEnroll = false;
 
 private:
 	SOCKET	ServerSocket;				// 서버와 연결할 소켓
