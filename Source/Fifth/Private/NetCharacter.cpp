@@ -12,6 +12,7 @@
 #include "MyPlayerState.h"
 #include "MyHUDWidget.h"
 #include "ATank.h"
+#include "BossTank.h"
 #include "FireBall.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
@@ -57,8 +58,37 @@ ANetCharacter::ANetCharacter()
 	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	Camera->bUsePawnControlRotation = true;
 
-
+	//Sound
+	//AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SOUND"));;
+	//AudioComponent->SetupAttachment(Mesh);
 	
+	static ConstructorHelpers::FObjectFinder<USoundWave> Fire(TEXT("SoundWave'/Game/MySound/Sound-Effect-Laser_256k.Sound-Effect-Laser_256k'"));
+
+	if (Fire.Succeeded())
+	{
+		Fire_Sound = Fire.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> AOE(TEXT("SoundWave'/Game/MySound/Explosion-Sound-Effect-HD_256k.Explosion-Sound-Effect-HD_256k'"));
+
+	if (AOE.Succeeded())
+	{
+		Magic_Sound = AOE.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> SWORD(TEXT("SoundWave'/Game/MySound/SWORDCLASH.SWORDCLASH'"));
+
+	if (SWORD.Succeeded())
+	{
+		Sword_Sound = SWORD.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> Key(TEXT("SoundWave'/Game/MySound/Video-Game-Beep-Sound-Effect_256k.Video-Game-Beep-Sound-Effect_256k'"));
+
+	if (Key.Succeeded())
+	{
+		Key_Sound = Key.Object;
+	}
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
@@ -302,7 +332,7 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-
+		
 	}
 }
 
@@ -642,15 +672,16 @@ void ANetCharacter::GetKey()
 {
 	if (CurrentKey)
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, Key_Sound, GetActorLocation());
 	//ABLOG(Warning, TEXT("DDD"));
 		if (KeyCount == 4) {
 			CurrentDoor->DestructDoor();
-			UParticleSystem* Portal =
-				Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-					TEXT("/Game/Effect/P_Portal.P_Portal")));
+			//UParticleSystem* Portal =
+				//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+					//TEXT("/Game/Effect/P_Portal.P_Portal")));
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
-				FVector((16657.025391f, 5849.000977f, 212.000000f)));
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
+				//FVector((16657.025391f, 5849.000977f, 212.000000f)));
 
 			ABLOG(Warning, TEXT("PR"));
 		}
@@ -672,33 +703,10 @@ void ANetCharacter::RAttack()
 	if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
 	{
 		ABLOG(Warning, TEXT("RATTACK"));
-		/*FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		
+		UGameplayStatics::PlaySoundAtLocation(this, Magic_Sound, GetActorLocation());
+		MyAnim->PlayFireMontage();
 
-		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = CameraRotation;
-
-		MuzzleRotation.Pitch += 10.0f;
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-			AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
-				MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
-
-			UNiagaraSystem* ARange =
-				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-					TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
-			UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-			
-			
-
-		}*/
-		//if (MyShake != NULL)
-		//{
 		MyAnim->PlayRAttackMontage();
 		
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
@@ -720,8 +728,9 @@ void ANetCharacter::Fire()
 	if (IsFireing) return;
 
 	
-
+	UGameplayStatics::PlaySoundAtLocation(this, Fire_Sound, GetActorLocation());
 	MyAnim->PlayFireMontage();
+
 	IsFireing = true;
 	NetPlayerController->SendActionSkill(sessionID, 2);
 }
@@ -928,6 +937,7 @@ void ANetCharacter::AttackCheck()
 	{
 		if (HitResult.Actor.IsValid())
 		{
+			UGameplayStatics::PlaySoundAtLocation(this, Sword_Sound, GetActorLocation());
 			if (HitResult.Actor->IsA(AATank::StaticClass()))
 			{
 				AATank* Monster = Cast<AATank>(HitResult.Actor);
@@ -943,7 +953,28 @@ void ANetCharacter::AttackCheck()
 						HitResult.Actor->TakeDamage(10.f, DamageEvent, GetController(), this);
 					}
 				}
+
+
 			}
+
+			/*if (HitResult.Actor->IsA(ABossTank::StaticClass()))
+			{
+				ABossTank* Monster = Cast<ABossTank>(HitResult.Actor);
+				if (Monster)
+				{
+
+					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+					bool isMaster = PlayerController->HitMonster(Monster->ID);
+					if (isMaster) {
+						ABLOG(Warning, TEXT("Hit Actor Name: %s"), *HitResult.Actor->GetName());
+						FDamageEvent DamageEvent;
+
+						HitResult.Actor->TakeDamage(10.f, DamageEvent, GetController(), this);
+					}
+				}
+
+
+			}*/
 
 			ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 			FDamageEvent DamageEvent;

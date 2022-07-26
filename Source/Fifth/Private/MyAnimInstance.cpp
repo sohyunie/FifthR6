@@ -6,6 +6,15 @@
 UMyAnimInstance::UMyAnimInstance()
 {
 	CurrentPawnSpeed = 0.0f;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> Foot(TEXT("SoundWave'/Game/MySound/Running-footsteps_256k.Running-footsteps_256k'"));
+
+	if (Foot.Succeeded())
+	{
+		Foot_Sound = Foot.Object;
+	}
+
+
 	IsInAir = false;
 	IsDead = false;
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(
@@ -71,6 +80,12 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (!IsDead)
 	{
 		CurrentPawnSpeed = Pawn->GetVelocity().Size();
+
+		//if (CurrentPawnSpeed > 0)
+		//{
+			//ABLOG(Warning, TEXT("RUNSOUND"));
+			//UGameplayStatics::PlaySoundAtLocation(Pawn, Foot_Sound, Pawn->GetActorLocation());
+		//}
 		
 	}
 }

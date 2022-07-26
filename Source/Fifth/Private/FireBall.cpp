@@ -25,7 +25,12 @@ AFireBall::AFireBall()
 	Capsule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Capsule"));
 	Capsule ->SetupAttachment(CollisionComponent);
 
-	
+	static ConstructorHelpers::FObjectFinder<USoundWave> Elec(TEXT("SoundWave'/Game/MySound/Electric-Sound-Effect_256k.Electric-Sound-Effect_256k'"));
+
+	if (Elec.Succeeded())
+	{
+		Electricity_Sound = Elec.Object;
+	}
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> FireBall(
 		TEXT("/Game/FireBall/Models/TestCapsule.TestCapsule"));
@@ -64,8 +69,10 @@ void AFireBall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		Destroy();
 	}*/
 
-	if (OtherActor->IsA(AATank::StaticClass()))
+	if (OtherActor->IsA(AATank::StaticClass()) || OtherActor->IsA(ABossTank::StaticClass()))
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, Electricity_Sound, GetActorLocation());
+
 		UNiagaraSystem* FireHitEffect =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
 				TEXT("/Game/FireBall/NiagaraSystems/NS_Hit_Electric.NS_Hit_Electric")));

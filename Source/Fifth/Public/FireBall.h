@@ -15,7 +15,7 @@ class FIFTH_API AFireBall : public AActor
 
 private:
 	
-	
+	USoundWave* Electricity_Sound;
 
 	//UFUNCTION()
 		//void OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor,

@@ -8,6 +8,7 @@
 #include "Components/TimelineComponent.h"
 #include "Door.h"
 #include "SaveCom.h"
+#include "Sound/SoundCue.h"
 #include "NetCharacter.generated.h"
 
 UCLASS()
@@ -260,6 +261,12 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Fire, Meta = (AllowPrivateAccess = true))
 		bool IsFireing;
 
+	UAudioComponent* AudioComponent;
+
+	USoundWave* Fire_Sound;
+	USoundWave* Magic_Sound;
+	USoundWave* Sword_Sound;
+	USoundWave* Key_Sound;
 	
 
 	//강제 이동이 아닌 조건 성립 체크
