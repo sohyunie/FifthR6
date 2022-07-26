@@ -376,7 +376,8 @@ uint32 ClientSocket::Run()
 			break;
 			case EPacketType::PLAY_GAME:
 			{
-				bool isStart = false;
+				if (isStart)
+					break;
 				RecvStream >> isStart;
 				// æ¿ ¿Ãµø
 				if (isStart) {
