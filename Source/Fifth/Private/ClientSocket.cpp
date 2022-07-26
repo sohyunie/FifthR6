@@ -382,6 +382,7 @@ uint32 ClientSocket::Run()
 				// ¾À ÀÌµ¿
 				if (isStart) {
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME!!"));
+					StopListen();
 					titleGameMode->MoveInGame();
 				}
 				else {
