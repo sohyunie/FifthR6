@@ -318,69 +318,72 @@ uint32 ClientSocket::Run()
 	FPlatformProcess::Sleep(0.03);
 	// recv while loop 시작
 	// StopTaskCounter 클래스 변수를 사용해 Thread Safety하게 해줌
-	while (StopTaskCounter.GetValue() == 0 && PlayerController != nullptr)
+	while (StopTaskCounter.GetValue() == 0)
 	{
 		stringstream RecvStream;
 		int PacketType;
 		int nRecvLen = recv(
 			ServerSocket, (CHAR*)&recvBuffer, MAX_BUFFER, 0
 		);
-		if (nRecvLen > 0)
-		{
-			RecvStream << recvBuffer;
-			RecvStream >> PacketType;
-
-			switch (PacketType)
-			{
-			case EPacketType::RECV_PLAYER:
-			{
-				PlayerController->RecvWorldInfo(RecvCharacterInfo(RecvStream));
-			}
-			break;
-			case EPacketType::CHAT:
-			{
-				PlayerController->RecvChat(RecvChat(RecvStream));
-			}
-			break;
-			case EPacketType::ENTER_NEW_PLAYER:
-			{
-				PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
-			}
-			break;
-			case EPacketType::SYNC_MONSTER:
-			{
-				PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
-			}
-			break;
-			case EPacketType::ACTION_SKILL:
-			{
-				int sessionID;
-				int id;
-				RecvStream >> sessionID;
-				RecvStream >> id;
-				PlayerController->RecvActionSkill(sessionID, id);
-			}
-			break;
-			case EPacketType::DESTROY_MONSTER:
-			{
-				PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
-			}
-			case EPacketType::PLAY_GAME:
+		if (PlayerController == nullptr) {
+			if (PacketType == EPacketType::PLAY_GAME)
 			{
 				bool isStart = false;
 				RecvStream >> isStart;
 				// 씬 이동
 				if (isStart) {
-					titleGameMode->MoveInGame();
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME!!"));
+					titleGameMode->MoveInGame();
 				}
 				else {
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME WAIT!!"));
 				}
 			}
-			break;
-			default:
+		}
+		else {
+			if (nRecvLen > 0)
+			{
+				RecvStream << recvBuffer;
+				RecvStream >> PacketType;
+
+				switch (PacketType)
+				{
+				case EPacketType::RECV_PLAYER:
+				{
+					PlayerController->RecvWorldInfo(RecvCharacterInfo(RecvStream));
+				}
 				break;
+				case EPacketType::CHAT:
+				{
+					PlayerController->RecvChat(RecvChat(RecvStream));
+				}
+				break;
+				case EPacketType::ENTER_NEW_PLAYER:
+				{
+					PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
+				}
+				break;
+				case EPacketType::SYNC_MONSTER:
+				{
+					PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
+				}
+				break;
+				case EPacketType::ACTION_SKILL:
+				{
+					int sessionID;
+					int id;
+					RecvStream >> sessionID;
+					RecvStream >> id;
+					PlayerController->RecvActionSkill(sessionID, id);
+				}
+				break;
+				case EPacketType::DESTROY_MONSTER:
+				{
+					PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
+				}
+				default:
+					break;
+				}
 			}
 		}
 	}
