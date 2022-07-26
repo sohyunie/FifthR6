@@ -13,6 +13,7 @@
 
 ANetPlayerController::ANetPlayerController()
 {
+	UE_LOG(LogClass, Log, TEXT("ANetPlayerController Create"));
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
 	SessionId = Socket->ID;

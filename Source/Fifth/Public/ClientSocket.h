@@ -339,7 +339,7 @@ private:
 	char UdpRecvBuffer[MAX_BUFFER];
 
 	SOCKADDR_IN	UdpServerAddr;
-	ANetPlayerController* PlayerController;	// 플레이어 컨트롤러 정보
+	ANetPlayerController* PlayerController = nullptr;	// 플레이어 컨트롤러 정보
 
 
 	char testChat[MAX_BUFFER];
