@@ -68,7 +68,7 @@ MainIocp::~MainIocp()
 	}
 
 	// DB ���� ����
-	//Conn.Close();
+	Conn.Close();
 }
 
 bool MainIocp::CreateWorkerThread()
@@ -214,9 +214,12 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 
 	printf_s("[INFO] Login {%s}/{%s}\n", Id, Pw);
 
+	int id = Conn.SearchAccount(Id, Pw);
+	printf_s("[INFO] ID {%d}\n", id);
+
 	stringstream SendStream;
 	SendStream << EPacketType::LOGIN << endl;
-	SendStream << Conn.SearchAccount(Id, Pw) << endl;
+	SendStream << id << endl;
 
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
@@ -245,8 +248,6 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		if (iter->second.characterID != 0) {
 			count++;
 		}
-		cout << "[" << iter->first << ","
-			<< iter->second << "]\n";
 		++iter;
 	}
 
@@ -254,6 +255,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << EPacketType::PLAY_GAME << endl;
 
 	if (count == 2) {
+		printf_s("[INFO] SEND PLAY GAME\n", Id);
 		SendStream << true << endl;
 	}
 	else {

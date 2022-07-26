@@ -27,7 +27,5 @@ public:
 
 private:
 	MYSQL * Conn;		// 커넥터
-	MYSQL_RES * Res;	// 결과값
-	MYSQL_ROW Row;		// 결과 row
 };
 

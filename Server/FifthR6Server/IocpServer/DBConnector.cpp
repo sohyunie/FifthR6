@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "DBConnector.h"
 
 
@@ -18,7 +18,7 @@ bool DBConnector::Connect(const string & Server, const string & User, const stri
 		Conn, Server.c_str(), User.c_str(), Password.c_str(), Database.c_str(), Port, NULL, 0)
 	)
 	{
-		printf_s("[DB] DB Á¢¼Ó ½ÇÆĞ\n");
+		printf_s("[DB] DB ì ‘ì† ì‹¤íŒ¨\n");
 		return false;
 	}
 
@@ -29,16 +29,32 @@ void DBConnector::Close()
 {
 	mysql_close(Conn);
 }
+#define DB_ADDRESS		"localhost"
+#define	DB_PORT			3306
+#define DB_ID			"test"
+#define DB_PW			"Kk471601"
+#define DB_SCHEMA		"user_data"
 
 int DBConnector::SearchAccount(const string & Id, const string & Password)
 {
+	// Connect ê³ ë¯¼...
+	if (Connect(DB_ADDRESS, DB_ID, DB_PW, DB_SCHEMA, DB_PORT))
+	{
+		printf_s("[INFO] DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n");
+	}
+	else {
+		printf_s("[ERROR] DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½\n");
+
+	}
+	MYSQL_RES* Res;	// ê²°ê³¼ê°’
+	MYSQL_ROW Row;		// ê²°ê³¼ row
 	bool bResult = false;
 	string sql = "SELECT * FROM user_data.userinfo WHERE name = '";
 	sql += Id + "' and password = '" + Password + "'";
 
 	if (mysql_query(Conn, sql.c_str()))
 	{
-		printf_s("[DB] °Ë»ö ½ÇÆĞ\n");
+		printf_s("[DB] ê²€ìƒ‰ ì‹¤íŒ¨\n");
 		return false;
 	}
 
@@ -52,7 +68,7 @@ int DBConnector::SearchAccount(const string & Id, const string & Password)
 	}
 	else
 	{
-		printf_s("[ERROR] ÇØ´ç ¾ÆÀÌµğ ¾øÀ½\n");
+		printf_s("[ERROR] í•´ë‹¹ ì•„ì´ë”” ì—†ìŒ\n");
 		return 0;
 	}
 	mysql_free_result(Res);

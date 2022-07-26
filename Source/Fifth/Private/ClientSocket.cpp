@@ -107,7 +107,7 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 	RecvStream >> PacketType;
 	RecvStream >> ID;
 
-	UE_LOG(LogClass, Log, TEXT("---[%d]---"), ID);
+	UE_LOG(LogClass, Log, TEXT("1---[%d]---"), ID);
 	if (PacketType != EPacketType::LOGIN)
 		return false;
 
@@ -120,12 +120,13 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 void ClientSocket::SetCharacterID(int id)
 {
 	UE_LOG(LogClass, Log, TEXT("SetCharacterID"));
-
+	UE_LOG(LogClass, Log, TEXT("2---[%d]---"), ID);
 	stringstream SendStream;
 	SendStream << EPacketType::SET_CHARACTER << endl;
 	SendStream << ID << endl;
 	SendStream << id << endl;
 
+	UE_LOG(LogClass, Log, TEXT("3---[%d]---"), ID);
 	int nSendLen = send(
 		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
 	);

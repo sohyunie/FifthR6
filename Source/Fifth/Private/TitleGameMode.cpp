@@ -35,7 +35,9 @@ bool ATitleGameMode::Login(const FText& Id, const FText& Pw)
 		return false;
 	}
 
-	Socket->ID = Socket->Login(Id, Pw);
+	Socket->Login(Id, Pw);
+
+
 	if (Socket->ID == 0) {
 		UE_LOG(LogClass, Log, TEXT("Login Fail!"));
 		return false;
