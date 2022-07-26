@@ -12,6 +12,7 @@
 
 class AMyGameMode;
 class ANetPlayerController;
+class ATitleGameMode;
 
 using namespace std;
 
@@ -304,10 +305,12 @@ public:
 	void SetPlayerController(ANetPlayerController* pPlayerController);
 
 	void CloseSocket();
+	void SetTitleGameMode(ATitleGameMode* pTitleGameMode);
 
 	// FRunnable Thread members	
 	FRunnableThread* Thread;
 	FThreadSafeCounter StopTaskCounter;
+	ATitleGameMode* titleGameMode;
 
 	// FRunnable override ÇÔ¼ö
 	virtual bool Init();

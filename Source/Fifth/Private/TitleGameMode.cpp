@@ -17,6 +17,7 @@ ATitleGameMode::ATitleGameMode()
 	UE_LOG(LogClass, Log, TEXT("server addr : 211.198.122.35  8080"));
 	if (bIsConnected)
 	{
+		Socket->SetTitleGameMode(this);
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 	}
 }
@@ -56,4 +57,9 @@ void ATitleGameMode::SetCharacter(int id)
 {
 	UE_LOG(LogClass, Log, TEXT("Set Character : [%d] "), id);
 	Socket->SetCharacterID(id);
+}
+
+void ATitleGameMode::MoveInGame()
+{
+	UGameplayStatics::OpenLevel(this, "BasementLab");
 }

@@ -20,6 +20,7 @@ class FIFTH_API ATitleGameMode : public AGameModeBase
 		void SetCharacter(int id);
 public:
 	ATitleGameMode();
+	void MoveInGame();
 	
 private:
 

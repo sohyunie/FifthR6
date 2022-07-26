@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 #include "NetPlayerController.h"
+#include "TitleGameMode.h"
 
 ClientSocket::ClientSocket()
 	:StopTaskCounter(0)
@@ -293,6 +294,12 @@ void ClientSocket::SetPlayerController(ANetPlayerController* pPlayerController)
 	}
 }
 
+void ClientSocket::SetTitleGameMode(ATitleGameMode* pTitleGameMode) {
+	if (pTitleGameMode) {
+		titleGameMode = pTitleGameMode;
+	}
+}
+
 void ClientSocket::CloseSocket()
 {
 	closesocket(ServerSocket);
@@ -364,6 +371,7 @@ uint32 ClientSocket::Run()
 				RecvStream >> isStart;
 				// ¾À ÀÌµ¿
 				if (isStart) {
+					titleGameMode->MoveInGame();
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME!!"));
 				}
 				else {
