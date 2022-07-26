@@ -225,6 +225,8 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	pSocket->dataBuf.buf = pSocket->messageBuffer;
 	pSocket->dataBuf.len = SendStream.str().length();
 
+	SessionSocket[id] = pSocket->socket;
+
 	Send(pSocket);
 }
 
