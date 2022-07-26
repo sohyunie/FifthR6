@@ -68,6 +68,8 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 
+	if (!Socket->isEnroll)
+		return;
 
 	if (!bIsConnected) return;
 

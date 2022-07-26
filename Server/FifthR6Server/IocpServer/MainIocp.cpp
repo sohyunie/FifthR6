@@ -155,7 +155,7 @@ void MainIocp::WorkerThread()
 
 		if (!bResult && recvBytes == 0)
 		{
-			printf_s("[INFO] socket(%d) ���� ����\n", pSocketInfo->socket);
+			printf_s("[INFO] bResult false (%d)\n", recvBytes);
 			closesocket(pSocketInfo->socket);
 			free(pSocketInfo);
 			continue;
@@ -166,6 +166,7 @@ void MainIocp::WorkerThread()
 
 		if (recvBytes == 0)
 		{
+			printf_s("[INFO] recvBytes == 0\n");
 			closesocket(pSocketInfo->socket);
 			free(pSocketInfo);
 			continue;
@@ -212,7 +213,7 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 
 	RecvStream >> Id;
 	RecvStream >> Pw;
-
+	printf_s("[INFO] Socket check {%d}\n", pSocket);
 	printf_s("[INFO] Login {%s}/{%s}\n", Id, Pw);
 
 	int id = Conn.SearchAccount(Id, Pw);
