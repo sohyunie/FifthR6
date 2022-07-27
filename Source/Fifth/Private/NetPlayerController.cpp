@@ -23,18 +23,19 @@ ANetPlayerController::ANetPlayerController()
 	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 	//HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
 	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
-	UE_LOG(LogClass, Log, TEXT("own character id : %d"), Socket->CharacterID);
-	switch (Socket->CharacterID) {
-	case 1:
-		WhoToSpawnOwn = AWarriorOfFire::StaticClass();
-		break;
-	case 2:
-		WhoToSpawnOwn = AWarriorOfThunder::StaticClass();
-		break;
-	case 3:
-		WhoToSpawnOwn = AWarriorOfWater::StaticClass();
-		break;
-	}
+	//UE_LOG(LogClass, Log, TEXT("own character id : %d"), Socket->CharacterID);
+	//switch (Socket->CharacterID) {
+	//case 1:
+	//	WhoToSpawnOwn = AWarriorOfFire::StaticClass();
+	//	break;
+	//case 2:
+	//	WhoToSpawnOwn = AWarriorOfThunder::StaticClass();
+	//	break;
+	//case 3:
+	//	WhoToSpawnOwn = AWarriorOfWater::StaticClass();
+	//	break;
+	//}
+	WhoToSpawnOwn = AWarriorOfFire::StaticClass();
 	Socket->SetPlayerController(this);
 
 	bIsChatNeedUpdate = false;
