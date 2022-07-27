@@ -34,7 +34,7 @@ ANetCharacter::ANetCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
+	//Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	WarriorStat = CreateDefaultSubobject<UWarriorStatComponent>(TEXT("WARRIORSTAT"));
 
 	
@@ -44,10 +44,30 @@ ANetCharacter::ANetCharacter()
 
 	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 
-	Camera->SetupAttachment(GetCapsuleComponent());
+	//Camera->SetupAttachment(GetMesh());
+
+
+
+	ViewRotator = 0.0f;
+	ViewArm = CreateDefaultSubobject<USpringArmComponent>("ViewArm");
+	ViewArm->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, (TEXT("Bip-Head")));
+	
+
+	ViewArm->TargetArmLength = -50.f;
+	//ViewArm->CameraLagSpeed = 3.f;
+	ViewArm->CameraRotationLagSpeed = 10.f;
+	ViewArm->bEnableCameraLag = false;
+	ViewArm->bEnableCameraRotationLag = true;
+	ViewArm->AddRelativeRotation(FRotator(90.f, 0, -90.f));
+	ViewArm->bUsePawnControlRotation = true;
+	Camera = CreateDefaultSubobject<UCameraComponent>("CAMERA");
+	Camera->AttachToComponent(ViewArm, FAttachmentTransformRules::KeepRelativeTransform);
+	
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),
 		FRotator(0.0f, -90.0f, 0.0f));
+
+	//GetMesh()->SetOwnerNoSee(true);
 	
 	Scene->SetupAttachment(GetMesh());
 
@@ -55,8 +75,15 @@ ANetCharacter::ANetCharacter()
 	Scene->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 		BallSocket);
 
-	Camera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
-	Camera->bUsePawnControlRotation = true;
+	//FName HeadSocket(TEXT("Bip-Head"));
+	//Camera->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		//HeadSocket);
+	//Camera->SetRelativeScale3D(FVector(0.1f, 0.1f, 0.1f));
+
+	//Camera->SetRelativeLocation(FVector(15.0f, 16.0f,125.0f + BaseEyeHeight));
+	//Camera->SetRelativeRotation(FRotator(0.0f, -90.0f, -100.0f));
+	//Camera->bUsePawnControlRotation = true;
+	
 
 	//Sound
 	//AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SOUND"));;
@@ -327,9 +354,11 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 {
 	if (ControlMode == 0)
 	{
+		ViewArm->bUsePawnControlRotation = true;
 
-		
-		bUseControllerRotationYaw = false;
+		//ViewArm->SetRelativeTransform(FTransform(FRotator(90, 0, (-88 + ViewRotator)), FVector(-5, -15, 10), FVector(0, 0, 0)));
+		//Camera->SetRelativeTransform(FTransform(FRotator(ViewUp, 0, 0), FVector(0, 0, 0), FVector(0, 0, 0)));
+		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		
@@ -648,6 +677,7 @@ void ANetCharacter::Attack()
 		ABCHECK(CurrentCombo == 0);
 		AttackStartComboState();
 		MyAnim->PlayAttackMontage();
+		
 		bIsAttacking = true;
 		//[TODO] Action to server
 		
@@ -940,6 +970,7 @@ void ANetCharacter::AttackCheck()
 			UGameplayStatics::PlaySoundAtLocation(this, Sword_Sound, GetActorLocation());
 			if (HitResult.Actor->IsA(AATank::StaticClass()))
 			{
+				GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
 				AATank* Monster = Cast<AATank>(HitResult.Actor);
 				if (Monster)
 				{

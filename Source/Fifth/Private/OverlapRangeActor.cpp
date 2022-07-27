@@ -9,6 +9,7 @@
 #include "ATank.h"
 #include "BossTank.h"
 #include "NetCharacter.h"
+#include "StrongMatineeCameraShake.h"
 
 // Sets default values
 AOverlapRangeActor::AOverlapRangeActor()
@@ -16,7 +17,7 @@ AOverlapRangeActor::AOverlapRangeActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SphereRadius = 300.0f;
+	SphereRadius = 200.0f;
 	MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("MySphereComponent"));
 	MyCollisionSphere-> InitSphereRadius(SphereRadius);
 	MyCollisionSphere->SetCollisionProfileName("Trigger");
@@ -55,17 +56,18 @@ void AOverlapRangeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		Destroy();
 	}*/
 
-	if (OtherActor->IsA(AATank::StaticClass()))
+	if (OtherActor->IsA(AATank::StaticClass()) || OtherActor->IsA(ABossTank::StaticClass()))
 	{
 		ABLOG(Warning, TEXT("HIT!!!"));
 		bCanApplyDamage = true;
 		MyCharacter = Cast<AActor>(OtherActor);
 		MyHit = SweepResult;
-		//GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ACampFire::ApplyFireDamage, 2.2f, true, 0.0f);
+		
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, 100.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
 		bCanApplyDamage = false;
-		//AOverlapRangeActor::Destroy();
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UStrongMatineeCameraShake::StaticClass(), 1.f);
+		//Destroy();
 	}
 }
 

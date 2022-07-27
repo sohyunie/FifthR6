@@ -50,6 +50,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 		UCameraComponent* Camera;
 
+	UPROPERTY(EditAnyWhere)
+		USpringArmComponent* ViewArm;
+
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> HelpWidgetClass;
@@ -248,6 +251,8 @@ private:
 	/*void DeathOverlap(UPrimitiveComponent* OverlappedComp,
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
+	float ViewRotator;
+	float ViewUp;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;

@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"
 #include "ATank.h"
 #include "BossTank.h"
+#include "MyMatineeCameraShake.h"
 
 // Sets default values
 AFireBall::AFireBall()
@@ -78,7 +79,7 @@ void AFireBall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 				TEXT("/Game/FireBall/NiagaraSystems/NS_Hit_Electric.NS_Hit_Electric")));
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect,
 			OtherActor->GetActorLocation(), this->GetActorRotation());
-
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
 		AFireBall::Destroy();
 		UGameplayStatics::ApplyPointDamage(OtherActor, 50.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
 
