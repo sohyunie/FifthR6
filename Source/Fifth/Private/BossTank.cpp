@@ -53,6 +53,9 @@ ABossTank::ABossTank()
 	AttackRange = 200.0f;
 	AttackRadius = 50.0f;
 
+	GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(100);
+
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("BossTank"));
 
 	AIControllerClass = ABossAIController::StaticClass();
@@ -114,7 +117,10 @@ void ABossTank::Tick(float DeltaTime)
 
 	if (IsDamaging)
 	{
-		SetActorLocation(GetActorLocation() + GetControlRotation().Vector());
+		
+		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
+		->GetControlRotation().Vector()/**10*/);
+		
 	}
 
 }

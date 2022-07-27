@@ -13,8 +13,11 @@ UMyMatineeCameraShake::UMyMatineeCameraShake()
 	RotOscillation.Pitch.Frequency = FMath::RandRange(25.f, 35.f);
 
 	RotOscillation.Yaw.Amplitude = FMath::RandRange(5.f, 10.f);
-	RotOscillation.Yaw.Frequency = FMath::RandRange(5.f, 10.f);
+	RotOscillation.Yaw.Frequency = FMath::RandRange(25.f, 35.f);
 
+	RotOscillation.Roll.Amplitude = FMath::RandRange(5.f, 10.f);
+	RotOscillation.Roll.Frequency = FMath::RandRange(25.f, 35.f);
 
+	
 }
 
