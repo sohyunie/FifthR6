@@ -328,7 +328,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 		{
 			if (player.first == SessionId || !player.second.IsAlive || !player.second.UELevel == 0)
 				continue;
-			UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
+			//UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
 			FVector spawnLocation;
 			spawnLocation.X = player.second.X;
 			spawnLocation.Y = player.second.Y;

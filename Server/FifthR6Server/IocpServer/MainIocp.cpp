@@ -187,7 +187,7 @@ void MainIocp::WorkerThread()
 			// ��Ŷ ó��
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
 			{
-				printf_s("[OK] PacketType : %d\n", PacketType);
+				//printf_s("[OK] PacketType : %d\n", PacketType);
 				fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
 			}
 			else
@@ -258,7 +258,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	SendStream << EPacketType::PLAY_GAME << endl;
 
-	if (count == 1) {
+	if (count == 2) {
 		printf_s("[INFO] SEND PLAY GAME\n", Id);
 		SendStream << true << endl;
 	}
@@ -312,7 +312,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	//pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 	//printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 
-	//SessionSocket[info.SessionId] = pSocket->socket;
+	SessionSocket[info.SessionId] = pSocket->socket;
 
 	//Send(pSocket);
 	BroadcastNewPlayer(CharactersInfo, info.UELevel);
