@@ -120,12 +120,13 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 
 void ClientSocket::SetCharacterID(int id)
 {
+	CharacterID = id;
 	UE_LOG(LogClass, Log, TEXT("SetCharacterID"));
 	UE_LOG(LogClass, Log, TEXT("2---[%d]---"), ID);
 	stringstream SendStream;
 	SendStream << EPacketType::SET_CHARACTER << endl;
 	SendStream << ID << endl;
-	SendStream << id << endl;
+	SendStream << CharacterID << endl;
 
 	UE_LOG(LogClass, Log, TEXT("3---[%d]---"), ID);
 	int nSendLen = send(

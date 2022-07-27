@@ -59,6 +59,8 @@ public:
 	int UELevel = 0;
 	bool IsMaster;
 
+	int	characterID;
+
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
 	{
 		stream << info.SessionId << endl;

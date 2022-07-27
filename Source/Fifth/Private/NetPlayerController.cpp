@@ -17,22 +17,29 @@ ANetPlayerController::ANetPlayerController()
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
 	SessionId = Socket->ID;
-	// CharacterID 1~3번
-	//Socket->CharacterID;
-
-	Socket->SetPlayerController(this);
-
-	bIsChatNeedUpdate = false;
-	bNewPlayerEntered = false;
-	nPlayers = -1;
-
-	WhoToSpawn = AWarriorOfFire::StaticClass();
 
 	// 임시 파티클
 	//DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
 	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
 	//HitEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
 	//	TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Sparks.P_Sparks'")));
+	UE_LOG(LogClass, Log, TEXT("own character id : %d"), Socket->CharacterID);
+	switch (Socket->CharacterID) {
+	case 1:
+		WhoToSpawnOwn = AWarriorOfFire::StaticClass();
+		break;
+	case 2:
+		WhoToSpawnOwn = AWarriorOfThunder::StaticClass();
+		break;
+	case 3:
+		WhoToSpawnOwn = AWarriorOfWater::StaticClass();
+		break;
+	}
+	Socket->SetPlayerController(this);
+
+	bIsChatNeedUpdate = false;
+	bNewPlayerEntered = false;
+	nPlayers = -1;
 
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -344,21 +351,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			SpawnParams.Instigator = this->GetPawn();
 			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
-
-			//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), PlayerInfos->players.size());
-			//switch (PlayerInfos->players.size()) {
-			//case 0:
-			//	WhoToSpawn = AWarriorOfFire::StaticClass();
-			//	break;
-			//case 1:
-			//	WhoToSpawn = AWarriorOfFire::StaticClass();
-			//	break;
-			//case 2:
-			//	WhoToSpawn = AWarriorOfFire::StaticClass();
-			//	break;
-			//}
-
-			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
+			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawnOwn, spawnLocation, spawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 			SpawnCharacter->SetSessionId(player.second.SessionId);
 		}
@@ -549,7 +542,20 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Instigator = this->GetPawn();
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
-				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
+				UE_LOG(LogClass, Log, TEXT("new player character id : %d"), player->characterID);
+				switch (player->characterID) {
+				case 1:
+					WhoToSpawnOther = AWarriorOfFire::StaticClass();
+					break;
+				case 2:
+					WhoToSpawnOther = AWarriorOfThunder::StaticClass();
+					break;
+				case 3:
+					WhoToSpawnOther = AWarriorOfWater::StaticClass();
+					break;
+				}
+
+				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawnOther, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SetSessionId(player->SessionId);
 

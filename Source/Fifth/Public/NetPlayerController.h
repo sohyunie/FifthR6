@@ -41,9 +41,13 @@ public:
 	UPROPERTY()
 		class UUserWidget* GameOverWidget;
 
+	// 스폰시킬 내 캐릭터
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+		TSubclassOf<class ACharacter> WhoToSpawnOwn;
+
 	// 스폰시킬 다른 캐릭터
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-		TSubclassOf<class ACharacter> WhoToSpawn;
+		TSubclassOf<class ACharacter> WhoToSpawnOther;
 
 	// 파괴될 때 파티클
 	UPROPERTY(EditAnywhere, Category = "Spawning")
