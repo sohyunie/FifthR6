@@ -136,6 +136,24 @@ void ClientSocket::SetCharacterID(int id)
 	{
 		return;
 	}
+
+	//int nRecvLen = recv(
+	//	ServerSocket, (CHAR*)&recvBuffer, MAX_BUFFER, 0
+	//);
+
+	//if (nRecvLen <= 0)
+	//	return;
+
+	//stringstream RecvStream;
+	//int PacketType;
+	//bool isCheck = false;
+
+	//RecvStream << recvBuffer;
+	//RecvStream >> PacketType;
+	//RecvStream >> isCheck;
+	//if(isCheck){
+	//	titleGameMode->MoveInGame();
+	//}
 }
 
 void ClientSocket::EnrollPlayer(cCharacter& info)
@@ -330,6 +348,7 @@ uint32 ClientSocket::Run()
 		{
 			RecvStream << recvBuffer;
 			RecvStream >> PacketType;
+			UE_LOG(LogClass, Log, TEXT("PacketType : [%d]"), PacketType);
 
 			switch (PacketType)
 			{
@@ -383,7 +402,6 @@ uint32 ClientSocket::Run()
 				if (isStart) {
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME!!"));
 					titleGameMode->MoveInGame();
-					StopListen();
 				}
 				else {
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME WAIT!!"));
