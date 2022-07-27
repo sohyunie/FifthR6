@@ -153,7 +153,7 @@ void ANetPlayerController::BeginPlay()
 	Socket->EnrollPlayer(tempCharacter);
 
 	// Recv 스레드 시작
-	Socket->StartListen();
+	//Socket->StartListen();
 	UE_LOG(LogClass, Log, TEXT("BeginPlay End"));
 }
 
