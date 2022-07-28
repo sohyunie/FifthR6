@@ -120,4 +120,7 @@ private:
 
 	int attackSessionID;
 	int attackMonsterID;
+
+	int skillSessionID;
+	int skillID;
 };

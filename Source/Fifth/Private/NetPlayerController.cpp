@@ -97,6 +97,25 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	// 몬스터 파괴
 	if (bIsNeedToDestroyMonster)
 		DestroyMonster();
+
+	if (skillSessionID != 0) {
+		TArray<AActor*> SpawnedCharacters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
+		AActor* actor = FindActorBySessionId(SpawnedCharacters, skillSessionID);
+		if (actor != nullptr) {
+
+			ANetCharacter* player = Cast<ANetCharacter>(actor);
+			if (skillID == 1)
+			{
+				player->RAttack();
+			}
+			else if (skillID == 2)
+			{
+				player->Fire();
+			}
+		}
+		skillSessionID = 0;
+	}
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
 	{
@@ -881,21 +900,8 @@ bool ANetPlayerController::UpdateMonster()
 void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
-	TArray<AActor*> SpawnedCharacters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
-	AActor* actor = FindActorBySessionId(SpawnedCharacters, sessionID);
-	if (actor != nullptr) {
-
-		ANetCharacter* player = Cast<ANetCharacter>(actor);
-		if (id == 1)
-		{
-			player->RAttack();
-		}
-		else if (id == 2)
-		{
-			player->Fire();
-		}
-	}
+	skillSessionID = sessionID;
+	skillID = id;
 }
 
 void ANetPlayerController::SendActionSkill(int sessionID, int id)
