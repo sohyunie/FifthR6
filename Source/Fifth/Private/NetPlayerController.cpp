@@ -81,6 +81,10 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 	if (!bIsConnected) return;
 
+
+	if (bNewPlayerEntered)
+		UpdateNewPlayer();
+
 	// 플레이어 정보 송신
 	if (!SendPlayerInfo()) return;
 
@@ -97,11 +101,6 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	if (bIsChatNeedUpdate)
 	{
 		//UpdateChat();
-	}
-
-	if (bNewPlayerEntered)
-	{
-		UpdateNewPlayer();
 	}
 
 }
@@ -247,7 +246,7 @@ void ANetPlayerController::RecvNewPlayer(cCharactersInfo* NewPlayer_)
 	{
 		bNewPlayerEntered = true;
 		PlayerInfos = NewPlayer_;
-		UE_LOG(LogClass, Log, TEXT("RecvNewPlayer NewPlayer : %d"), PlayerInfos->players.size());
+		UE_LOG(LogClass, Log, TEXT("player size : %d"), PlayerInfos->players.size());
 	}
 }
 
@@ -336,7 +335,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 		{
 			if (player.first == SessionId || !player.second.IsAlive || !player.second.UELevel == 0)
 				continue;
-			//UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
+			UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
 			FVector spawnLocation;
 			spawnLocation.X = player.second.X;
 			spawnLocation.Y = player.second.Y;
@@ -561,7 +560,7 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SetSessionId(player->SessionId);
 
-				UE_LOG(LogClass, Log, TEXT("Create NewPlayer : %d"), PlayerInfos->players.size());
+				UE_LOG(LogClass, Log, TEXT("Create NewPlayer : %d"), player->SessionId);
 			}
 		}
 	}
@@ -884,23 +883,10 @@ void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
 	TArray<AActor*> SpawnedCharacters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
-	if (SpawnedCharacters.Num() == 0)
-{
-		return;
-	}
-	for (auto& character : SpawnedCharacters)
-	{
-		ANetCharacter* player = Cast<ANetCharacter>(character);
+	AActor* actor = FindActorBySessionId(SpawnedCharacters, sessionID);
+	if (actor != nullptr) {
 
-		if (!player || player->GetSessionId() == -1 || player->GetSessionId() == SessionId)
-		{
-			continue;
-		}
-		if (player == nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill player null"));
-			return;
-		}
+		ANetCharacter* player = Cast<ANetCharacter>(actor);
 		if (id == 1)
 		{
 			player->RAttack();
@@ -914,5 +900,6 @@ void ANetPlayerController::RecvActionSkill(int sessionID, int id)
 
 void ANetPlayerController::SendActionSkill(int sessionID, int id)
 {
+	Socket = ClientSocket::GetSingleton();
 	Socket->SendActionSkill(sessionID, id);
 }

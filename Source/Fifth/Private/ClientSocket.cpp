@@ -146,7 +146,7 @@ void ClientSocket::EnrollPlayer(cCharacter& info)
 	stringstream SendStream;
 	// 요청 종류
 	SendStream << EPacketType::ENROLL_PLAYER << endl;;
-	SendStream << info;
+	SendStream << info << endl;
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(
@@ -167,7 +167,7 @@ void ClientSocket::SendPlayer(cCharacter& info)
 	stringstream SendStream;
 	// 요청 종류
 	SendStream << EPacketType::SEND_PLAYER << endl;;
-	SendStream << info;
+	SendStream << info << endl;
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(
@@ -331,7 +331,7 @@ uint32 ClientSocket::Run()
 		{
 			RecvStream << recvBuffer;
 			RecvStream >> PacketType;
-			//UE_LOG(LogClass, Log, TEXT("PacketType : [%d]"), PacketType);
+			UE_LOG(LogClass, Log, TEXT("PacketType : [%d]"), PacketType);
 
 			switch (PacketType)
 			{
@@ -469,8 +469,8 @@ void ClientSocket::SendActionSkill(int sessionID, int id)
 	stringstream SendStream;
 	// 요청 종류
 	SendStream << EPacketType::ACTION_SKILL << endl;
-	SendStream << sessionID;
-	SendStream << id;
+	SendStream << sessionID << endl;
+	SendStream << id << endl;
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(
