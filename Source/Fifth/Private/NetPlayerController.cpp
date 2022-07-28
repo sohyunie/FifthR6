@@ -8,15 +8,23 @@
 #include "WarriorOfWater.h"
 #include "ATank.h"
 #include "BossTank.h"
+#include "ResultTrigger.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
 ANetPlayerController::ANetPlayerController()
 {
+	CurrentResult = Cast<AResultTrigger>(UGameplayStatics::GetActorOfClass(GetWorld(), AResultTrigger::StaticClass()));
+
 	UE_LOG(LogClass, Log, TEXT("ANetPlayerController Create"));
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
 	SessionId = Socket->ID;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> Result(
+		TEXT("/Game/UI/UI_Result1.UI_Result1_C"));
+
+	ResultWidgetClass = Result.Class;
 
 	// 임시 파티클
 	//DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
@@ -75,6 +83,17 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	if (CurrentResult->ResultCheck)
+	{
+		ResultInfoWidget = CreateWidget<UUserWidget>(GetWorld(), ResultWidgetClass);
+
+		if (ResultInfoWidget)
+		{
+			ResultInfoWidget->AddToViewport();
+			ChangeInputMode(false);
+		
+		}
+	}
 
 	if (!Socket->isEnroll)
 		return;
@@ -124,12 +143,30 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 }
 
+
+void ANetPlayerController::ChangeInputMode(bool bGameMode)
+{
+	if (bGameMode)
+	{
+		SetInputMode(GameInputMode);
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		SetInputMode(UIInputMode);
+		bShowMouseCursor = true;
+	}
+}
+
 void ANetPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	FInputModeGameOnly InputMode;
-	SetInputMode(InputMode);
+	SetInputMode(GameInputMode);
+	//SetInputMode(GameInputMode);
+
+	//ChangeInputMode(true);
 
 	UE_LOG(LogClass, Log, TEXT("BeginPlay NetPlayer Start"));
 	//if (HUDWidgetClass != nullptr)

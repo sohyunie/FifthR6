@@ -28,7 +28,7 @@ AMyGameMode::AMyGameMode(): Super()
 
 	//UE_LOG(LogTemp, Display, TEXT("START"));
 
-	//DefaultPawnClass = AWarriorOfFire::StaticClass();
+	DefaultPawnClass = AWarriorOfFire::StaticClass();
 	switch (Socket->CharacterID) {
 	case 1:
 		DefaultPawnClass = AWarriorOfFire::StaticClass();

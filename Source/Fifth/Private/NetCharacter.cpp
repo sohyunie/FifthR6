@@ -176,6 +176,11 @@ ANetCharacter::ANetCharacter()
 		TEXT("/Game/UI/ExitKeyInfo.ExitKeyInfo_C"));
 
 	ExitWidgetClass = ExitHelp.Class;
+
+	//static ConstructorHelpers::FClassFinder<UUserWidget> Result(
+		//TEXT("/Game/UI/ExitKeyInfo.ExitKeyInfo_C"));
+
+	//ResultWidgetClass = Result.Class;
 }
 
 /*void ANetCharacter::DeathOverlap(UPrimitiveComponent* OverlappedComp,
@@ -446,6 +451,7 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &ANetCharacter::Fire);
 	PlayerInputComponent->BindAction(TEXT("Save"), EInputEvent::IE_Pressed, this, &ANetCharacter::SaveGame);
 	PlayerInputComponent->BindAction(TEXT("GetKey"), EInputEvent::IE_Pressed, this, &ANetCharacter::GetKey);
+	PlayerInputComponent->BindAction(TEXT("GoTitle"), EInputEvent::IE_Pressed, this, &ANetCharacter::GoTitle);
 	PlayerInputComponent->BindAction(TEXT("Cheat_One"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_One);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Two"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Two);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Three"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Three);
@@ -696,7 +702,10 @@ void ANetCharacter::SAttack()
 	IsSAttacking = true;
 }
 
-
+void ANetCharacter::GoTitle()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Title"));
+}
 
 void ANetCharacter::GetKey()
 {

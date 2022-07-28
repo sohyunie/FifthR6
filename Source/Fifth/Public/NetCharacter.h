@@ -9,6 +9,7 @@
 #include "Door.h"
 #include "SaveCom.h"
 #include "Sound/SoundCue.h"
+#include "ResultTrigger.h"
 #include "NetCharacter.generated.h"
 
 UCLASS()
@@ -70,6 +71,9 @@ public:
 
 	// declare widget
 	class UUserWidget* ExitInfoWidget;
+
+
+	
 
 	UPROPERTY(EditAnywhere)
 		class AExitKey* CurrentKey;
@@ -209,6 +213,7 @@ private:
 	void SAttack();
 	
 	void GetKey();
+	void GoTitle();
 
 	void SaveGame();
 
