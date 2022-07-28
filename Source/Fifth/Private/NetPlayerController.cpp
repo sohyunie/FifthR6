@@ -351,7 +351,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			SpawnParams.Instigator = this->GetPawn();
 			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
-			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawnOwn, spawnLocation, spawnRotation, SpawnParams);
+			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 			SpawnCharacter->SetSessionId(player.second.SessionId);
 		}
