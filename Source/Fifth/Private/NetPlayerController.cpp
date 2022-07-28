@@ -35,7 +35,7 @@ ANetPlayerController::ANetPlayerController()
 	//	WhoToSpawnOwn = AWarriorOfWater::StaticClass();
 	//	break;
 	//}
-	WhoToSpawnOwn = AWarriorOfFire::StaticClass();
+	WhoToSpawn = AWarriorOfFire::StaticClass();
 	Socket->SetPlayerController(this);
 
 	bIsChatNeedUpdate = false;
@@ -543,20 +543,20 @@ void ANetPlayerController::UpdateNewPlayer()
 				SpawnParams.Name = FName(*FString(to_string(player->SessionId).c_str()));
 
 				//[TODO] 해당 엑터로 변경 필요
-				//UE_LOG(LogClass, Log, TEXT("new player character id : %d"), player->characterID);
-				//switch (player->characterID) {
-				//case 1:
-				//	WhoToSpawnOther = AWarriorOfFire::StaticClass();
-				//	break;
-				//case 2:
-				//	WhoToSpawnOther = AWarriorOfThunder::StaticClass();
-				//	break;
-				//case 3:
-				//	WhoToSpawnOther = AWarriorOfWater::StaticClass();
-				//	break;
-				//}
+				UE_LOG(LogClass, Log, TEXT("new player character id : %d"), player->characterID);
+				switch (player->characterID) {
+				case 1:
+					WhoToSpawn = AWarriorOfFire::StaticClass();
+					break;
+				case 2:
+					WhoToSpawn = AWarriorOfThunder::StaticClass();
+					break;
+				case 3:
+					WhoToSpawn = AWarriorOfWater::StaticClass();
+					break;
+				}
 
-				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawnOwn, spawnLocation, spawnRotation, SpawnParams);
+				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SetSessionId(player->SessionId);
 
