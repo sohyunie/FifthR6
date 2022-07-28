@@ -21,9 +21,11 @@ class FIFTH_API ATitleGameMode : public AGameModeBase
 public:
 	ATitleGameMode();
 	void MoveInGame();
+	virtual void Tick(float DeltaTime) override;
 	
 private:
 
 	ClientSocket* Socket;
 	bool bIsConnected;
+	bool IsMoveScene;
 };

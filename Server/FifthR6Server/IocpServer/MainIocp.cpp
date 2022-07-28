@@ -187,7 +187,7 @@ void MainIocp::WorkerThread()
 			// ��Ŷ ó��
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
 			{
-				printf_s("[OK] PacketType : %d\n", PacketType);
+				//printf_s("[OK] PacketType : %d\n", PacketType);
 				fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
 			}
 			else

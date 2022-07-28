@@ -6,6 +6,7 @@
 
 ATitleGameMode::ATitleGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogClass, Log, TEXT("ATitleGameMode!"));
 	Socket = ClientSocket::GetSingleton();
 	Socket->InitSocket();
@@ -61,5 +62,16 @@ void ATitleGameMode::SetCharacter(int id)
 
 void ATitleGameMode::MoveInGame()
 {
-	UGameplayStatics::OpenLevel(this, "BasementLab");
+	IsMoveScene = true;
+}
+
+void ATitleGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (IsMoveScene)
+	{
+		UE_LOG(LogClass, Log, TEXT("IsMoveScene"));
+		IsMoveScene = false;
+		UGameplayStatics::OpenLevel(this, "BasementLab");
+	}
 }
