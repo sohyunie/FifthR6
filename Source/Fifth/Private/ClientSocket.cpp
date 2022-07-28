@@ -331,7 +331,6 @@ uint32 ClientSocket::Run()
 		{
 			RecvStream << recvBuffer;
 			RecvStream >> PacketType;
-			UE_LOG(LogClass, Log, TEXT("PacketType : [%d]"), PacketType);
 
 			switch (PacketType)
 			{

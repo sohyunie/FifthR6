@@ -331,30 +331,30 @@ bool ANetPlayerController::UpdateWorldInfo()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANetCharacter::StaticClass(), SpawnedCharacters);
 	if (nPlayers == -1)
 	{
-		for (auto& player : ci->players)
-		{
-			if (player.first == SessionId || !player.second.IsAlive || !player.second.UELevel == 0)
-				continue;
-			//UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
-			FVector spawnLocation;
-			spawnLocation.X = player.second.X;
-			spawnLocation.Y = player.second.Y;
-			spawnLocation.Z = player.second.Z;
+		//for (auto& player : ci->players)
+		//{
+		//	if (player.first == SessionId || !player.second.IsAlive || !player.second.UELevel == 0)
+		//		continue;
+		//	//UE_LOG(LogClass, Log, TEXT("---[%d]---. %d"), player.second.SessionId, player.second.UELevel);
+		//	FVector spawnLocation;
+		//	spawnLocation.X = player.second.X;
+		//	spawnLocation.Y = player.second.Y;
+		//	spawnLocation.Z = player.second.Z;
 
-			FRotator spawnRotation;
-			spawnRotation.Yaw = player.second.Yaw;
-			spawnRotation.Pitch = player.second.Pitch;
-			spawnRotation.Roll = player.second.Roll;
+		//	FRotator spawnRotation;
+		//	spawnRotation.Yaw = player.second.Yaw;
+		//	spawnRotation.Pitch = player.second.Pitch;
+		//	spawnRotation.Roll = player.second.Roll;
 
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = this->GetPawn();
-			SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
+		//	FActorSpawnParameters SpawnParams;
+		//	SpawnParams.Owner = this;
+		//	SpawnParams.Instigator = this->GetPawn();
+		//	SpawnParams.Name = FName(*FString(to_string(player.second.SessionId).c_str()));
 
-			ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
-			SpawnCharacter->SpawnDefaultController();
-			SpawnCharacter->SetSessionId(player.second.SessionId);
-		}
+		//	ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
+		//	SpawnCharacter->SpawnDefaultController();
+		//	SpawnCharacter->SetSessionId(player.second.SessionId);
+		//}
 
 		nPlayers = ci->players.size();
 	}
