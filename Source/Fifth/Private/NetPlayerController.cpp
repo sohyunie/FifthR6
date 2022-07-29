@@ -8,11 +8,6 @@
 #include "WarriorOfWater.h"
 #include "ATank.h"
 #include "BossTank.h"
-<<<<<<< HEAD
-#include "ExitKey.h"
-=======
-#include "ResultTrigger.h"
->>>>>>> e81fa2d0780f79d0f02d26a8813312dc7f341545
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
