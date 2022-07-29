@@ -7,6 +7,7 @@
 #include "WarriorOfThunder.h"
 #include "WarriorOfWater.h"
 #include "ATank.h"
+#include "ExitKey.h"
 #include "BossTank.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
