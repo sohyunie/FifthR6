@@ -91,7 +91,6 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 		{
 			ResultInfoWidget->AddToViewport();
 			ChangeInputMode(false);
-		
 		}
 	}
 
