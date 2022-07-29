@@ -20,6 +20,18 @@ public:
 	ANetPlayerController();
 	~ANetPlayerController();
 
+	UPROPERTY(EditAnywhere)
+		class AResultTrigger* CurrentResult;
+
+	void ChangeInputMode(bool bGameMode = true);
+
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> ResultWidgetClass;
+
+	// declare widget
+	class UUserWidget* ResultInfoWidget;
+
 	// 채팅 함수
 	UFUNCTION(BlueprintCallable, Category = "Chat")
 		void ChatToServer(FString Text);
@@ -87,6 +99,9 @@ public:
 	bool GetIsMaster();
 
 private:
+	FInputModeGameOnly GameInputMode;
+	FInputModeUIOnly UIInputMode;
+
 	ClientSocket* Socket;			// 서버와 접속할 소켓
 	bool			bIsConnected;	// 서버와 접속 유무
 	int				SessionId;		// 캐릭터의 세션 고유 아이디 (랜덤값)
