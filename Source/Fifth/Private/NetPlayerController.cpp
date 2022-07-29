@@ -140,14 +140,16 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 		
 		TArray<AActor*> ExitKeys;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AExitKey::StaticClass(), ExitKeys);
-		AActor* actor = FindActorBySessionId(ExitKeys, destructKeyID);
-		if (actor != nullptr) {
 
+		for (const auto& actor : ExitKeys)
+		{
 			AExitKey* key = Cast<AExitKey>(actor);
-			key->DestructKey();
-			if (keyCount == 4) {
-				ADoor* door = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
-				door->DestructDoor();
+			if (key->ID == destructKeyID) {
+				key->DestructKey();
+				if (keyCount == 4) {
+					ADoor* door = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
+					door->DestructDoor();
+				}
 			}
 		}
 		destructKeyID = 0;
