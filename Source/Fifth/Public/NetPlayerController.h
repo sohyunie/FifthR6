@@ -94,6 +94,8 @@ public:
 	bool HitMonster(const int& MonsterId);
 	void RecvActionSkill(int sessionID, int id);
 	void SendActionSkill(int sessionID, int id);
+	void RecvDestructKey(int keyID);
+	void SendDestructKey(int sessionID, int keyID);
 	bool GetIsMaster();
 
 private:
@@ -138,4 +140,7 @@ private:
 
 	int skillSessionID;
 	int skillID;
+
+	int destructKeyID;
+	int keyCount;
 };

@@ -728,6 +728,8 @@ void ANetCharacter::GetKey()
 	ABLOG(Warning, TEXT("Key : %d"), KeyCount);
 	
 	CurrentKey->DestructKey();
+	if (sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
+		Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendDestructKey(sessionID, CurrentKey->ID);
 	}
 	else {
 		//ABLOG(Warning, TEXT("NULL"));

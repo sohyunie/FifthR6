@@ -14,6 +14,7 @@ DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
 CRITICAL_SECTION MainIocp::csMonsters;
 MonsterSet MainIocp::MonstersInfo;
+int MainIocp::KeyCount;
 map<int, queue<int>> LevelMaster;
 
 unsigned int WINAPI CallWorkerThread(LPVOID p)
@@ -47,6 +48,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::HIT_MONSTER].funcProcessPacket = HitMonster;
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
 	fnProcess[EPacketType::ACTION_SKILL].funcProcessPacket = ActionSkill;
+	fnProcess[EPacketType::DESTRUCT_KEY].funcProcessPacket = DestructKey;
 }
 
 
@@ -182,7 +184,7 @@ void MainIocp::WorkerThread()
 			RecvStream << pSocketInfo->dataBuf.buf;
 			RecvStream >> PacketType;
 
-			if (PacketType > 14)
+			if (PacketType > 16)
 				continue;
 			// ��Ŷ ó��
 			if (fnProcess[PacketType].funcProcessPacket != nullptr)
@@ -277,7 +279,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	printf_s("Enroll Character %d", info.SessionId);
+	printf_s("Enroll Character %d\n", info.SessionId);
 
 	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
@@ -313,7 +315,6 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	//printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 
 	SessionSocket[info.SessionId] = pSocket->socket;
-
 	//Send(pSocket);
 	BroadcastNewPlayer(CharactersInfo, info.UELevel);
 	LeaveCriticalSection(&csPlayers);
@@ -570,7 +571,22 @@ void MainIocp::ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << sessionID << endl;
 	SendStream << id << endl;
 
-	printf_s("[INFO]Action Skill");
+	printf_s("[INFO]Action Skill %d", sessionID);
+
+	OtherBroadcast(SendStream, 1, sessionID);
+}
+
+void MainIocp::DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	int sessionID;
+	int id;
+	RecvStream >> sessionID;
+	RecvStream >> id;
+	stringstream SendStream;
+	SendStream << EPacketType::DESTRUCT_KEY << endl;
+	SendStream << id << endl;
+
+	printf_s("[INFO]DestructKey %d", id);
 
 	OtherBroadcast(SendStream, 1, sessionID);
 }

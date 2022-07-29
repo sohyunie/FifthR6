@@ -7,8 +7,8 @@
 #include "WarriorOfThunder.h"
 #include "WarriorOfWater.h"
 #include "ATank.h"
+#include "ExitKey.h"
 #include "BossTank.h"
-#include "ResultTrigger.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
@@ -91,7 +91,6 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 		{
 			ResultInfoWidget->AddToViewport();
 			ChangeInputMode(false);
-		
 		}
 	}
 
@@ -134,6 +133,25 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 			}
 		}
 		skillSessionID = 0;
+	}
+
+	if (destructKeyID != 0) {
+		
+		TArray<AActor*> ExitKeys;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AExitKey::StaticClass(), ExitKeys);
+
+		for (const auto& actor : ExitKeys)
+		{
+			AExitKey* key = Cast<AExitKey>(actor);
+			if (key->ID == destructKeyID) {
+				key->DestructKey();
+				if (keyCount == 4) {
+					ADoor* door = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
+					door->DestructDoor();
+				}
+			}
+		}
+		destructKeyID = 0;
 	}
 	// 채팅 동기화
 	if (bIsChatNeedUpdate)
@@ -945,4 +963,23 @@ void ANetPlayerController::SendActionSkill(int sessionID, int id)
 {
 	Socket = ClientSocket::GetSingleton();
 	Socket->SendActionSkill(sessionID, id);
+}
+
+
+void ANetPlayerController::RecvDestructKey(int id)
+{
+	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
+	keyCount++;
+	UE_LOG(LogClass, Log, TEXT("keyCount : [%d]"), keyCount);
+	destructKeyID = id;
+}
+
+
+void ANetPlayerController::SendDestructKey(int sessionID, int keyID)
+{
+	keyCount++;
+
+	UE_LOG(LogClass, Log, TEXT("keyCount : [%d]"), keyCount);
+	Socket = ClientSocket::GetSingleton();
+	Socket->SendDestructKey(sessionID, keyID);
 }

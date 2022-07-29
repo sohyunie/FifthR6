@@ -121,6 +121,7 @@ enum EPacketType
 	ACTION_SKILL,
 	DESTROY_MONSTER,
 	PLAY_GAME,
+	DESTRUCT_KEY,
 };
 
 class cCharactersInfo
@@ -298,6 +299,7 @@ public:
 	void HitMonster(const int& MonsterId);
 	void SendSyncMonster(MonsterSet& monsterSet);
 	void SendActionSkill(int sessionID, int id);
+	void SendDestructKey(int sessionID, int keyID);
 	void SetCharacterID(int id);
 	// UDP 테스트용 함수
 	char* UdpTest();
