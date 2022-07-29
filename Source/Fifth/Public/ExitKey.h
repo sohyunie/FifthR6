@@ -17,6 +17,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* Body;
+	UPROPERTY(EditAnywhere, Category = ID)
+		int32 ID;
 
 protected:
 	// Called when the game starts or when spawned

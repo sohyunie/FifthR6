@@ -389,6 +389,14 @@ uint32 ClientSocket::Run()
 					UE_LOG(LogClass, Log, TEXT("PLAY_GAME WAIT!!"));
 				}
 			}
+			case EPacketType::DESTRUCT_KEY:
+			{
+				if (isEnroll) {
+					int id;
+					RecvStream >> id;
+					PlayerController->RecvDestructKey(id);
+				}
+			}
 			break;
 			default:
 				break;
@@ -470,6 +478,27 @@ void ClientSocket::SendActionSkill(int sessionID, int id)
 	SendStream << EPacketType::ACTION_SKILL << endl;
 	SendStream << sessionID << endl;
 	SendStream << id << endl;
+
+	// 캐릭터 정보 전송
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+}
+
+void ClientSocket::SendDestructKey(int sessionID, int keyID)
+{
+	UE_LOG(LogClass, Log, TEXT("SendDestructKey"));
+	// 캐릭터 정보 직렬화
+	stringstream SendStream;
+	// 요청 종류
+	SendStream << EPacketType::DESTRUCT_KEY << endl;
+	SendStream << sessionID << endl;
+	SendStream << keyID << endl;
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(
