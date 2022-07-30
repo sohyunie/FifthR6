@@ -34,34 +34,39 @@ AWarriorOfWater::AWarriorOfWater()
 
 void AWarriorOfWater::RAttack()
 {
-	Super::RAttack();
 
-	FVector CameraLocation;
-	FRotator CameraRotation;
-	GetActorEyesViewPoint(CameraLocation, CameraRotation);
-
-	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-	FRotator MuzzleRotation = CameraRotation;
-
-	MuzzleRotation.Pitch += 10.0f;
-	UWorld* World = GetWorld();
-	if (World)
+	if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-		AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
-			MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
 
-		if (OvCheck)
+		Super::RAttack();
+
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = CameraRotation;
+
+		MuzzleRotation.Pitch += 10.0f;
+		UWorld* World = GetWorld();
+		if (World)
 		{
-			UNiagaraSystem* ARange =
-				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-					TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn2.NS_AOE_FireColumn2")));
-			UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-		}
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+			AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
+				MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
 
-		ABLOG(Warning, TEXT("DERIVED SUCCESS"));
+			if (OvCheck)
+			{
+				UNiagaraSystem* ARange =
+					Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+						TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn2.NS_AOE_FireColumn2")));
+				UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+			}
+
+			ABLOG(Warning, TEXT("DERIVED SUCCESS"));
+		}
 	}
 }
 
@@ -92,12 +97,12 @@ void AWarriorOfWater::Fire()
 		{
 			UNiagaraSystem* Muzzle =
 				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-					TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
+					TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric1.NS_Muzzle_Electric1")));
 			UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 
 			UNiagaraSystem* FireEffectMuzzle =
 				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-					TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric.NS_Projectile_Fireball_Electric")));
+					TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric3.NS_Projectile_Fireball_Electric3")));
 			UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 
 			FVector LaunchDirection = MuzzleRotation.Vector();

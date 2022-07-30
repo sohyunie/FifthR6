@@ -228,7 +228,7 @@ void ANetCharacter::BeginPlay()
 	HealthPercentage = 1.0f;
 	bCanBeDamaged = true;
 
-	FullSkill = 100.f;
+	FullSkill = 20.f;
 	Skill = FullSkill;
 	SkillPercentage = 1.f;
 	PreviousSkill = SkillPercentage;
@@ -744,12 +744,12 @@ void ANetCharacter::RAttack()
 {
 	if (IsRAttacking) return;
 
-	if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
-	{
+	//if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
+	//{
 		ABLOG(Warning, TEXT("RATTACK"));
 		
 		UGameplayStatics::PlaySoundAtLocation(this, Magic_Sound, GetActorLocation());
-		MyAnim->PlayFireMontage();
+		//MyAnim->PlayFireMontage();
 
 		MyAnim->PlayRAttackMontage();
 		
@@ -765,7 +765,7 @@ void ANetCharacter::RAttack()
 
 		if(sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
 			Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendActionSkill(sessionID, 1);
-	}
+	//}
 }
 
 void ANetCharacter::Fire()
