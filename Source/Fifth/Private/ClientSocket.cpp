@@ -105,15 +105,11 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 	int PacketType;
 	ID = 0;
 
-	int checkSum = 0;
 	RecvStream << recvBuffer;
 	RecvStream >> PacketType;
-	RecvStream >> checkSum;
 	RecvStream >> ID;
 
 	UE_LOG(LogClass, Log, TEXT("1---[%d]---"), ID);
-	if (checkSum != 999)
-		return false;
 	if (PacketType != EPacketType::LOGIN)
 		return false;
 
@@ -336,7 +332,6 @@ uint32 ClientSocket::Run()
 	{
 		stringstream RecvStream;
 		int PacketType;
-		int checkSum = 0;
 		int nRecvLen = recv(
 			ServerSocket, (CHAR*)&recvBuffer, MAX_BUFFER, 0
 		);
@@ -344,13 +339,6 @@ uint32 ClientSocket::Run()
 		{
 			RecvStream << recvBuffer;
 			RecvStream >> PacketType;
-			RecvStream >> checkSum;
-
-			if (checkSum != 999)
-			{
-				UE_LOG(LogClass, Log, TEXT("checkSum error"));
-				break;
-			}
 
 			switch (PacketType)
 			{
@@ -412,9 +400,16 @@ uint32 ClientSocket::Run()
 			case EPacketType::DESTRUCT_KEY:
 			{
 				if (isEnroll) {
+					int checkSum = 0;
 					int id;
+					RecvStream >> checkSum;
 					RecvStream >> id;
-					PlayerController->RecvDestructKey(id);
+					if (checkSum == 999) {
+						PlayerController->RecvDestructKey(id);
+					}
+					else {
+						UE_LOG(LogClass, Log, TEXT("DESTRUCT_KEY checkSum error"));
+					}
 				}
 			}
 			break;
