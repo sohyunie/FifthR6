@@ -174,7 +174,7 @@ void MainIocp::WorkerThread()
 		}
 
 		try
-		{		
+		{
 			// ��Ŷ ����
 			int PacketType;
 			int checkSum = 0;
@@ -185,26 +185,21 @@ void MainIocp::WorkerThread()
 			RecvStream >> PacketType;
 			RecvStream >> checkSum;
 
-			if (PacketType > 16) {
-				printf_s("[ERROR] over packetType : %d\n", PacketType);
+			if (checkSum != 999)
+			{
+				//printf_s("[ERROR] checkSum : %d\n", checkSum);
 			}
 			else {
-				if (checkSum != 999)
+				// ��Ŷ ó��
+				if (fnProcess[PacketType].funcProcessPacket != nullptr)
 				{
-					printf_s("[ERROR] checkSum : %d\n", checkSum);
+					//printf_s("[OK] PacketType : %d\n", PacketType);
+					fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
 				}
-				else {
-					// ��Ŷ ó��
-					if (fnProcess[PacketType].funcProcessPacket != nullptr)
-					{
-						//printf_s("[OK] PacketType : %d\n", PacketType);
-						fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
-					}
-					else
-					{
-						printf_s("[ERROR] PacketType : %d\n", PacketType);
-						//printf_s("[ERROR] RecvStream : %s\n", RecvStream.str());
-					}
+				else
+				{
+					printf_s("[ERROR] PacketType : %d\n", PacketType);
+					//printf_s("[ERROR] RecvStream : %s\n", RecvStream.str());
 				}
 			}
 		}
@@ -233,6 +228,7 @@ void MainIocp::Login(stringstream & RecvStream, stSOCKETINFO * pSocket)
 
 	stringstream SendStream;
 	SendStream << EPacketType::LOGIN << endl;
+	SendStream << 999 << endl;
 	SendStream << id << endl;
 
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
@@ -275,6 +271,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	stringstream SendStream;
 	SendStream << EPacketType::PLAY_GAME << endl;
+	SendStream << 999 << endl;
 
 	if (count == 2) {
 		printf_s("[INFO] SEND PLAY GAME\n", Id);
@@ -387,6 +384,7 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	// ����ȭ	
 	SendStream << EPacketType::RECV_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << CharactersInfo << endl;
 
 	OtherBroadcast(SendStream, pinfo->UELevel, pinfo->SessionId);
@@ -490,6 +488,7 @@ void MainIocp::BroadcastNewPlayer(cCharactersInfo & player, int UELevel)
 {
 	stringstream SendStream;
 	SendStream << EPacketType::ENTER_NEW_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << player << endl;
 
 	Broadcast(SendStream, UELevel);
@@ -519,6 +518,7 @@ void MainIocp::WriteCharactersInfoToSocket(stSOCKETINFO * pSocket)
 
 	// ����ȭ	
 	SendStream << EPacketType::RECV_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << CharactersInfo << endl;
 
 	CopyMemory(pSocket->messageBuffer, (CHAR*)SendStream.str().c_str(), SendStream.str().length());
@@ -540,6 +540,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		printf_s("[INFO] (%d) DESTROY_MONSTER \n", MonsterId);
 		stringstream SendStream;
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
+		SendStream << 999 << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
 		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].UELevel);
@@ -551,6 +552,7 @@ void MainIocp::HitMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		printf_s("[INFO] (%d) HIT_MONSTER \n", MonsterId);
 		stringstream SendStream;
 		SendStream << EPacketType::DESTROY_MONSTER << endl;
+		SendStream << 999 << endl;
 		SendStream << MonstersInfo.monsters[MonsterId] << endl;
 
 		Broadcast(SendStream, MonstersInfo.monsters[MonsterId].UELevel);
@@ -569,6 +571,7 @@ void MainIocp::SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	// Send
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
+	SendStream << 999 << endl;
 	SendStream << MonstersInfo << endl;
 
 
@@ -585,6 +588,7 @@ void MainIocp::ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	RecvStream >> id;
 	stringstream SendStream;
 	SendStream << EPacketType::ACTION_SKILL << endl;
+	SendStream << 999 << endl;
 	SendStream << sessionID << endl;
 	SendStream << id << endl;
 
@@ -601,6 +605,7 @@ void MainIocp::DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	RecvStream >> id;
 	stringstream SendStream;
 	SendStream << EPacketType::DESTRUCT_KEY << endl;
+	SendStream << 999 << endl;
 	SendStream << id << endl;
 
 	printf_s("[INFO]DestructKey %d", id);

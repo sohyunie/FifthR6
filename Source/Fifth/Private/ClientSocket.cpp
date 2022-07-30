@@ -105,11 +105,15 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 	int PacketType;
 	ID = 0;
 
+	int checkSum = 0;
 	RecvStream << recvBuffer;
 	RecvStream >> PacketType;
+	RecvStream >> checkSum;
 	RecvStream >> ID;
 
 	UE_LOG(LogClass, Log, TEXT("1---[%d]---"), ID);
+	if (checkSum != 999)
+		return false;
 	if (PacketType != EPacketType::LOGIN)
 		return false;
 
@@ -332,6 +336,7 @@ uint32 ClientSocket::Run()
 	{
 		stringstream RecvStream;
 		int PacketType;
+		int checkSum = 0;
 		int nRecvLen = recv(
 			ServerSocket, (CHAR*)&recvBuffer, MAX_BUFFER, 0
 		);
@@ -339,31 +344,38 @@ uint32 ClientSocket::Run()
 		{
 			RecvStream << recvBuffer;
 			RecvStream >> PacketType;
+			RecvStream >> checkSum;
+
+			if (checkSum != 999)
+			{
+				UE_LOG(LogClass, Log, TEXT("checkSum error"));
+				break;
+			}
 
 			switch (PacketType)
 			{
 			case EPacketType::RECV_PLAYER:
 			{
-				if(isEnroll)
-				PlayerController->RecvWorldInfo(RecvCharacterInfo(RecvStream));
+				if (isEnroll)
+					PlayerController->RecvWorldInfo(RecvCharacterInfo(RecvStream));
 			}
 			break;
 			case EPacketType::CHAT:
 			{
 				if (isEnroll)
-				PlayerController->RecvChat(RecvChat(RecvStream));
+					PlayerController->RecvChat(RecvChat(RecvStream));
 			}
 			break;
 			case EPacketType::ENTER_NEW_PLAYER:
 			{
 				if (isEnroll)
-				PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
+					PlayerController->RecvNewPlayer(RecvNewPlayer(RecvStream));
 			}
 			break;
 			case EPacketType::SYNC_MONSTER:
 			{
 				if (isEnroll)
-				PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
+					PlayerController->RecvMonsterSet(RecvMonsterSet(RecvStream));
 			}
 			break;
 			case EPacketType::ACTION_SKILL:
@@ -380,7 +392,7 @@ uint32 ClientSocket::Run()
 			case EPacketType::DESTROY_MONSTER:
 			{
 				if (isEnroll)
-				PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
+					PlayerController->RecvDestroyMonster(RecvMonster(RecvStream));
 			}
 			break;
 			case EPacketType::PLAY_GAME:

@@ -136,7 +136,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	}
 
 	if (destructKeyID != 0) {
-		
+
 		TArray<AActor*> ExitKeys;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AExitKey::StaticClass(), ExitKeys);
 
@@ -272,7 +272,7 @@ void ANetPlayerController::HitCharacter(const int& sessionID, const ANetCharacte
 bool ANetPlayerController::HitMonster(const int& MonsterId)
 {
 	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-	if (ci!= nullptr && ci->players[SessionId].IsMaster)
+	if (ci != nullptr && ci->players[SessionId].IsMaster)
 	{
 		if (ci->players[SessionId].IsMaster)
 		{
@@ -513,7 +513,7 @@ bool ANetPlayerController::UpdateWorldInfo()
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -588,7 +588,7 @@ void ANetPlayerController::UpdateNewPlayer()
 	{
 		i++;
 		UE_LOG(LogClass, Log, TEXT("NewPlayer : %d"), i);
-		
+
 		if (kvp.first == SessionId)
 			continue;
 
@@ -716,7 +716,7 @@ void ANetPlayerController::UpdateMonsterSet()
 						UE_LOG(LogClass, Log, TEXT("size 0"));
 						continue;
 					}
-					
+
 					if (monster->ID < 0 || monster->ID > 200) {
 						UE_LOG(LogClass, Log, TEXT("error id number : %d"), monster->ID);
 						continue;
@@ -793,21 +793,21 @@ void ANetPlayerController::DestroyMonster()
 		{
 			if (MonsterInfo->UELevel == 0)
 				continue;
-			 AATank* Monster = Cast<AATank>(Actor);
-			 if (Monster && Monster->ID == MonsterInfo->Id)
-			 {
-				  UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
-				  //Monster->SetTankHpRatio(MonsterInfo->Health);
-				  //Monster->GetTankHpRatio() = MonsterInfo->Health;
-				  //Monster->SetTankHpRatio(MonsterInfo->Health);
-				  Monster->PlayTakeDamageAnim();
-				  if (Monster->GetTankHpRatio() <= 0) {
-					  //Monster->Destroy();
-			 			//[TODO] dead
-			 			//Monster->Dead();
-				  }
-			 	break;
-			 }
+			AATank* Monster = Cast<AATank>(Actor);
+			if (Monster && Monster->ID == MonsterInfo->Id)
+			{
+				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				//Monster->SetTankHpRatio(MonsterInfo->Health);
+				//Monster->GetTankHpRatio() = MonsterInfo->Health;
+				//Monster->SetTankHpRatio(MonsterInfo->Health);
+				Monster->PlayTakeDamageAnim();
+				if (Monster->GetTankHpRatio() <= 0) {
+					//Monster->Destroy();
+					  //[TODO] dead
+					  //Monster->Dead();
+				}
+				break;
+			}
 		}
 
 		// 업데이트 후 초기화
@@ -883,7 +883,7 @@ bool ANetPlayerController::UpdateMonster()
 
 			//if (monster->UELevel != ci->players[SessionId].UELevel)
 			//	continue;
-			
+
 			if (monster->isMasterStartAction == false)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("[Master] monster->StartAction()"));
@@ -917,7 +917,7 @@ bool ANetPlayerController::UpdateMonster()
 				sendMonsterSet.monsters[monster->ID].Health = monster->GetTankHpRatio();
 				//sendMonsterSet.monsters[monster->ID].UELevel = 1;
 				sendMonsterSet.monsters[monster->ID].IsAttacking = monster->GetIsAttacking();
-			}									 
+			}
 		}
 		Socket->SendSyncMonster(sendMonsterSet);
 		return true;
@@ -969,9 +969,8 @@ void ANetPlayerController::SendActionSkill(int sessionID, int id)
 
 void ANetPlayerController::RecvDestructKey(int id)
 {
-	UE_LOG(LogTemp, Warning, TEXT("RecvActionSkill"));
 	keyCount++;
-	UE_LOG(LogClass, Log, TEXT("keyCount : [%d]"), keyCount);
+	UE_LOG(LogClass, Log, TEXT("RecvDestructKey : [%d]"), keyCount);
 	destructKeyID = id;
 }
 
@@ -979,8 +978,7 @@ void ANetPlayerController::RecvDestructKey(int id)
 void ANetPlayerController::SendDestructKey(int sessionID, int keyID)
 {
 	keyCount++;
-
-	UE_LOG(LogClass, Log, TEXT("keyCount : [%d]"), keyCount);
+	UE_LOG(LogClass, Log, TEXT("SendDestructKey : [%d]"), keyCount);
 	Socket = ClientSocket::GetSingleton();
 	Socket->SendDestructKey(sessionID, keyID);
 }
