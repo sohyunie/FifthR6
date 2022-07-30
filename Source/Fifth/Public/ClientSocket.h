@@ -38,15 +38,15 @@ public:
 	~cCharacter() {};
 
 	// 세션 아이디
-	int SessionId;
+	int		SessionId;
 	// 위치
-	float X;
-	float Y;
-	float Z;
+	float	X;
+	float	Y;
+	float	Z;
 	// 회전값
-	float Yaw;
-	float Pitch;
-	float Roll;
+	float	Yaw;
+	float	Pitch;
+	float	Roll;
 	// 속도
 	float VX;
 	float VY;
@@ -56,17 +56,17 @@ public:
 	float	HealthValue;
 	bool	IsAttacking;
 
-	int UELevel = 0;
-	bool IsMaster;
+	int		UELevel;
+	bool	IsMaster;
 
-	int	characterID;
+	int		characterID;
 
 	friend ostream& operator<<(ostream& stream, cCharacter& info)
 	{
 		stream << info.SessionId << endl;
 		stream << info.X << endl;
 		stream << info.Y << endl;
-		stream << info.Z << endl; 
+		stream << info.Z << endl;
 		stream << info.VX << endl;
 		stream << info.VY << endl;
 		stream << info.VZ << endl;
