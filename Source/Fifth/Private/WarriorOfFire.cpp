@@ -102,7 +102,7 @@ void AWarriorOfFire::Fire()
 		{
 			UNiagaraSystem* Muzzle =
 				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-					TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
+					TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric2.NS_Muzzle_Electric2")));
 			UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, Muzzle, MuzzleLocation * GetControlRotation().Vector(), FRotator::ZeroRotator);
 			//MuzzleLocation + GetControlRotation().Vector()
