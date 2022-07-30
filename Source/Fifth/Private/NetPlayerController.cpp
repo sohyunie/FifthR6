@@ -773,18 +773,17 @@ void ANetPlayerController::DestroyMonster()
 			if (MonsterInfo->UELevel == 0)
 				continue;
 			ABossTank* Monster = Cast<ABossTank>(actor);
-			UE_LOG(LogClass, Log, TEXT("BOSS HIT"));
 			if (Monster && Monster->ID == MonsterInfo->Id)
 			{
-				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
+				UE_LOG(LogClass, Log, TEXT("[%d] Boss Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
 				//Monster->SetTankHpRatio(MonsterInfo->Health);
 				Monster->PlayTakeDamageAnim();
-				/*if (Monster->GetTankHpRatio() <= 0) {
-					//Monster->Destroy();
-					  //[TODO] dead
-					  //Monster->Dead();
-				}*/
+				//if (Monster->GetTankHpRatio() <= 0) {
+				//	//Monster->Destroy();
+				//	  //[TODO] dead
+				//	  //Monster->Dead();
+				//}
 				break;
 			}
 		}
@@ -795,7 +794,6 @@ void ANetPlayerController::DestroyMonster()
 			if (MonsterInfo->UELevel == 0)
 				continue;
 			AATank* Monster = Cast<AATank>(Actor);
-			UE_LOG(LogClass, Log, TEXT("TANK HIT"));
 			if (Monster && Monster->ID == MonsterInfo->Id)
 			{
 				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
@@ -803,11 +801,10 @@ void ANetPlayerController::DestroyMonster()
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
 				//Monster->SetTankHpRatio(MonsterInfo->Health);
 				Monster->PlayTakeDamageAnim();
-				if (Monster->GetTankHpRatio() <= 0) {
-					//Monster->Destroy();
-					  //[TODO] dead
-					  //Monster->Dead();
-				}
+				//if (Monster->GetTankHpRatio() <= 0)
+				//{
+				//	 Monster->Dead();
+				//}
 				break;
 			}
 		}
