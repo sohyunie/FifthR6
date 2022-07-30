@@ -98,7 +98,7 @@ void AWarriorOfFire::Fire()
 
 		UNiagaraSystem* FireEffectMuzzle =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric.NS_Projectile_Fireball_Electric")));
+				TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric2.NS_Projectile_Fireball_Electric2")));
 		UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 		if (Projectile)
 		{
