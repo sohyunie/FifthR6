@@ -260,7 +260,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	SendStream << EPacketType::PLAY_GAME << endl;
 
-	if (count == 1) {
+	if (count == 2) {
 		printf_s("[INFO] SEND PLAY GAME\n", Id);
 		SendStream << true << endl;
 	}
@@ -279,7 +279,8 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	printf_s("Enroll Character %d\n", info.SessionId);
+	printf_s("[Enroll] info.SessionId %d\n", info.SessionId);
+	printf_s("[Enroll] info.characterID %d\n", info.characterID);
 
 	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
@@ -307,6 +308,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->IsAlive = info.IsAlive;
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
+	pinfo->characterID = info.characterID;
 	//pinfo->UELevel = info.UELevel;
 
 	//LevelMaster[info.UELevel].push(info.SessionId);

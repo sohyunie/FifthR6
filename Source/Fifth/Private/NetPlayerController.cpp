@@ -229,6 +229,7 @@ void ANetPlayerController::BeginPlay()
 	tempCharacter.HealthValue = player->GetHealthValue();
 
 	tempCharacter.UELevel = player->UELevel; // [TODO] UE Level ID ÇÊ¿ä.
+	tempCharacter.characterID = Socket->CharacterID;
 
 	UE_LOG(LogClass, Log, TEXT("EnrollPlayer"));
 	Socket->EnrollPlayer(tempCharacter);

@@ -78,6 +78,7 @@ public:
 		stream << info.IsAttacking << endl;
 		stream << info.UELevel << endl;
 		stream << info.IsMaster << endl;
+		stream << info.characterID << endl;
 
 		return stream;
 	}
@@ -99,6 +100,7 @@ public:
 		stream >> info.IsAttacking;
 		stream >> info.UELevel;
 		stream >> info.IsMaster;
+		stream >> info.characterID;
 
 		return stream;
 	}
@@ -152,7 +154,7 @@ public:
 		cCharacter Player;
 		info.IsLock = true;
 		//UE_LOG(LogClass, Log, TEXT("Is Lock true"));
-		info.players.clear();
+		//info.players.clear();
 
 		stream >> nPlayers;
 		for (int i = 0; i < nPlayers; i++)
