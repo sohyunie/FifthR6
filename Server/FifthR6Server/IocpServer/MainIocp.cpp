@@ -307,6 +307,7 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->IsAlive = info.IsAlive;
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
+	pinfo->characterID = info.characterID;
 	//pinfo->UELevel = info.UELevel;
 
 	//LevelMaster[info.UELevel].push(info.SessionId);
