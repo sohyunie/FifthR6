@@ -83,6 +83,7 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 	stringstream SendStream;
 
 	SendStream << EPacketType::LOGIN << endl;
+	SendStream << 999 << endl;
 	SendStream << TCHAR_TO_UTF8(*Id.ToString()) << endl;
 	SendStream << TCHAR_TO_UTF8(*Pw.ToString()) << endl;
 
@@ -125,6 +126,7 @@ void ClientSocket::SetCharacterID(int id)
 	UE_LOG(LogClass, Log, TEXT("2---[%d]---"), ID);
 	stringstream SendStream;
 	SendStream << EPacketType::SET_CHARACTER << endl;
+	SendStream << 999 << endl;
 	SendStream << ID << endl;
 	SendStream << CharacterID << endl;
 
@@ -145,7 +147,8 @@ void ClientSocket::EnrollPlayer(cCharacter& info)
 	// 캐릭터 정보 직렬화
 	stringstream SendStream;
 	// 요청 종류
-	SendStream << EPacketType::ENROLL_PLAYER << endl;;
+	SendStream << EPacketType::ENROLL_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << info << endl;
 	UE_LOG(LogClass, Log, TEXT("Enroll info.characterID : [%d]"), info.characterID);
 
@@ -167,7 +170,8 @@ void ClientSocket::SendPlayer(cCharacter& info)
 	// 캐릭터 정보 직렬화
 	stringstream SendStream;
 	// 요청 종류
-	SendStream << EPacketType::SEND_PLAYER << endl;;
+	SendStream << EPacketType::SEND_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << info << endl;
 
 	// 캐릭터 정보 전송
@@ -227,6 +231,7 @@ void ClientSocket::LogoutPlayer(int SessionId)
 	// 서버에게 로그아웃시킬 캐릭터 정보 전송
 	stringstream SendStream;
 	SendStream << EPacketType::LOGOUT_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << SessionId << endl;
 
 	int nSendLen = send(
@@ -267,6 +272,7 @@ void ClientSocket::DamagePlayer(int SessionId)
 	// 서버에게 데미지를 준 캐릭터 정보 전송
 	stringstream SendStream;
 	SendStream << EPacketType::HIT_PLAYER << endl;
+	SendStream << 999 << endl;
 	SendStream << SessionId << endl;
 
 	int nSendLen = send(
@@ -280,6 +286,7 @@ void ClientSocket::SendChat(const int& SessionId, const string& Chat)
 	// 서버에게 채팅 전송
 	stringstream SendStream;
 	SendStream << EPacketType::CHAT << endl;
+	SendStream << 999 << endl;
 	SendStream << SessionId << endl;
 	SendStream << Chat << endl;
 
@@ -442,6 +449,7 @@ void ClientSocket::HitMonster(const int& MonsterId)
 	// 서버에게 데미지를 준 몬스터 정보 전송
 	stringstream SendStream;
 	SendStream << EPacketType::HIT_MONSTER << endl;
+	SendStream << 999 << endl;
 	SendStream << MonsterId << endl;
 
 	int nSendLen = send(
@@ -454,6 +462,7 @@ void ClientSocket::SendSyncMonster(MonsterSet& monsterSet)
 	// 서버에게 몬스터 정보를 전송
 	stringstream SendStream;
 	SendStream << EPacketType::SYNC_MONSTER << endl;
+	SendStream << 999 << endl;
 	SendStream << monsterSet << endl;
 	//FString name = SendStream.str().c_str();
 	//TArray<FStringFormatArg> args;
@@ -477,6 +486,7 @@ void ClientSocket::SendActionSkill(int sessionID, int id)
 	stringstream SendStream;
 	// 요청 종류
 	SendStream << EPacketType::ACTION_SKILL << endl;
+	SendStream << 999 << endl;
 	SendStream << sessionID << endl;
 	SendStream << id << endl;
 
@@ -498,6 +508,7 @@ void ClientSocket::SendDestructKey(int sessionID, int keyID)
 	stringstream SendStream;
 	// 요청 종류
 	SendStream << EPacketType::DESTRUCT_KEY << endl;
+	SendStream << 999 << endl;
 	SendStream << sessionID << endl;
 	SendStream << keyID << endl;
 

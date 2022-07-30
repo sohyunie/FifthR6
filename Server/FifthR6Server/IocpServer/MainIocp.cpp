@@ -154,7 +154,7 @@ void MainIocp::WorkerThread()
 			INFINITE				// ����� �ð�
 		);
 
-		if (!bResult && recvBytes == 0)
+		if (!bResult)
 		{
 			printf_s("[INFO] bResult false (%d)\n", recvBytes);
 			closesocket(pSocketInfo->socket);
@@ -177,24 +177,35 @@ void MainIocp::WorkerThread()
 		{		
 			// ��Ŷ ����
 			int PacketType;
+			int checkSum = 0;
 			// Ŭ���̾�Ʈ ���� ������ȭ
 			stringstream RecvStream;
 
 			RecvStream << pSocketInfo->dataBuf.buf;
 			RecvStream >> PacketType;
+			RecvStream >> checkSum;
 
-			if (PacketType > 16)
-				continue;
-			// ��Ŷ ó��
-			if (fnProcess[PacketType].funcProcessPacket != nullptr)
-			{
-				//printf_s("[OK] PacketType : %d\n", PacketType);
-				fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
+			if (PacketType > 16) {
+				printf_s("[ERROR] over packetType : %d\n", PacketType);
 			}
-			else
-			{
-				printf_s("[ERROR] PacketType : %d\n", PacketType);
-				//printf_s("[ERROR] RecvStream : %s\n", RecvStream.str());
+			else {
+				if (checkSum != 999)
+				{
+					printf_s("[ERROR] checkSum : %d\n", checkSum);
+				}
+				else {
+					// ��Ŷ ó��
+					if (fnProcess[PacketType].funcProcessPacket != nullptr)
+					{
+						//printf_s("[OK] PacketType : %d\n", PacketType);
+						fnProcess[PacketType].funcProcessPacket(RecvStream, pSocketInfo);
+					}
+					else
+					{
+						printf_s("[ERROR] PacketType : %d\n", PacketType);
+						//printf_s("[ERROR] RecvStream : %s\n", RecvStream.str());
+					}
+				}
 			}
 		}
 		catch (const std::exception& e)
