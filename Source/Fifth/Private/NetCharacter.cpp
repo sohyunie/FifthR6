@@ -50,8 +50,8 @@ ANetCharacter::ANetCharacter()
 
 	ViewRotator = 0.0f;
 	ViewArm = CreateDefaultSubobject<USpringArmComponent>("ViewArm");
-	ViewArm->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, (TEXT("Bip-Head")));
-	
+	//ViewArm->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, (TEXT("Bip-Head")));
+	ViewArm->SetupAttachment(GetMesh(),(TEXT("Bip-Head")));
 
 	ViewArm->TargetArmLength = -50.f;
 	//ViewArm->CameraLagSpeed = 3.f;
@@ -61,7 +61,8 @@ ANetCharacter::ANetCharacter()
 	ViewArm->AddRelativeRotation(FRotator(90.f, 0, -90.f));
 	ViewArm->bUsePawnControlRotation = true;
 	Camera = CreateDefaultSubobject<UCameraComponent>("CAMERA");
-	Camera->AttachToComponent(ViewArm, FAttachmentTransformRules::KeepRelativeTransform);
+	//Camera->AttachToComponent(ViewArm, FAttachmentTransformRules::KeepRelativeTransform);
+	Camera->SetupAttachment(ViewArm);
 	
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),
@@ -72,7 +73,9 @@ ANetCharacter::ANetCharacter()
 	Scene->SetupAttachment(GetMesh());
 
 	FName BallSocket(TEXT("Bip-L-Finger2"));
-	Scene->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+	//Scene->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		//BallSocket);
+	Scene->SetupAttachment(GetMesh(),
 		BallSocket);
 
 	//FName HeadSocket(TEXT("Bip-Head"));
