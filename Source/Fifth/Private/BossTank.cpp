@@ -88,13 +88,13 @@ void ABossTank::BeginPlay()
 
 	}
 
-	
+
 
 	auto MyGameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	Id = MyGameInstance->uniqueMonsterID++;
 
 	UE_LOG(LogClass, Log, TEXT("Monster : %d"), Id);
-	
+
 }
 
 void ABossTank::SetControlMode(int32 ControlMode)
@@ -117,10 +117,10 @@ void ABossTank::Tick(float DeltaTime)
 
 	if (IsDamaging)
 	{
-		
+
 		SetActorLocation(GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetPawn()
-		->GetControlRotation().Vector()/**10*/);
-		
+			->GetControlRotation().Vector()/**10*/);
+
 	}
 
 }
@@ -144,7 +144,7 @@ void ABossTank::PostInitializeComponents()
 		ABLOG(Warning, TEXT("OnHPIsZero"));
 		BTAnim->SetDeadAnim();
 		SetActorEnableCollision(false);
-		});
+	});
 
 	BTAnim->OnAttackHitCheck.AddUObject(this, &ABossTank::AttackCheck);
 }
@@ -162,14 +162,14 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		DamageTimer();
 
 		Damaged();
-		
+
 
 		//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-		
+
 		//BossStat->SetDamage(FinalDamage);
 
-		
+
 		UNiagaraSystem* HitEffect =
 			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
 				TEXT("/Game/Effect/Hit.Hit")));
@@ -496,43 +496,49 @@ void ABossTank::KickCheck()
 	}
 }
 
-	void ABossTank::StartAction()
-	{
-		//TankAIController->RunAI();
-	}
+void ABossTank::StartAction()
+{
+	//TankAIController->RunAI();
+}
 
-	/*float ABossTank::GetTankHpRatio()
-	{
-		return BossStat->GetHPRatio();
-	}*/
+/*float ABossTank::GetTankHpRatio()
+{
+	return BossStat->GetHPRatio();
+}*/
 
-	bool ABossTank::GetIsAttacking()
-	{
-		return IsAttacking;
-	}
+bool ABossTank::GetIsAttacking()
+{
+	return IsAttacking;
+}
 
-	void ABossTank::PlayTakeDamageAnim()
-	{
-		return BTAnim->PlayDamagedMontage();
-	}
+void ABossTank::PlayTakeDamageAnim()
+{
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
 
-	/*void ABossTank::SetTankHpRatio(float ratio)
-	{
-		return BossStat->SetHpRatio(ratio);
-	}*/
+		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+	return BTAnim->PlayDamagedMontage();
+}
+
+/*void ABossTank::SetTankHpRatio(float ratio)
+{
+	return BossStat->SetHpRatio(ratio);
+}*/
 
 
-	void ABossTank::MoveToLocation(const FVector & dest)
-	{
-		// [TODO] boss
-		//if (BossAIController)
-		//{
-		//	BossAIController->MoveToLocation(dest);
-		//}
-	}
+void ABossTank::MoveToLocation(const FVector& dest)
+{
+	// [TODO] boss
+	//if (BossAIController)
+	//{
+	//	BossAIController->MoveToLocation(dest);
+	//}
+}
 
-	void ABossTank::PlayAttackAnim()
-	{
-		return BTAnim->PlayAttackMontage();
-	}
+void ABossTank::PlayAttackAnim()
+{
+	return BTAnim->PlayAttackMontage();
+}
 

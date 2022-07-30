@@ -33,14 +33,14 @@ ANetCharacter::ANetCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	//Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	WarriorStat = CreateDefaultSubobject<UWarriorStatComponent>(TEXT("WARRIORSTAT"));
 
-	
+
 	static ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("/Game/UI/Skill_Curve.Skill_Curve"));
 	SkillCurve = Curve.Object;
-	
+
 
 	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 
@@ -51,7 +51,7 @@ ANetCharacter::ANetCharacter()
 	ViewRotator = 0.0f;
 	ViewArm = CreateDefaultSubobject<USpringArmComponent>("ViewArm");
 	//ViewArm->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, (TEXT("Bip-Head")));
-	ViewArm->SetupAttachment(GetMesh(),(TEXT("Bip-Head")));
+	ViewArm->SetupAttachment(GetMesh(), (TEXT("Bip-Head")));
 
 	ViewArm->TargetArmLength = -50.f;
 	//ViewArm->CameraLagSpeed = 3.f;
@@ -63,13 +63,13 @@ ANetCharacter::ANetCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>("CAMERA");
 	//Camera->AttachToComponent(ViewArm, FAttachmentTransformRules::KeepRelativeTransform);
 	Camera->SetupAttachment(ViewArm);
-	
+
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),
 		FRotator(0.0f, -90.0f, 0.0f));
 
 	//GetMesh()->SetOwnerNoSee(true);
-	
+
 	Scene->SetupAttachment(GetMesh());
 
 	FName BallSocket(TEXT("Bip-L-Finger2"));
@@ -86,12 +86,12 @@ ANetCharacter::ANetCharacter()
 	//Camera->SetRelativeLocation(FVector(15.0f, 16.0f,125.0f + BaseEyeHeight));
 	//Camera->SetRelativeRotation(FRotator(0.0f, -90.0f, -100.0f));
 	//Camera->bUsePawnControlRotation = true;
-	
+
 
 	//Sound
 	//AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SOUND"));;
 	//AudioComponent->SetupAttachment(Mesh);
-	
+
 	static ConstructorHelpers::FObjectFinder<USoundWave> Fire(TEXT("SoundWave'/Game/MySound/Sound-Effect-Laser_256k.Sound-Effect-Laser_256k'"));
 
 	if (Fire.Succeeded())
@@ -133,7 +133,7 @@ ANetCharacter::ANetCharacter()
 	GetCapsuleComponent()->SetCapsuleRadius(100);
 
 
-	
+
 
 	SetControlMode(0);
 	IsAttacking = false;
@@ -143,7 +143,7 @@ ANetCharacter::ANetCharacter()
 	AttackEndComboState();
 
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ANetCharacter::DeathOverlap);
-	
+
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("MyCharacter"));
 
 	AttackRange = 200.0f;
@@ -163,7 +163,7 @@ ANetCharacter::ANetCharacter()
 
 	SetActorHiddenInGame(true);
 	SetCanBeDamaged(false);*/
-	CurrentDoor = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(),ADoor::StaticClass()));
+	CurrentDoor = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
 
 	DeadTimer = 5.0f;
 	HealthValue = 1.0f;
@@ -235,7 +235,7 @@ void ANetCharacter::BeginPlay()
 	SkillValue = 0.f;
 	bCanUseSkill = true;
 
-	
+
 	if (SkillCurve)
 	{
 		ABLOG(Warning, TEXT("CURVE"));
@@ -312,7 +312,7 @@ void ANetCharacter::SetWarriorState(ECharacterState NewState)
 
 		WarriorStat->OnHPIsZero.AddLambda([this]()->void {
 			SetWarriorState(ECharacterState::DEAD);
-			});
+		});
 
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
@@ -333,7 +333,7 @@ void ANetCharacter::SetWarriorState(ECharacterState NewState)
 			SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 			NetPlayerController->RestartLevel();
 
-				}), DeadTimer, false);
+		}), DeadTimer, false);
 
 		break;
 	}
@@ -369,7 +369,7 @@ void ANetCharacter::SetControlMode(int32 ControlMode)
 		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-		
+
 	}
 }
 
@@ -403,9 +403,9 @@ void ANetCharacter::Tick(float DeltaTime)
 			}
 		}
 
-		
+
 	}
-	else 
+	else
 	{
 		InfoWidget->SetVisibility(ESlateVisibility::Hidden);
 		CurrentSave = NULL;
@@ -414,7 +414,7 @@ void ANetCharacter::Tick(float DeltaTime)
 		CurrentKey = NULL;
 	}
 
-	
+
 	MyTimeline.TickTimeline(DeltaTime);
 
 	if (IsAttacking || IsSAttacking)
@@ -467,7 +467,7 @@ void ANetCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction(TEXT("Cheat_Zero"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Zero);
 	PlayerInputComponent->BindAction(TEXT("Cheat_Y"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_Y);
 	PlayerInputComponent->BindAction(TEXT("Cheat_U"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_U);
-	PlayerInputComponent->BindAction(TEXT("Cheat_I"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_I); 
+	PlayerInputComponent->BindAction(TEXT("Cheat_I"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_I);
 	PlayerInputComponent->BindAction(TEXT("Cheat_O"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_O);
 	PlayerInputComponent->BindAction(TEXT("Cheat_P"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_P);
 	PlayerInputComponent->BindAction(TEXT("Cheat_L"), EInputEvent::IE_Pressed, this, &ANetCharacter::Cheat_L);
@@ -582,7 +582,7 @@ void ANetCharacter::PostInitializeComponents()
 			//MyAnim->JumpToAttackMontageSection(CurrentCombo);
 		}
 
-		});
+	});
 
 
 	MyAnim->OnIsChecked.AddLambda([this]()->void {
@@ -603,7 +603,7 @@ void ANetCharacter::PostInitializeComponents()
 			StopAnimMontage();
 			ABLOG(Warning, TEXT("STOP"));
 		}
-		});
+	});
 
 
 
@@ -615,7 +615,7 @@ void ANetCharacter::PostInitializeComponents()
 		ABLOG(Warning, TEXT("OnHPIsZero"));
 		MyAnim->SetDeadAnim();
 		SetActorEnableCollision(false);
-		});
+	});
 }
 
 
@@ -686,10 +686,10 @@ void ANetCharacter::Attack()
 		ABCHECK(CurrentCombo == 0);
 		AttackStartComboState();
 		MyAnim->PlayAttackMontage();
-		
+
 		bIsAttacking = true;
 		//[TODO] Action to server
-		
+
 		//beChecked = true;
 		//MyAnim->JumpToAttackMontageSection(CurrentCombo);
 		IsAttacking = true;
@@ -715,7 +715,7 @@ void ANetCharacter::GetKey()
 	if (CurrentKey)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, Key_Sound, GetActorLocation());
-	//ABLOG(Warning, TEXT("DDD"));
+		//ABLOG(Warning, TEXT("DDD"));
 		if (KeyCount == 4) {
 			CurrentDoor->DestructDoor();
 			//UParticleSystem* Portal =
@@ -727,12 +727,12 @@ void ANetCharacter::GetKey()
 
 			ABLOG(Warning, TEXT("PR"));
 		}
-	++KeyCount;
-	ABLOG(Warning, TEXT("Key : %d"), KeyCount);
-	
-	CurrentKey->DestructKey();
-	if (sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
-		Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendDestructKey(sessionID, CurrentKey->ID);
+		++KeyCount;
+		ABLOG(Warning, TEXT("Key : %d"), KeyCount);
+
+		CurrentKey->DestructKey();
+		if (sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
+			Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendDestructKey(sessionID, CurrentKey->ID);
 	}
 	else {
 		//ABLOG(Warning, TEXT("NULL"));
@@ -746,25 +746,25 @@ void ANetCharacter::RAttack()
 
 	//if (!FMath::IsNearlyZero(Skill, 0.001f) && bCanUseSkill)
 	//{
-		ABLOG(Warning, TEXT("RATTACK"));
-		
-		UGameplayStatics::PlaySoundAtLocation(this, Magic_Sound, GetActorLocation());
-		//MyAnim->PlayFireMontage();
+	ABLOG(Warning, TEXT("RATTACK"));
 
-		MyAnim->PlayRAttackMontage();
-		
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
-			//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(MyShake, 1.f);
-		IsRAttacking = true;
-		//}
+	UGameplayStatics::PlaySoundAtLocation(this, Magic_Sound, GetActorLocation());
+	//MyAnim->PlayFireMontage();
 
-		MyTimeline.Stop();
-		GetWorldTimerManager().ClearTimer(SkillTimerHandle);
-		SetSkillChange(-20.f);
-		GetWorldTimerManager().SetTimer(SkillTimerHandle, this, &ANetCharacter::UpdateSkill, 5.f, false);
+	MyAnim->PlayRAttackMontage();
 
-		if(sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
-			Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendActionSkill(sessionID, 1);
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
+	//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(MyShake, 1.f);
+	IsRAttacking = true;
+	//}
+
+	MyTimeline.Stop();
+	GetWorldTimerManager().ClearTimer(SkillTimerHandle);
+	SetSkillChange(-20.f);
+	GetWorldTimerManager().SetTimer(SkillTimerHandle, this, &ANetCharacter::UpdateSkill, 5.f, false);
+
+	if (sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
+		Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendActionSkill(sessionID, 1);
 	//}
 }
 
@@ -772,7 +772,7 @@ void ANetCharacter::Fire()
 {
 	if (IsFireing) return;
 
-	
+
 	UGameplayStatics::PlaySoundAtLocation(this, Fire_Sound, GetActorLocation());
 	MyAnim->PlayFireMontage();
 
@@ -805,9 +805,9 @@ void ANetCharacter::LoadGame()
 {
 	//Create an instance of our savegame class
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
-	
+
 	//Load the saved game into our savegameinstance variable
-	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot",0));
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
 
 	//Set the players position from the saved game file
 	this->SetActorLocation(SaveGameInstance->PlayerLocation);
@@ -990,7 +990,6 @@ void ANetCharacter::AttackCheck()
 				AATank* Monster = Cast<AATank>(HitResult.Actor);
 				if (Monster)
 				{
-
 					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 					bool isMaster = PlayerController->HitMonster(Monster->ID);
 					if (isMaster) {
@@ -1004,12 +1003,11 @@ void ANetCharacter::AttackCheck()
 
 			}
 
-			/*if (HitResult.Actor->IsA(ABossTank::StaticClass()))
+			if (HitResult.Actor->IsA(ABossTank::StaticClass()))
 			{
 				ABossTank* Monster = Cast<ABossTank>(HitResult.Actor);
 				if (Monster)
 				{
-
 					ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 					bool isMaster = PlayerController->HitMonster(Monster->ID);
 					if (isMaster) {
@@ -1019,9 +1017,7 @@ void ANetCharacter::AttackCheck()
 						HitResult.Actor->TakeDamage(10.f, DamageEvent, GetController(), this);
 					}
 				}
-
-
-			}*/
+			}
 
 			ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
 			FDamageEvent DamageEvent;
