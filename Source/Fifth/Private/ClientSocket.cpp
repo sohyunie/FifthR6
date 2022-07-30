@@ -147,6 +147,7 @@ void ClientSocket::EnrollPlayer(cCharacter& info)
 	// 요청 종류
 	SendStream << EPacketType::ENROLL_PLAYER << endl;;
 	SendStream << info << endl;
+	UE_LOG(LogClass, Log, TEXT("Enroll info.characterID : [%d]"), info.characterID);
 
 	// 캐릭터 정보 전송
 	int nSendLen = send(

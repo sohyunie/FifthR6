@@ -36,7 +36,6 @@ MainIocp::MainIocp()
 	else {
 		printf_s("[ERROR] DB ���� ����\n");
 	}
-
 	// ��Ŷ �Լ� �����Ϳ� �Լ� ����
 	fnProcess[EPacketType::LOGIN].funcProcessPacket = Login;
 	fnProcess[EPacketType::SET_CHARACTER].funcProcessPacket = SetCharacter;
@@ -241,6 +240,12 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	RecvStream >> sessionID;
 	RecvStream >> Id;
 
+	if (Id > 3) {
+		printf_s("[INFO] SetCharacter -_- {%d}\n", Id);
+
+		return;
+	}
+
 	cCharacter* pinfo = &CharactersInfo.players[sessionID]; // ID등록
 	pinfo->SessionId = sessionID;
 	pinfo->characterID = Id;
@@ -309,11 +314,10 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	pinfo->HealthValue = info.HealthValue;
 	pinfo->IsAttacking = info.IsAttacking;
 	pinfo->characterID = info.characterID;
-	//pinfo->UELevel = info.UELevel;
+	pinfo->UELevel = info.UELevel;
 
-	//LevelMaster[info.UELevel].push(info.SessionId);
-
-	//pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
+	LevelMaster[info.UELevel].push(info.SessionId);
+	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 	//printf_s("[Check Master][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
 
 	SessionSocket[info.SessionId] = pSocket->socket;
@@ -357,14 +361,14 @@ void MainIocp::SyncCharacters(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	}
 
 	// Level이 변경하는 상황 발생.
-	if (pinfo->UELevel != info.UELevel)
-	{
-		LevelMaster[pinfo->UELevel].pop(); // 마스터면 자신은 Queue에서 빠짐
-		LevelMaster[info.UELevel].push(info.SessionId);
+	//if (pinfo->UELevel != info.UELevel)
+	//{
+	//	LevelMaster[pinfo->UELevel].pop(); // 마스터면 자신은 Queue에서 빠짐
+	//	LevelMaster[info.UELevel].push(info.SessionId);
 
-		pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
-		printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
-	}
+	//	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
+	//	printf_s("[Change Level][%d] - UELevel : [%d], IsMaster : [%s]\n", info.SessionId, info.UELevel, pinfo->IsMaster ? "true" : "false");
+	//}
 	pinfo->UELevel = info.UELevel;
 	pinfo->IsMaster = LevelMaster[info.UELevel].front() == info.SessionId;
 
