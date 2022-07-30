@@ -260,7 +260,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	stringstream SendStream;
 	SendStream << EPacketType::PLAY_GAME << endl;
 
-	if (count == 1) {
+	if (count == 2) {
 		printf_s("[INFO] SEND PLAY GAME\n", Id);
 		SendStream << true << endl;
 	}
