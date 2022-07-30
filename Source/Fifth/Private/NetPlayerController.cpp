@@ -774,7 +774,7 @@ void ANetPlayerController::DestroyMonster()
 				continue;
 			ABossTank* Monster = Cast<ABossTank>(actor);
 			UE_LOG(LogClass, Log, TEXT("BOSS HIT"));
-			if (Monster && Monster->Id == MonsterInfo->Id)
+			if (Monster && Monster->ID == MonsterInfo->Id)
 			{
 				UE_LOG(LogClass, Log, TEXT("[%d] Health %f"), MonsterInfo->Id, MonsterInfo->Health);
 				//Monster->GetTankHpRatio() = MonsterInfo->Health;
