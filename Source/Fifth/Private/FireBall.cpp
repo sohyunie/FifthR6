@@ -80,7 +80,7 @@ void AFireBall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireHitEffect,
 			OtherActor->GetActorLocation(), this->GetActorRotation());
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(UMyMatineeCameraShake::StaticClass(), 1.f);
-		AFireBall::Destroy();
+		Destroy();
 		UGameplayStatics::ApplyPointDamage(OtherActor, 50.0f, OtherActor->GetActorLocation(), SweepResult, nullptr, this, nullptr);
 
 		/*ABLOG(Warning, TEXT("HIT!!!"));

@@ -47,16 +47,16 @@ void UBossService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(ABossAIController::TargetKey,
 					NetCharacter);
-				DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+				//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
 
-				DrawDebugPoint(World, NetCharacter->GetActorLocation(), 10.0f, FColor::Blue, false, 0.2f);
-				DrawDebugLine(World, ControllingPawn->GetActorLocation(), NetCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+				//DrawDebugPoint(World, NetCharacter->GetActorLocation(), 10.0f, FColor::Blue, false, 0.2f);
+				//DrawDebugLine(World, ControllingPawn->GetActorLocation(), NetCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
 				return;
 			}
 		}
 	}
 
-	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+	//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
 }
 
 

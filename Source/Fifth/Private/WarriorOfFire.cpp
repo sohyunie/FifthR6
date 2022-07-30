@@ -59,11 +59,13 @@ void AWarriorOfFire::RAttack()
 		AOverlapRangeActor* OvCheck = World->SpawnActor<AOverlapRangeActor>(AOverlapRangeActor::StaticClass(),
 			MuzzleLocation + GetControlRotation().Vector() * 1000.f, MuzzleRotation, SpawnParams);
 
-		UNiagaraSystem* ARange =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
-		UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-
+		if (OvCheck)
+		{
+			UNiagaraSystem* ARange =
+				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+					TEXT("/Game/RangeAttack/NiagaraSystems/NS_AOE_FireColumn.NS_AOE_FireColumn")));
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ARange, OvCheck->MyCollisionSphere, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		}
 
 		ABLOG(Warning, TEXT("DERIVED SUCCESS"));
 	}
@@ -91,17 +93,21 @@ void AWarriorOfFire::Fire()
 		SpawnParams.Instigator = GetInstigator();
 		AFireBall* Projectile = World->SpawnActor<AFireBall>(AFireBall::StaticClass(), MuzzleLocation, MuzzleRotation, SpawnParams);
 
-		UNiagaraSystem* Muzzle =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
-		UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-
-		UNiagaraSystem* FireEffectMuzzle =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric2.NS_Projectile_Fireball_Electric2")));
-		UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		
 		if (Projectile)
 		{
+			UNiagaraSystem* Muzzle =
+				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+					TEXT("/Game/FireBall/NiagaraSystems/NS_Muzzle_Electric.NS_Muzzle_Electric")));
+			UNiagaraFunctionLibrary::SpawnSystemAttached(Muzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, Muzzle, MuzzleLocation * GetControlRotation().Vector(), FRotator::ZeroRotator);
+			//MuzzleLocation + GetControlRotation().Vector()
+
+			UNiagaraSystem* FireEffectMuzzle =
+				Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+					TEXT("/Game/FireBall/NiagaraSystems/NS_Projectile_Fireball_Electric2.NS_Projectile_Fireball_Electric2")));
+			UNiagaraFunctionLibrary::SpawnSystemAttached(FireEffectMuzzle, Projectile->Capsule, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+
 			FVector LaunchDirection = MuzzleRotation.Vector();
 			Projectile->FireInDirection(LaunchDirection);
 		}
