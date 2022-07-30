@@ -79,6 +79,7 @@ public:
 		stream << info.IsAttacking << endl;
 		stream << info.UELevel << endl;
 		stream << info.IsMaster << endl;
+		stream << info.characterID << endl;
 
 		return stream;
 	}
@@ -100,6 +101,7 @@ public:
 		stream >> info.IsAttacking;
 		stream >> info.UELevel;
 		stream >> info.IsMaster;
+		stream >> info.characterID;
 
 		return stream;
 	}
@@ -131,10 +133,10 @@ public:
 		int nPlayers = 0;
 		int SessionId = 0;
 		cCharacter Player;
-		info.players.clear();
+		//info.players.clear();
 
 		stream >> nPlayers;
-		//cout << "cCharactersInfo nPlayers : " << nPlayers << endl;
+		cout << "cCharactersInfo nPlayers : " << nPlayers << endl;
 		for (int i = 0; i < nPlayers; i++)
 		{
 			stream >> SessionId;

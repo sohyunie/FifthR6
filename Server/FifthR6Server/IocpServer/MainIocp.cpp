@@ -279,7 +279,8 @@ void MainIocp::EnrollCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket
 	cCharacter info;
 	RecvStream >> info;
 
-	printf_s("Enroll Character %d\n", info.SessionId);
+	printf_s("[Enroll] info.SessionId %d\n", info.SessionId);
+	printf_s("[Enroll] info.characterID %d\n", info.characterID);
 
 	//printf_s("[INFO][%d] - UELevel : [%d]\n", info.SessionId, info.UELevel);
 
