@@ -6,6 +6,7 @@
 
 ATitleGameMode::ATitleGameMode()
 {
+	IsMoveScene = false;
 	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogClass, Log, TEXT("ATitleGameMode!"));
 
@@ -23,10 +24,10 @@ ATitleGameMode::ATitleGameMode()
 		UE_LOG(LogClass, Log, TEXT("server addr : 211.198.122.35  8080"));
 		if (bIsConnected)
 		{
-			Socket->SetTitleGameMode(this);
 			UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 		}
 	}
+	Socket->SetTitleGameMode(this);
 }
 
 bool ATitleGameMode::Login(const FText& Id, const FText& Pw)
