@@ -316,7 +316,7 @@ void ABossTank::AttackCheck()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-#if ENABLE_DRAW_DEBUG
+/*#if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -334,7 +334,7 @@ void ABossTank::AttackCheck()
 		false,
 		DebugLifeTime);
 
-#endif
+#endif*/
 
 
 	//if (bResult)
