@@ -167,7 +167,7 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 
-		//BossStat->SetDamage(FinalDamage);
+		BossStat->SetDamage(DamageAmount);
 
 
 		UNiagaraSystem* HitEffect =
@@ -186,7 +186,7 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	DamageTimer();
 
 	Damaged();
-	//BossStat->SetDamage(FinalDamage);
+	BossStat->SetDamage(DamageAmount);
 
 	//return FinalDamage;
 	return DamageAmount;

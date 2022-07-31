@@ -187,7 +187,7 @@ void MainIocp::WorkerThread()
 
 			if (checkSum != 999)
 			{
-				printf_s("[ERROR] checkSum : %d\n", checkSum);
+				//printf_s("[ERROR] checkSum : %d\n", checkSum);
 			}
 			else {
 				// ��Ŷ ó��
