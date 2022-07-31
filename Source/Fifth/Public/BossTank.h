@@ -17,6 +17,9 @@ class FIFTH_API ABossTank : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABossTank();
+	void SetBossTankState(ECharacterState NewState);
+	ECharacterState GetBossTankState() const;
+
 	bool isStartAction = false;
 	bool isMasterStartAction = false;
 
@@ -102,6 +105,17 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Health")
 		class UUserWidget* CurrentWidget;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+		ECharacterState CurrentState;
+
+	UPROPERTY()
+		class ABossAIController* BossAIController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		float DeadTimer;
+
+	FTimerHandle DeadTimerHandle = {};
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 		bool IsAttacking;

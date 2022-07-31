@@ -42,3 +42,25 @@ void ABossAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+
+void ABossAIController::RunAI()
+{
+
+	if (UseBlackboard(BBAsset, Blackboard))
+	{
+		Blackboard->SetValueAsVector(HomePosKey, GetPawn()->GetActorLocation());
+		if (!RunBehaviorTree(BTAsset))
+		{
+			ABLOG(Error, TEXT("BossTankAIController couldn't run behavior tree!"));
+		}
+	}
+}
+
+void ABossAIController::StopAI()
+{
+	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (nullptr != BehaviorTreeComponent)
+	{
+		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
+	}
+}

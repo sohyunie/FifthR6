@@ -97,6 +97,85 @@ void ABossTank::BeginPlay()
 
 }
 
+
+void ABossTank::SetBossTankState(ECharacterState NewState)
+{
+	ABCHECK(CurrentState != NewState);
+	CurrentState = NewState;
+
+	switch (CurrentState)
+	{
+	case ECharacterState::LOADING:
+	{
+		SetActorHiddenInGame(true);
+		
+		SetCanBeDamaged(false);
+		break;
+	}
+	case ECharacterState::READY_MASTER:
+	{
+		SetActorHiddenInGame(false);
+		
+		SetCanBeDamaged(true);
+
+		BossStat->OnHPIsZero.AddLambda([this]()->void {
+			SetBossTankState(ECharacterState::DEAD);
+			});
+
+		
+
+		SetControlMode(0);
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+		BossAIController->RunAI();
+
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		
+		SetCanBeDamaged(true);
+
+		BossStat->OnHPIsZero.AddLambda([this]()->void {
+			SetBossTankState(ECharacterState::DEAD);
+			});
+
+		
+
+		SetControlMode(0);
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+		BossAIController->StopAI();
+
+		break;
+	}
+	case ECharacterState::DEAD:
+	{
+		SetActorEnableCollision(false);
+		GetMesh()->SetHiddenInGame(false);
+		
+		BTAnim->SetDeadAnim();
+		SetCanBeDamaged(false);
+
+		BossAIController->StopAI();
+
+		GetWorld()->GetTimerManager().SetTimer
+		(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+			Destroy();
+
+			}), DeadTimer, false);
+
+
+		break;
+	}
+	}
+}
+
+
+ECharacterState ABossTank::GetBossTankState() const
+{
+	return CurrentState;
+}
+
 void ABossTank::SetControlMode(int32 ControlMode)
 {
 	if (ControlMode == 0)
