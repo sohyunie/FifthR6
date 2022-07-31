@@ -249,9 +249,9 @@ void ANetPlayerController::BeginPlay()
 
 void ANetPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Socket->LogoutPlayer(SessionId);
-	Socket->CloseSocket();
-	Socket->StopListen();
+	//Socket->LogoutPlayer(SessionId);
+	//Socket->CloseSocket();
+	//Socket->StopListen();
 }
 
 AActor* ANetPlayerController::FindActorBySessionId(TArray<AActor*> ActorArray, const int& sessionId)
