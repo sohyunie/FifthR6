@@ -24,6 +24,8 @@ public:
 
 	static const FName SelectAttackNumberKey;
 	
+	void RunAI();
+	void StopAI();
 
 private:
 	UPROPERTY()
