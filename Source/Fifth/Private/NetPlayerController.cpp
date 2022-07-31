@@ -154,7 +154,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 			if (key->ID == destructKeyID) {
 				keyCount++;
 				key->DestructKey();
-				if (keyCount == 4) {
+				if (keyCount == 2) {
 					ADoor* door = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
 					door->DestructDoor();
 				}

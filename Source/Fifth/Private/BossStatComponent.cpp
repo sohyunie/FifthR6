@@ -93,7 +93,7 @@ void UBossStatComponent::SetHpRatio(float ratio)
 	CurrentHP = hp;
 	//OnHPChanged.Broadcast();
 
-	ABLOG(Error, TEXT("SetHpRatio : %f"), hp);
+	//ABLOG(Error, TEXT("SetHpRatio : %f"), hp);
 	if (!isDead && CurrentHP <= KINDA_SMALL_NUMBER)
 	{
 		ABLOG(Error, TEXT("Boss SetHpRatio zero"));
