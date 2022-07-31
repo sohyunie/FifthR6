@@ -46,6 +46,7 @@ private:
 	static CRITICAL_SECTION csMonsters;		// CharactersInfo 임계영역
 	static MonsterSet		MonstersInfo;	// 몬스터 집합 정보
 	static int				KeyCount;
+	static int				ClearUserCount;
 
 	FuncProcess fnProcess[100];
 
@@ -69,6 +70,7 @@ private:
 	static void SyncMonster(stringstream& RecvStream, stSOCKETINFO* pSocket);
 	static void ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket);
 	static void DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket);
+	static void ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket);
 
 	// 브로드캐스트 함수
 	static void Broadcast(stringstream & SendStream, int UELevel);	

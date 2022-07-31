@@ -89,6 +89,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 		if (ResultInfoWidget)
 		{
+			Socket->SendClearGame(true);
 			ResultInfoWidget->AddToViewport();
 			ChangeInputMode(false);
 		}

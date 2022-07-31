@@ -529,3 +529,24 @@ void ClientSocket::SendDestructKey(int sessionID, int keyID)
 		return;
 	}
 }
+
+void ClientSocket::SendClearGame(bool isClear)
+{
+	UE_LOG(LogClass, Log, TEXT("SendClearGame"));
+	// 캐릭터 정보 직렬화
+	stringstream SendStream;
+	// 요청 종류
+	SendStream << EPacketType::CLEAR_GAME << endl;
+	SendStream << 999 << endl;
+	SendStream << isClear << endl;
+
+	// 캐릭터 정보 전송
+	int nSendLen = send(
+		ServerSocket, (CHAR*)SendStream.str().c_str(), SendStream.str().length(), 0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+}
