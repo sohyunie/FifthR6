@@ -542,3 +542,8 @@ void ABossTank::PlayAttackAnim()
 	return BTAnim->PlayAttackMontage();
 }
 
+void ABossTank::SetTankHpRatio(float ratio)
+{
+	return BossStat->SetHpRatio(ratio);
+}
+

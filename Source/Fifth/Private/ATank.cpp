@@ -436,51 +436,51 @@ void AATank::AttackCheck()
 	}
 }
 
-	void AATank::PlayTakeDamageAnim()
+void AATank::PlayTakeDamageAnim()
+{
+	UNiagaraSystem* HitEffect =
+		Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
+			TEXT("/Game/Effect/Hit.Hit")));
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
+		this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
+
+
+	return ATAnim->PlayDamagedMontage();
+}
+
+void AATank::MoveToLocation(const FVector & dest)
+{
+	if (TankAIController)
 	{
-		UNiagaraSystem* HitEffect =
-			Cast<UNiagaraSystem>(StaticLoadObject(UNiagaraSystem::StaticClass(), NULL,
-				TEXT("/Game/Effect/Hit.Hit")));
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect,
-			this->GetActorLocation() + FVector(50.0f, 20.0f, 0.0f), this->GetActorRotation());
-
-
-		return ATAnim->PlayDamagedMontage();
+		TankAIController->MoveToLocation(dest);
 	}
+}
 
-	void AATank::MoveToLocation(const FVector & dest)
-	{
-		if (TankAIController)
-		{
-			TankAIController->MoveToLocation(dest);
-		}
-	}
+void AATank::PlayAttackAnim()
+{
+	return ATAnim->PlayAttackMontage();
+}
 
-	void AATank::PlayAttackAnim()
-	{
-		return ATAnim->PlayAttackMontage();
-	}
+void AATank::StartAction()
+{
+	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController->GetIsMaster())
+		SetTankState(ECharacterState::READY_MASTER);
+	else
+		SetTankState(ECharacterState::READY);
+}
 
-	void AATank::StartAction()
-	{
-		ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
-		if (PlayerController->GetIsMaster())
-			SetTankState(ECharacterState::READY_MASTER);
-		else
-			SetTankState(ECharacterState::READY);
-	}
+float AATank::GetTankHpRatio()
+{
+	return TankStat->GetHPRatio();
+}
 
-	float AATank::GetTankHpRatio()
-	{
-		return TankStat->GetHPRatio();
-	}
+bool AATank::GetIsAttacking()
+{
+	return IsAttacking;
+}
 
-	bool AATank::GetIsAttacking()
-	{
-		return IsAttacking;
-	}
-
-	void AATank::SetTankHpRatio(float ratio)
-	{
-		return TankStat->SetHpRatio(ratio);
+void AATank::SetTankHpRatio(float ratio)
+{
+	return TankStat->SetHpRatio(ratio);
 }

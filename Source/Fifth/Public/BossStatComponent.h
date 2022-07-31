@@ -11,7 +11,7 @@ DECLARE_MULTICAST_DELEGATE(FOnHPIsZeroDelegate);
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FIFTH_API UBossStatComponent : public UActorComponent
 {
-	GENERATED_BODY()
+	GENERATED_BODY()	
 
 public:	
 	// Sets default values for this component's properties

@@ -687,6 +687,7 @@ void ANetPlayerController::UpdateMonsterSet()
 				spawnRotation.Pitch = monsterInfo->Pitch;
 				spawnRotation.Roll = monsterInfo->Roll;
 
+				monster->SetTankHpRatio(monsterInfo->Health);
 				monster->AddMovementInput(CharacterVelocity);
 				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);

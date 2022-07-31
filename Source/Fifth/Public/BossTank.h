@@ -90,6 +90,7 @@ public:
 	void PlayAttackAnim();
 
 	void MoveToLocation(const FVector& dest);
+	void SetTankHpRatio(float ratio);
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UBossStatComponent* BossStat;
