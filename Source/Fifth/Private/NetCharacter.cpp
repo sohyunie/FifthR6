@@ -715,21 +715,21 @@ void ANetCharacter::GetKey()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, Key_Sound, GetActorLocation());
 		//ABLOG(Warning, TEXT("DDD"));
-		if (KeyCount == 4) {
-			CurrentDoor->DestructDoor();
-			//UParticleSystem* Portal =
-				//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
-					//TEXT("/Game/Effect/P_Portal.P_Portal")));
+		//if (KeyCount == 4) {
+		//	CurrentDoor->DestructDoor();
+		//	//UParticleSystem* Portal =
+		//		//Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
+		//			//TEXT("/Game/Effect/P_Portal.P_Portal")));
 
-			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
-				//FVector((16657.025391f, 5849.000977f, 212.000000f)));
+		//	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Portal,
+		//		//FVector((16657.025391f, 5849.000977f, 212.000000f)));
 
-			ABLOG(Warning, TEXT("PR"));
-		}
-		++KeyCount;
+		//	ABLOG(Warning, TEXT("PR"));
+		//}
+		//++KeyCount;
 		ABLOG(Warning, TEXT("Key : %d"), KeyCount);
 
-		CurrentKey->DestructKey();
+		//CurrentKey->DestructKey();
 		if (sessionID == Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->GetSessionId())
 			Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController())->SendDestructKey(sessionID, CurrentKey->ID);
 	}

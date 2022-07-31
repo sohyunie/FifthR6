@@ -605,7 +605,7 @@ void MainIocp::DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	printf_s("[INFO]DestructKey %d", id);
 
-	OtherBroadcast(SendStream, 1, sessionID);
+	Broadcast(SendStream, 1);
 }
 
 void MainIocp::ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket)

@@ -152,6 +152,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 		{
 			AExitKey* key = Cast<AExitKey>(actor);
 			if (key->ID == destructKeyID) {
+				keyCount++;
 				key->DestructKey();
 				if (keyCount == 4) {
 					ADoor* door = Cast<ADoor>(UGameplayStatics::GetActorOfClass(GetWorld(), ADoor::StaticClass()));
@@ -639,7 +640,7 @@ void ANetPlayerController::UpdateNewPlayer()
 					break;
 				}
 
-				if (player->characterID > 0 && player->characterID <= 3)
+				if (player->UELevel != 0)
 				{
 					ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
 					SpawnCharacter->SpawnDefaultController();
@@ -980,7 +981,6 @@ void ANetPlayerController::SendActionSkill(int sessionID, int id)
 
 void ANetPlayerController::RecvDestructKey(int id)
 {
-	keyCount++;
 	UE_LOG(LogClass, Log, TEXT("RecvDestructKey : [%d]"), keyCount);
 	destructKeyID = id;
 }
@@ -988,7 +988,6 @@ void ANetPlayerController::RecvDestructKey(int id)
 
 void ANetPlayerController::SendDestructKey(int sessionID, int keyID)
 {
-	keyCount++;
 	UE_LOG(LogClass, Log, TEXT("SendDestructKey : [%d]"), keyCount);
 	Socket = ClientSocket::GetSingleton();
 	Socket->SendDestructKey(sessionID, keyID);
