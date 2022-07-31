@@ -501,10 +501,10 @@ void ABossTank::StartAction()
 	//TankAIController->RunAI();
 }
 
-/*float ABossTank::GetTankHpRatio()
+float ABossTank::GetTankHpRatio()
 {
 	return BossStat->GetHPRatio();
-}*/
+}
 
 bool ABossTank::GetIsAttacking()
 {

@@ -866,7 +866,7 @@ bool ANetPlayerController::UpdateMonster()
 
 				sendMonsterSet.monsters[monster->Id].UELevel = monster->UELevel;
 
-				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
+				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				//sendMonsterSet.monsters[monster->Id].UELevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
 			}

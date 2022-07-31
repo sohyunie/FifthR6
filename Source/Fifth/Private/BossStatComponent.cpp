@@ -35,6 +35,13 @@ void UBossStatComponent::InitializeComponent()
 	// ...
 }
 
+float UBossStatComponent::GetHPRatio()
+{
+	ABCHECK(nullptr != CurrentStatData, 0.0f);
+
+	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
+}
+
 void UBossStatComponent::SetNewLevel(int32 NewLevel)
 {
 	auto MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -86,8 +93,10 @@ void UBossStatComponent::SetHpRatio(float ratio)
 	CurrentHP = hp;
 	//OnHPChanged.Broadcast();
 
+	ABLOG(Error, TEXT("SetHpRatio : %f"), hp);
 	if (!isDead && CurrentHP <= KINDA_SMALL_NUMBER)
 	{
+		ABLOG(Error, TEXT("Boss SetHpRatio zero"));
 		isDead = true;
 		CurrentHP = 0.0f;
 		OnHPIsZero.Broadcast();

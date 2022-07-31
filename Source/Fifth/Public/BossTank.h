@@ -83,10 +83,9 @@ public:
 
 	void StartAction();
 
-	//float GetTankHpRatio();
+	float GetTankHpRatio();
 	bool GetIsAttacking();
 	void PlayTakeDamageAnim();
-	//void SetTankHpRatio(float ratio);
 	void PlayAttackAnim();
 
 	void MoveToLocation(const FVector& dest);
