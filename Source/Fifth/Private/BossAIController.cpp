@@ -33,14 +33,7 @@ void ABossAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (UseBlackboard(BBAsset, Blackboard))
-	{
-		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
-		if (!RunBehaviorTree(BTAsset))
-		{
-			ABLOG(Error, TEXT("TankAIController couldn't run behavior tree!"));
-		}
-	}
+	
 }
 
 void ABossAIController::RunAI()

@@ -72,6 +72,9 @@ void ABossTank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BossAIController = Cast<ABossAIController>(GetController());
+	ABCHECK(nullptr != BossAIController);
+
 	FullHealth = 1000.f;
 	Health = FullHealth;
 	HealthPercentage = 1.0f;
