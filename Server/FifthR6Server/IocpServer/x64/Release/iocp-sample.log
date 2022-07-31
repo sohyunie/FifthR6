@@ -1,27 +1,33 @@
 ﻿  MainIocp.cpp
 C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(114,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(114): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(123,68): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(123,68): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(133,7): warning C4101: 'nResult' :참조되지 않은 지역 변수입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(136,8): warning C4101: 'sendBytes' :참조되지 않은 지역 변수입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(218,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'stSOCKETINFO *'입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(218,11): warning C4313: 'printf_s': 서식 문자열의 '%d'이(가) 인수 1('stSOCKETINFO *' 형식)과(와) 충돌합니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(219,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(219,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'std::string'입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(230,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(264,39): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(264,39): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(272,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(398,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(419,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(419,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(491,51): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(509,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(117,23): warning C4251: 'cCharactersInfo::players': class 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>'에서는 class 'cCharactersInfo'의 클라이언트에서 DLL 인터페이스를 사용하도록 지정해야 합니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\PacketDll\CommonClass.h(117): message : 'std::map<int,cCharacter,std::less<int>,std::allocator<std::pair<const int,cCharacter>>>' 선언을 참조하십시오.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(124,68): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(124,68): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(134,7): warning C4101: 'nResult' :참조되지 않은 지역 변수입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(137,8): warning C4101: 'sendBytes' :참조되지 않은 지역 변수입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(225,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'stSOCKETINFO *'입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(225,11): warning C4313: 'printf_s': 서식 문자열의 '%d'이(가) 인수 1('stSOCKETINFO *' 형식)과(와) 충돌합니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(226,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::string'입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(226,11): warning C4477: 'printf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'std::string'입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(237,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(277,39): warning C4474: 'printf_s' : 서식 문자열에 전달된 인수가 너무 많습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(277,39): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(285,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(412,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(433,11): warning C4477: 'printf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'unsigned __int64'입니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(433,11): message : 서식 문자열에서 '%zd'을(를) 사용하는 것이 좋습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(505,51): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\MainIocp.cpp(523,50): warning C4267: '=': 'size_t'에서 'ULONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
-  2 of 707 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    5 functions had inline decision re-evaluated but remain unchanged
+  81 of 729 functions (11.1%) were compiled, the rest were copied from previous compilation.
+    24 functions were new in current compilation
+    64 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
+DBConnector.obj : warning LNK4205: 'C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\vc142.pdb'에 참조 모듈에 대한 현재 디버깅 정보가 없습니다. 디버깅 정보가 없는 것처럼 개체를 링크합니다.
+main.obj : warning LNK4205: 'C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\vc142.pdb'에 참조 모듈에 대한 현재 디버깅 정보가 없습니다. 디버깅 정보가 없는 것처럼 개체를 링크합니다.
+IocpBase.obj : warning LNK4205: 'C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\vc142.pdb'에 참조 모듈에 대한 현재 디버깅 정보가 없습니다. 디버깅 정보가 없는 것처럼 개체를 링크합니다.
+Monster.obj : warning LNK4205: 'C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\vc142.pdb'에 참조 모듈에 대한 현재 디버깅 정보가 없습니다. 디버깅 정보가 없는 것처럼 개체를 링크합니다.
+MSVCRT.lib(commit_mode.obj) : warning LNK4020: 'c:\unrealproject\fifthr6\server\fifthr6server\iocpserver\x64\release\vc142.pdb'의 형식 레코드가 손상되었습니다. 디버거에서 일부 기호와 형식에 액세스할 수 없습니다.
+MSVCRT.lib(default_local_stdio_options.obj) : warning LNK4020: 'c:\unrealproject\fifthr6\server\fifthr6server\iocpserver\x64\release\vc142.pdb'의 형식 레코드가 손상되었습니다. 디버거에서 일부 기호와 형식에 액세스할 수 없습니다.
   iocp-sample.vcxproj -> C:\UnrealProject\FifthR6\Server\FifthR6Server\IocpServer\x64\Release\iocp-server.exe

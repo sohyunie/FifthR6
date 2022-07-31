@@ -86,7 +86,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 	if (isClearStage)
 		return;
 
-	if (CurrentResult->ResultCheck)
+	if (CurrentResult != NULL && CurrentResult->ResultCheck)
 	{
 		ResultInfoWidget = CreateWidget<UUserWidget>(GetWorld(), ResultWidgetClass);
 
