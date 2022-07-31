@@ -269,6 +269,7 @@ void MainIocp::SetCharacter(stringstream& RecvStream, stSOCKETINFO* pSocket)
 		}
 		++iter;
 	}
+	printf_s("[INFO] player count : %d\n", count);
 
 	stringstream SendStream;
 	SendStream << EPacketType::PLAY_GAME << endl;
