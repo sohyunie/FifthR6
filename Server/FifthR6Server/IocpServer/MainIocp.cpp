@@ -585,7 +585,7 @@ void MainIocp::ActionSkill(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	SendStream << sessionID << endl;
 	SendStream << id << endl;
 
-	printf_s("[INFO]Action Skill %d", sessionID);
+	printf_s("[INFO]Action Skill %d \n", sessionID);
 
 	OtherBroadcast(SendStream, 1, sessionID);
 }
@@ -613,7 +613,7 @@ void MainIocp::ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	bool isClear;
 	RecvStream >> isClear;
 
-	printf_s("[INFO]ClearUserCount %d", ClearUserCount);
+	printf_s("[INFO]ClearUserCount %d \n", ClearUserCount);
 	if (ClearUserCount == 2) {
 		// ResetGame
 		ClearUserCount = 0;
