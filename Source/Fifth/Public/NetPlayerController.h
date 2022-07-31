@@ -143,4 +143,6 @@ private:
 
 	int destructKeyID;
 	int keyCount;
+
+	bool isClearStage = false;
 };
