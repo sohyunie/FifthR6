@@ -121,6 +121,7 @@ bool ClientSocket::Login(const FText& Id, const FText& Pw)
 
 void ClientSocket::SetCharacterID(int id)
 {
+	StartListen();
 	CharacterID = id;
 	UE_LOG(LogClass, Log, TEXT("SetCharacterID"));
 	UE_LOG(LogClass, Log, TEXT("2---[%d]---"), ID);
