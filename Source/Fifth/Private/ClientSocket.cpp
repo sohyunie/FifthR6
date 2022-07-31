@@ -532,6 +532,9 @@ void ClientSocket::SendDestructKey(int sessionID, int keyID)
 
 void ClientSocket::SendClearGame(bool isClear)
 {
+	CharacterID = 0;
+	isEnroll = false;
+	isStart = false;
 	UE_LOG(LogClass, Log, TEXT("SendClearGame"));
 	// 캐릭터 정보 직렬화
 	stringstream SendStream;
