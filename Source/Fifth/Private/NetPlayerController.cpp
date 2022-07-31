@@ -51,7 +51,7 @@ ANetPlayerController::ANetPlayerController()
 	nPlayers = -1;
 
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 12/60;
+	PrimaryActorTick.TickInterval = 6/60;
 
 	bIsConnected = true;
 }
@@ -639,11 +639,14 @@ void ANetPlayerController::UpdateNewPlayer()
 					break;
 				}
 
-				ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
-				SpawnCharacter->SpawnDefaultController();
-				SpawnCharacter->SetSessionId(player->SessionId);
+				if (player->characterID > 0 && player->characterID <= 3)
+				{
+					ANetCharacter* SpawnCharacter = world->SpawnActor<ANetCharacter>(WhoToSpawn, spawnLocation, spawnRotation, SpawnParams);
+					SpawnCharacter->SpawnDefaultController();
+					SpawnCharacter->SetSessionId(player->SessionId);
 
-				UE_LOG(LogClass, Log, TEXT("Create NewPlayer : %d"), player->SessionId);
+					UE_LOG(LogClass, Log, TEXT("Create NewPlayer : %d"), player->SessionId);
+				}
 			}
 		}
 	}
