@@ -246,7 +246,7 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		//float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		//ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 
-		//BossStat->SetDamage(FinalDamage);
+		BossStat->SetDamage(DamageAmount);
 
 
 		UNiagaraSystem* HitEffect =
@@ -265,7 +265,7 @@ float ABossTank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	DamageTimer();
 
 	Damaged();
-	//BossStat->SetDamage(FinalDamage);
+	BossStat->SetDamage(DamageAmount);
 
 	//return FinalDamage;
 	return DamageAmount;
@@ -580,10 +580,10 @@ void ABossTank::StartAction()
 	//TankAIController->RunAI();
 }
 
-/*float ABossTank::GetTankHpRatio()
+float ABossTank::GetTankHpRatio()
 {
 	return BossStat->GetHPRatio();
-}*/
+}
 
 bool ABossTank::GetIsAttacking()
 {
@@ -619,5 +619,10 @@ void ABossTank::MoveToLocation(const FVector& dest)
 void ABossTank::PlayAttackAnim()
 {
 	return BTAnim->PlayAttackMontage();
+}
+
+void ABossTank::SetTankHpRatio(float ratio)
+{
+	return BossStat->SetHpRatio(ratio);
 }
 

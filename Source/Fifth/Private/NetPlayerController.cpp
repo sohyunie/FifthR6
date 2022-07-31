@@ -89,6 +89,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 		if (ResultInfoWidget)
 		{
+			Socket->SendClearGame(true);
 			ResultInfoWidget->AddToViewport();
 			ChangeInputMode(false);
 		}
@@ -687,6 +688,7 @@ void ANetPlayerController::UpdateMonsterSet()
 				spawnRotation.Pitch = monsterInfo->Pitch;
 				spawnRotation.Roll = monsterInfo->Roll;
 
+				monster->SetTankHpRatio(monsterInfo->Health);
 				monster->AddMovementInput(CharacterVelocity);
 				monster->SetActorRotation(spawnRotation);
 				monster->MoveToLocation(Location);
@@ -865,7 +867,7 @@ bool ANetPlayerController::UpdateMonster()
 
 				sendMonsterSet.monsters[monster->Id].UELevel = monster->UELevel;
 
-				//sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
+				sendMonsterSet.monsters[monster->Id].Health = monster->GetTankHpRatio();
 				//sendMonsterSet.monsters[monster->Id].UELevel = ci->players[SessionId].UELevel;
 				sendMonsterSet.monsters[monster->Id].IsAttacking = monster->GetIsAttacking();
 			}

@@ -124,6 +124,7 @@ enum EPacketType
 	DESTROY_MONSTER,
 	PLAY_GAME,
 	DESTRUCT_KEY,
+	CLEAR_GAME,
 };
 
 class cCharactersInfo
@@ -302,6 +303,7 @@ public:
 	void SendSyncMonster(MonsterSet& monsterSet);
 	void SendActionSkill(int sessionID, int id);
 	void SendDestructKey(int sessionID, int keyID);
+	void SendClearGame(bool isClear);
 	void SetCharacterID(int id);
 	// UDP 테스트용 함수
 	char* UdpTest();

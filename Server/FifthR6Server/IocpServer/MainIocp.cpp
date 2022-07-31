@@ -13,8 +13,9 @@ cCharactersInfo MainIocp::CharactersInfo;
 DBConnector MainIocp::Conn;
 CRITICAL_SECTION MainIocp::csPlayers;
 CRITICAL_SECTION MainIocp::csMonsters;
-MonsterSet MainIocp::MonstersInfo;
+MonsterSet MainIocp::MonstersInfo; 
 int MainIocp::KeyCount;
+int MainIocp::ClearUserCount;
 map<int, queue<int>> LevelMaster;
 
 unsigned int WINAPI CallWorkerThread(LPVOID p)
@@ -48,6 +49,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
 	fnProcess[EPacketType::ACTION_SKILL].funcProcessPacket = ActionSkill;
 	fnProcess[EPacketType::DESTRUCT_KEY].funcProcessPacket = DestructKey;
+	fnProcess[EPacketType::CLEAR_GAME].funcProcessPacket = DestructKey;
 }
 
 
@@ -187,7 +189,7 @@ void MainIocp::WorkerThread()
 
 			if (checkSum != 999)
 			{
-				printf_s("[ERROR] checkSum : %d\n", checkSum);
+				//printf_s("[ERROR] checkSum : %d\n", checkSum);
 			}
 			else {
 				// ��Ŷ ó��
@@ -602,4 +604,25 @@ void MainIocp::DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket)
 	printf_s("[INFO]DestructKey %d", id);
 
 	OtherBroadcast(SendStream, 1, sessionID);
+}
+
+void MainIocp::ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket)
+{
+	ClearUserCount++;
+
+	bool isClear;
+	RecvStream >> isClear;
+	stringstream SendStream;
+	SendStream << EPacketType::CLEAR_GAME << endl;
+	SendStream << 999 << endl; // checkSum
+	SendStream << ClearUserCount << endl;
+
+	printf_s("[INFO]ClearUserCount %d", ClearUserCount);
+	if (ClearUserCount == 2) {
+		// ResetGame
+		ClearUserCount = 0;
+		CharactersInfo.players.clear();
+	}
+
+	Broadcast(SendStream, 1);
 }
