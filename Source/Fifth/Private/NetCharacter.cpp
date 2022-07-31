@@ -1125,6 +1125,7 @@ bool ANetCharacter::GetIsAttacking()
 
 void ANetCharacter::UpdateHealth(float _healthValue)
 {
+	HealthPercentage = _healthValue;
 	HealthValue = _healthValue;
 }
 

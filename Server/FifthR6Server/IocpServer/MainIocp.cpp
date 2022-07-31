@@ -446,7 +446,6 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	if (CharactersInfo.players.count(DamagedSessionId) == 0)
 		return;
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
-	printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
 		printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);
@@ -497,7 +496,7 @@ void MainIocp::BroadcastNewPlayer(cCharactersInfo & player, int UELevel)
 void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
-	cout << SessionSocket.size() << endl;
+	//cout << SessionSocket.size() << endl;
 	for (const auto& kvp : SessionSocket)
 	{
 		//cout << kvp.first << endl;
