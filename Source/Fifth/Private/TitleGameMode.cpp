@@ -9,13 +9,13 @@ ATitleGameMode::ATitleGameMode()
 	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogClass, Log, TEXT("ATitleGameMode!"));
 
+	Socket = ClientSocket::GetSingleton();
 	if (Socket->ID != 0)
 	{
 		UE_LOG(LogClass, Log, TEXT("ServerSocket != NULL"));
 	}
 	else
 	{
-		Socket = ClientSocket::GetSingleton();
 		Socket->InitSocket();
 		//UE_LOG(LogClass, Log, TEXT("server addr : [%s]"), ip_addr);
 		bIsConnected = Socket->Connect("211.198.122.35", 8080);
