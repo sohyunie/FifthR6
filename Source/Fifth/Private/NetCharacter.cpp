@@ -211,7 +211,6 @@ void ANetCharacter::BeginPlay()
 		}
 
 	}
-
 	if (ExitWidgetClass)
 	{
 		ExitInfoWidget = CreateWidget<UUserWidget>(GetWorld(), ExitWidgetClass);
