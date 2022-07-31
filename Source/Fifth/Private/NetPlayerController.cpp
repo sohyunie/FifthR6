@@ -51,6 +51,7 @@ ANetPlayerController::ANetPlayerController()
 	nPlayers = -1;
 
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickInterval = 12/60;
 
 	bIsConnected = true;
 }
@@ -82,6 +83,8 @@ bool ANetPlayerController::GetIsMaster()
 void ANetPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (isClearStage)
+		return;
 
 	if (CurrentResult->ResultCheck)
 	{

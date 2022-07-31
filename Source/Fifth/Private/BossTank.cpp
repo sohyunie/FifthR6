@@ -118,15 +118,11 @@ void ABossTank::SetBossTankState(ECharacterState NewState)
 	case ECharacterState::READY_MASTER:
 	{
 		SetActorHiddenInGame(false);
-		
 		SetCanBeDamaged(true);
 
 		BossStat->OnHPIsZero.AddLambda([this]()->void {
 			SetBossTankState(ECharacterState::DEAD);
 			});
-
-		
-
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 		BossAIController->RunAI();
@@ -136,14 +132,11 @@ void ABossTank::SetBossTankState(ECharacterState NewState)
 	case ECharacterState::READY:
 	{
 		SetActorHiddenInGame(false);
-		
 		SetCanBeDamaged(true);
 
 		BossStat->OnHPIsZero.AddLambda([this]()->void {
 			SetBossTankState(ECharacterState::DEAD);
 			});
-
-		
 
 		SetControlMode(0);
 		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
