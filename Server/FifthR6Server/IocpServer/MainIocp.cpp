@@ -446,6 +446,7 @@ void MainIocp::HitCharacter(stringstream & RecvStream, stSOCKETINFO * pSocket)
 	if (CharactersInfo.players.count(DamagedSessionId) == 0)
 		return;
 	CharactersInfo.players[DamagedSessionId].HealthValue -= HitPoint;
+	printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);
 	if (CharactersInfo.players[DamagedSessionId].HealthValue < 0)
 	{
 		printf_s("[INFO] HealthValue : %f \n", CharactersInfo.players[DamagedSessionId].HealthValue);

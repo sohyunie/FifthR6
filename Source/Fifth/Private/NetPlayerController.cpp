@@ -554,6 +554,7 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 	{
 		// 캐릭터 속성 업데이트
 		//UE_LOG(LogClass, Log, TEXT("Player damaged : %d"), tempPlayer->GetSessionId());
+		tempPlayer->UpdateHealth(info.HealthValue);
 		if (tempPlayer->GetHealthValue() != info.HealthValue)
 		{
 			//UE_LOG(LogClass, Log, TEXT("Player damaged : %f / %f"), tempPlayer->GetHealthValue(), info.HealthValue);
@@ -564,7 +565,6 @@ void ANetPlayerController::UpdatePlayerInfo(const cCharacter& info)
 			//);
 			// 피격 애니메이션 스폰
 			tempPlayer->PlayTakeDamageAnim();
-			tempPlayer->UpdateHealth(info.HealthValue);
 		}
 	}
 }
