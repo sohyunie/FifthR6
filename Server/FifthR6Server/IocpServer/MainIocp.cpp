@@ -496,6 +496,7 @@ void MainIocp::BroadcastNewPlayer(cCharactersInfo & player, int UELevel)
 void MainIocp::Broadcast(stringstream & SendStream, int UELevel)
 {
 	stSOCKETINFO* client = new stSOCKETINFO;
+	cout << SessionSocket.size() << endl;
 	for (const auto& kvp : SessionSocket)
 	{
 		//cout << kvp.first << endl;
@@ -609,22 +610,16 @@ void MainIocp::DestructKey(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 void MainIocp::ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket)
 {
-	ClearUserCount++;
 
 	bool isClear;
 	RecvStream >> isClear;
 
-	printf_s("[INFO]ClearUserCount %d \n", ClearUserCount);
-	if (ClearUserCount == 2) {
-		// ResetGame
-		ClearUserCount = 0;
-		CharactersInfo.players.clear();
+	printf_s("[INFO]ClearUser \n");
+	CharactersInfo.players.clear();
 
-		stringstream SendStream;
-		SendStream << EPacketType::CLEAR_GAME << endl;
-		SendStream << 999 << endl; // checkSum
-		SendStream << ClearUserCount << endl;
-		Broadcast(SendStream, 1);
-	}
-
+	stringstream SendStream;
+	SendStream << EPacketType::CLEAR_GAME << endl;
+	SendStream << 999 << endl; // checkSum
+	SendStream << ClearUserCount << endl;
+	Broadcast(SendStream, 1);
 }

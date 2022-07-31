@@ -8,18 +8,24 @@ ATitleGameMode::ATitleGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogClass, Log, TEXT("ATitleGameMode!"));
-	Socket = ClientSocket::GetSingleton();
-	Socket->InitSocket();
-	//string ip_addr = "192.168.55.170";
-	//UE_LOG(LogClass, Log, TEXT("server addr : [%s]"), ip_addr);
-	bIsConnected = Socket->Connect("211.198.122.35", 8080);
-	//bIsConnected = Socket->Connect("127.0.0.1", 8080);
-	//bIsConnected = Socket->Connect("192.168.45.1", 5000);
-	UE_LOG(LogClass, Log, TEXT("server addr : 211.198.122.35  8080"));
-	if (bIsConnected)
+
+	if (Socket->ID != 0)
 	{
-		Socket->SetTitleGameMode(this);
-		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
+		UE_LOG(LogClass, Log, TEXT("ServerSocket != NULL"));
+	}
+	else
+	{
+		Socket = ClientSocket::GetSingleton();
+		Socket->InitSocket();
+		//UE_LOG(LogClass, Log, TEXT("server addr : [%s]"), ip_addr);
+		bIsConnected = Socket->Connect("211.198.122.35", 8080);
+		//bIsConnected = Socket->Connect("127.0.0.1", 8080);
+		UE_LOG(LogClass, Log, TEXT("server addr : 211.198.122.35  8080"));
+		if (bIsConnected)
+		{
+			Socket->SetTitleGameMode(this);
+			UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
+		}
 	}
 }
 
