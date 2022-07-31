@@ -49,7 +49,7 @@ MainIocp::MainIocp()
 	fnProcess[EPacketType::SYNC_MONSTER].funcProcessPacket = SyncMonster;
 	fnProcess[EPacketType::ACTION_SKILL].funcProcessPacket = ActionSkill;
 	fnProcess[EPacketType::DESTRUCT_KEY].funcProcessPacket = DestructKey;
-	fnProcess[EPacketType::CLEAR_GAME].funcProcessPacket = DestructKey;
+	fnProcess[EPacketType::CLEAR_GAME].funcProcessPacket = ClearGame;
 }
 
 
