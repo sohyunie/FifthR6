@@ -577,7 +577,11 @@ void ABossTank::KickCheck()
 
 void ABossTank::StartAction()
 {
-	//TankAIController->RunAI();
+	ANetPlayerController* PlayerController = Cast<ANetPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController->GetIsMaster())
+		SetBossTankState(ECharacterState::READY_MASTER);
+	else
+		SetBossTankState(ECharacterState::READY);
 }
 
 float ABossTank::GetTankHpRatio()
@@ -610,10 +614,10 @@ void ABossTank::PlayTakeDamageAnim()
 void ABossTank::MoveToLocation(const FVector& dest)
 {
 	// [TODO] boss
-	//if (BossAIController)
-	//{
-	//	BossAIController->MoveToLocation(dest);
-	//}
+	if (BossAIController)
+	{
+		BossAIController->MoveToLocation(dest);
+	}
 }
 
 void ABossTank::PlayAttackAnim()
