@@ -89,7 +89,11 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 		if (ResultInfoWidget)
 		{
-			Socket->SendClearGame(true);
+			if (!isClearStage)
+			{
+				isClearStage = true;
+				Socket->SendClearGame(true);
+			}
 			ResultInfoWidget->AddToViewport();
 			ChangeInputMode(false);
 		}

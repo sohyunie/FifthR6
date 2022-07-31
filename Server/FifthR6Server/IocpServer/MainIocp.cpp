@@ -612,17 +612,18 @@ void MainIocp::ClearGame(stringstream& RecvStream, stSOCKETINFO* pSocket)
 
 	bool isClear;
 	RecvStream >> isClear;
-	stringstream SendStream;
-	SendStream << EPacketType::CLEAR_GAME << endl;
-	SendStream << 999 << endl; // checkSum
-	SendStream << ClearUserCount << endl;
 
 	printf_s("[INFO]ClearUserCount %d", ClearUserCount);
 	if (ClearUserCount == 2) {
 		// ResetGame
 		ClearUserCount = 0;
 		CharactersInfo.players.clear();
+
+		stringstream SendStream;
+		SendStream << EPacketType::CLEAR_GAME << endl;
+		SendStream << 999 << endl; // checkSum
+		SendStream << ClearUserCount << endl;
+		Broadcast(SendStream, 1);
 	}
 
-	Broadcast(SendStream, 1);
 }
