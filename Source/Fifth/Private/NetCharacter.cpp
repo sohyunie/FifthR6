@@ -390,12 +390,12 @@ void ANetCharacter::Tick(float DeltaTime)
 	{
 		if (Hit.bBlockingHit)
 		{
-			if (Hit.GetActor()->GetClass()->IsChildOf(ASaveCom::StaticClass()))
-			{
-				InfoWidget->SetVisibility(ESlateVisibility::Visible);
-				CurrentSave = Cast<ASaveCom>(Hit.GetActor());
-			}
-			else if (Hit.GetActor()->GetClass()->IsChildOf(AExitKey::StaticClass()))
+			//if (Hit.GetActor()->GetClass()->IsChildOf(ASaveCom::StaticClass()))
+			//{
+			//	InfoWidget->SetVisibility(ESlateVisibility::Visible);
+			//	CurrentSave = Cast<ASaveCom>(Hit.GetActor());
+			//}
+			if (Hit.GetActor()->GetClass()->IsChildOf(AExitKey::StaticClass()))
 			{
 				ExitInfoWidget->SetVisibility(ESlateVisibility::Visible);
 				CurrentKey = Cast<AExitKey>(Hit.GetActor());
