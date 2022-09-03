@@ -334,7 +334,7 @@ void ANetCharacter::SetWarriorState(ECharacterState NewState)
 		MyAnim->SetDeadAnim();
 		SetCanBeDamaged(false);
 
-		DisableInput(NetPlayerController);
+		//DisableInput(NetPlayerController);
 
 		GetWorld()->GetTimerManager().
 			SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
@@ -913,14 +913,15 @@ void ANetCharacter::UpdateMyHealth(float HealthChange)
 
 	if (Health <= 0)
 	{
-		ABLOG(Warning, TEXT("GAMEOVER!"));
+		//ABLOG(Warning, TEXT("GAMEOVER!"));
 		GameOverInfoWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
 
 		if (GameOverInfoWidget)
 		{
-			ABLOG(Warning, TEXT("GAMEOVER!!!"));
+			//ABLOG(Warning, TEXT("GAMEOVER!!!"));
 			GameOverInfoWidget->AddToViewport();
-			//ChangeInputMode(false);
+			UGameplayStatics::GetPlayerController(GetWorld(),0)->bShowMouseCursor = true;
+			
 
 		}
 	}
