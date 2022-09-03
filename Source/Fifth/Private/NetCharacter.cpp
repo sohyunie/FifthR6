@@ -172,6 +172,8 @@ ANetCharacter::ANetCharacter()
 
 	
 
+	GameOverCheck = false;
+
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> SaveHelp(
 		TEXT("/Game/UI/SaveInfo.SaveInfo_C"));
@@ -616,7 +618,7 @@ void ANetCharacter::PostInitializeComponents()
 	WarriorStat->OnHPIsZero.AddLambda([this]()->void {
 		ABLOG(Warning, TEXT("OnHPIsZero"));
 
-		
+		GameOverCheck = true;
 
 		MyAnim->SetDeadAnim();
 		SetActorEnableCollision(false);
@@ -905,6 +907,9 @@ void ANetCharacter::UpdateMyHealth(float HealthChange)
 {
 	Health = FMath::Clamp(Health += HealthChange, 0.0f, FullHealth);
 	HealthPercentage = Health / FullHealth;
+
+	if (Health <= 0)
+		GameOverCheck = true;
 
 }
 

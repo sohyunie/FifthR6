@@ -9,13 +9,15 @@
 #include "ATank.h"
 #include "ExitKey.h"
 #include "BossTank.h"
+#include "NetCharacter.h"
 //#include "Blueprint/UserWidget.h"
 #include <string>
 
 ANetPlayerController::ANetPlayerController()
 {
 	CurrentResult = Cast<AResultTrigger>(UGameplayStatics::GetActorOfClass(GetWorld(), AResultTrigger::StaticClass()));
-
+	//CurrentGameOver = Cast<ANetCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ANetCharacter::StaticClass()));
+	CurrentGameOver = Cast<ANetCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	UE_LOG(LogClass, Log, TEXT("ANetPlayerController Create"));
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
@@ -25,6 +27,12 @@ ANetPlayerController::ANetPlayerController()
 		TEXT("/Game/UI/UI_Result1.UI_Result1_C"));
 
 	ResultWidgetClass = Result.Class;
+
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameOver(
+		TEXT("/Game/UI/GameOver.GameOver_C"));
+
+	GameOverWidgetClass = GameOver.Class;
 
 	// 임시 파티클
 	//DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
@@ -88,6 +96,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 	if (CurrentResult != NULL && CurrentResult->ResultCheck)
 	{
+		
 		ResultInfoWidget = CreateWidget<UUserWidget>(GetWorld(), ResultWidgetClass);
 
 		if (ResultInfoWidget)
@@ -99,6 +108,22 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 				ResultInfoWidget->AddToViewport();
 				ChangeInputMode(false);
 			}
+		}
+	}
+
+	
+
+	if (CurrentGameOver != NULL && CurrentGameOver->GameOverCheck)
+	{
+		ABLOG(Warning, TEXT("GAMEOVER!"));
+		GameOverInfoWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+
+		if (GameOverInfoWidget)
+		{
+			ABLOG(Warning, TEXT("GAMEOVER!!!"));
+			GameOverInfoWidget->AddToViewport();
+			ChangeInputMode(false);
+			
 		}
 	}
 

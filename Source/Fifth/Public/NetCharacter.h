@@ -57,6 +57,8 @@ public:
 
 	
 
+	bool GameOverCheck;
+
 
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere)

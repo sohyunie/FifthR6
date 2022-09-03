@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		class AResultTrigger* CurrentResult;
 
+	UPROPERTY(EditAnywhere)
+		class ANetCharacter* CurrentGameOver;
+
 	void ChangeInputMode(bool bGameMode = true);
 
 	// Reference UMG Asset in the Editor
@@ -31,6 +34,13 @@ public:
 
 	// declare widget
 	class UUserWidget* ResultInfoWidget;
+
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> GameOverWidgetClass;
+
+	// declare widget
+	class UUserWidget* GameOverInfoWidget;
 
 	// 채팅 함수
 	UFUNCTION(BlueprintCallable, Category = "Chat")
@@ -43,15 +53,15 @@ public:
 	// HUD 화면에서 쓸 위젯 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties", Meta = (BlueprintProtect = "true"))
 		TSubclassOf<class UUserWidget> HUDWidgetClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties", Meta = (BlueprintProtect = "true"))
-		TSubclassOf<class UUserWidget> GameOverWidgetClass;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties", Meta = (BlueprintProtect = "true"))
+		//TSubclassOf<class UUserWidget> GameOverWidgetClass;
 
 	// HUD 객체
 	UPROPERTY()
 		class UUserWidget* CurrentWidget;
 
-	UPROPERTY()
-		class UUserWidget* GameOverWidget;
+	//UPROPERTY()
+		//class UUserWidget* GameOverWidget;
 
 	// 스폰시킬 다른 캐릭터
 	UPROPERTY(EditAnywhere, Category = "Spawning")

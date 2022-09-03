@@ -56,7 +56,8 @@ void AOverlapRangeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		Destroy();
 	}*/
 
-	if (OtherActor->IsA(AATank::StaticClass()) || OtherActor->IsA(ABossTank::StaticClass()))
+	if (OtherActor->IsA(AATank::StaticClass()) || OtherActor->IsA(ABossTank::StaticClass())
+		|| OtherActor->IsA(ANetCharacter::StaticClass()))
 	{
 		ABLOG(Warning, TEXT("HIT!!!"));
 		bCanApplyDamage = true;
