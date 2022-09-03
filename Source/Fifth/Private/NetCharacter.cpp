@@ -170,7 +170,10 @@ ANetCharacter::ANetCharacter()
 	isAlived = true;
 	bIsAttacking = false;
 
-	
+	static ConstructorHelpers::FClassFinder<UUserWidget> GameOver(
+		TEXT("/Game/UI/GameOver.GameOver_C"));
+
+	GameOverWidgetClass = GameOver.Class;
 
 	GameOverCheck = false;
 
@@ -909,7 +912,19 @@ void ANetCharacter::UpdateMyHealth(float HealthChange)
 	HealthPercentage = Health / FullHealth;
 
 	if (Health <= 0)
-		GameOverCheck = true;
+	{
+		ABLOG(Warning, TEXT("GAMEOVER!"));
+		GameOverInfoWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+
+		if (GameOverInfoWidget)
+		{
+			ABLOG(Warning, TEXT("GAMEOVER!!!"));
+			GameOverInfoWidget->AddToViewport();
+			//ChangeInputMode(false);
+
+		}
+	}
+		//GameOverCheck = true;
 
 }
 

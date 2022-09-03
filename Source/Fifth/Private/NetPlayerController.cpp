@@ -17,7 +17,7 @@ ANetPlayerController::ANetPlayerController()
 {
 	CurrentResult = Cast<AResultTrigger>(UGameplayStatics::GetActorOfClass(GetWorld(), AResultTrigger::StaticClass()));
 	//CurrentGameOver = Cast<ANetCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ANetCharacter::StaticClass()));
-	CurrentGameOver = Cast<ANetCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	//CurrentGameOver = Cast<ANetCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	UE_LOG(LogClass, Log, TEXT("ANetPlayerController Create"));
 	// 서버와 연결
 	Socket = ClientSocket::GetSingleton();
@@ -29,10 +29,7 @@ ANetPlayerController::ANetPlayerController()
 	ResultWidgetClass = Result.Class;
 
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> GameOver(
-		TEXT("/Game/UI/GameOver.GameOver_C"));
-
-	GameOverWidgetClass = GameOver.Class;
+	
 
 	// 임시 파티클
 	//DestroyEmiiter = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL,
@@ -113,7 +110,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 
 	
 
-	if (CurrentGameOver != NULL && CurrentGameOver->GameOverCheck)
+	/*if (CurrentGameOver->GameOverCheck)
 	{
 		ABLOG(Warning, TEXT("GAMEOVER!"));
 		GameOverInfoWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
@@ -125,7 +122,7 @@ void ANetPlayerController::Tick(float DeltaSeconds)
 			ChangeInputMode(false);
 			
 		}
-	}
+	}*/
 
 	if (!Socket->isEnroll)
 		return;

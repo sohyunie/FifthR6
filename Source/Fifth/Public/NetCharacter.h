@@ -55,7 +55,12 @@ public:
 		USpringArmComponent* ViewArm;
 
 
-	
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> GameOverWidgetClass;
+
+	// declare widget
+	class UUserWidget* GameOverInfoWidget;
 
 	bool GameOverCheck;
 

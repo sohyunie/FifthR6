@@ -23,8 +23,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		class AResultTrigger* CurrentResult;
 
-	UPROPERTY(EditAnywhere)
-		class ANetCharacter* CurrentGameOver;
+	//UPROPERTY(EditAnywhere)
+		//class ANetCharacter* CurrentGameOver;
 
 	void ChangeInputMode(bool bGameMode = true);
 
@@ -35,12 +35,7 @@ public:
 	// declare widget
 	class UUserWidget* ResultInfoWidget;
 
-	// Reference UMG Asset in the Editor
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> GameOverWidgetClass;
-
-	// declare widget
-	class UUserWidget* GameOverInfoWidget;
+	
 
 	// 채팅 함수
 	UFUNCTION(BlueprintCallable, Category = "Chat")
