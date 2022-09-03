@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditAnyWhere)
 		USpringArmComponent* ViewArm;
 
+
+	
+
+
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> HelpWidgetClass;

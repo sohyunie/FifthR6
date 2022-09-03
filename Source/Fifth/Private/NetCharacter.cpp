@@ -170,6 +170,9 @@ ANetCharacter::ANetCharacter()
 	isAlived = true;
 	bIsAttacking = false;
 
+	
+
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> SaveHelp(
 		TEXT("/Game/UI/SaveInfo.SaveInfo_C"));
 
@@ -612,6 +615,9 @@ void ANetCharacter::PostInitializeComponents()
 
 	WarriorStat->OnHPIsZero.AddLambda([this]()->void {
 		ABLOG(Warning, TEXT("OnHPIsZero"));
+
+		
+
 		MyAnim->SetDeadAnim();
 		SetActorEnableCollision(false);
 	});
